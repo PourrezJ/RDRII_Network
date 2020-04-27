@@ -50,39 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitReader.cs" />
-    <Compile Include="ClientResourceSettings.cs" />
-    <Compile Include="EntityProperties.cs" />
-    <Compile Include="Enums\PedHash.cs" />
-    <Compile Include="GTANSchemeListener.cs" />
-    <Compile Include="ImpatientWebClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="LauncherSettings.cs" />
-    <Compile Include="LogManager.cs" />
-    <Compile Include="MasterServerAnnounce.cs" />
-    <Compile Include="Math\Matrix4.cs" />
-    <Compile Include="Math\Quaternion.cs" />
-    <Compile Include="Math\Vector3.cs" />
-    <Compile Include="NativeData.cs" />
-    <Compile Include="NetHandle.cs" />
-    <Compile Include="NonStandardVehicleMods.cs" />
-    <Compile Include="PacketOptimization.cs" />
-    <Compile Include="Packets.cs" />
-    <Compile Include="ParseableVersion.cs" />
-    <Compile Include="PickupHashes.cs" />
-    <Compile Include="PickupToWeapon.cs" />
-    <Compile Include="PlayerSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerSettings.cs" />
-    <Compile Include="SyncPackets.cs" />
-    <Compile Include="Util.cs" />
-    <Compile Include="VehicleHashes.cs" />
-    <Compile Include="VersionCompatibility.cs" />
-    <Compile Include="WeaponHashes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

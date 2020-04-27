@@ -29,7 +29,7 @@ namespace RDRNetworkLauncher
             #endregion
 
             System.Threading.Thread.Sleep(5500);
-
+            /*
             var playerSetings = new PlayerSettings();
 
             #region Create settings.xml if it does not exist
@@ -43,10 +43,11 @@ namespace RDRNetworkLauncher
                 }
             }
             #endregion
-
+            */
             #region Read settings.xml
+            /*
             PlayerSettings settings = null;
-            settings = PlayerSettings.ReadSettings(RDRNFolder + "settings.xml");
+            settings = PlayerSettings.ReadSettings(RDRNFolder + "settings.xml");*/
             #endregion
 
             splashScreen.SetPercent(10);
