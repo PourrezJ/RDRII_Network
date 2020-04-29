@@ -29,11 +29,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Module">
-      <HintPath>..\build\Release\Module.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,8 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Cleanup.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +52,19 @@
       <Project>{D68E6CB7-FC70-41C9-BD53-D79552B37F0E}</Project>
       <Name>API</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Module\source\Module.vcxproj">
+      <Project>{c90aa001-fdfc-44c3-a4ec-1ef949458af4}</Project>
+      <Name>Module</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del $(TargetDir)ClearScriptV8-32.dll
+del $(TargetDir)v8-base-ia32.dll
+del $(TargetDir)v8-ia32.dll
+del $(TargetDir)v8-zlib-ia32.dll
+xcopy /E /Y $(TargetDir)*.dll "C:\RDRNetwork\bin\Scripts\"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -17,15 +17,9 @@ DWORD WINAPI ControlThread(const LPVOID param)
 
 BOOL APIENTRY DllMain(const HMODULE hModule, const DWORD reasonForCall, const LPVOID lpReserved)
 {
-    switch (reasonForCall)
+    if (reasonForCall == DLL_PROCESS_ATTACH)
     {
-    case DLL_PROCESS_ATTACH:
-        CreateThread(nullptr, 0, ControlThread, static_cast<LPVOID>(hModule), 0, nullptr);
-        break;
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH: break;
-    case DLL_PROCESS_DETACH: rh2::Unload(); break;
+        CreateThread(NULL, NULL, ControlThread, hModule, 0, 0);
     }
-
     return TRUE;
 }

@@ -32,7 +32,7 @@ void ManagedScriptKeyboardMessage(unsigned long key, unsigned short repeats, uns
 			wfkey = wfkey | System::Windows::Forms::Keys::Alt;
 		}
 
-		if (isWithAlt && wfkey == System::Windows::Forms::Keys::F12)
+		if (wfkey == System::Windows::Forms::Keys::R)
         {
             rh2::Unload();
 		}

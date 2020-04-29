@@ -94,9 +94,10 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)Module/vendor/inc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)Module/vendor/lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
-    <OutDir>..\..\build\Release\</OutDir>
+    <OutDir>C:\RDRNetwork\bin\</OutDir>
     <IntDir>
     </IntDir>
+    <TargetName>RDRN_Module</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -190,7 +191,6 @@
     <ClCompile Include="memory\patternscan.cpp" />
     <ClCompile Include="rage\scrProgram.cpp" />
     <ClCompile Include="rage\scrThread.cpp" />
-    <ClCompile Include="scripting\script.cpp" />
     <ClCompile Include="util\fiber.cpp" />
     <ClCompile Include="wrapper\Function.cpp" />
     <ClCompile Include="wrapper\Input.cpp" />
@@ -215,7 +215,6 @@
     <ClInclude Include="hooking\command-hook.hpp" />
     <ClInclude Include="hooking\detour-hook.hpp" />
     <ClInclude Include="hooking\input-hook.hpp" />
-    <ClInclude Include="invoker\crossmapping.hpp" />
     <ClInclude Include="invoker\invoker.hpp" />
     <ClInclude Include="logger\file-log.hpp" />
     <ClInclude Include="logger\generic-file-logger.hpp" />
@@ -231,7 +230,6 @@
     <ClInclude Include="memory\helpers.hpp" />
     <ClInclude Include="memory\memory-location.hpp" />
     <ClInclude Include="memory\patternscan.hpp" />
-    <ClInclude Include="scripting\script.hpp" />
     <ClInclude Include="util\fiber.hpp" />
     <ClInclude Include="wrapper\Function.h" />
     <ClInclude Include="wrapper\INativeValue.h" />

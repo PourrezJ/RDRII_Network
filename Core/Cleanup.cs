@@ -22,9 +22,9 @@ namespace RDRNetwork
             Function.Call(Hash.SET_SCENARIO_PED_DENSITY_MULTIPLIER_THIS_FRAME, 0f);
 
 
-            Function.Call(Hash.SET_PLAYER_HEALTH_RECHARGE_MULTIPLIER, Game.Player, 0f);
+            Function.Call(Hash.SET_PLAYER_HEALTH_RECHARGE_MULTIPLIER, Game.Player.Handle, 0f);
 
-            Function.Call(Hash.SET_PLAYER_WANTED_LEVEL, Game.Player, 0, false);
+            Function.Call(Hash.SET_PLAYER_WANTED_LEVEL, Game.Player.Handle, 0, false);
             Function.Call(Hash.SET_MAX_WANTED_LEVEL, 0);
             Function.Call(Hash.CLEAR_PLAYER_WANTED_LEVEL, 0);
 
@@ -72,8 +72,8 @@ namespace RDRNetwork
 
     internal class Controls : Script
     {
-        private static void OnTick(object sender, EventArgs e)
-        {     
+        public override void OnTick()
+        {
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClub, true);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClubSecondary, true);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.EnterCheatCode, true);

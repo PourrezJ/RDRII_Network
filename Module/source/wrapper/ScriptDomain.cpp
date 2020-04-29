@@ -24,7 +24,7 @@ void RDRN_Module::ScriptDomain::FindAllTypes()
 	CurrentDir = System::Reflection::Assembly::GetExecutingAssembly()->Location;
 	CurrentDir = System::IO::Path::GetDirectoryName(CurrentDir);
 
-	auto file = System::IO::Path::Combine(CurrentDir, "Scripts\\RDRNetwork.dll");
+	auto file = System::IO::Path::Combine(CurrentDir, "Scripts\\RDRN_Core.dll");
 
 	auto fileName = System::IO::Path::GetFileName(file);
 
@@ -140,6 +140,9 @@ RDRN_Module::Script^ RDRN_Module::ScriptDomain::GetExecuting()
 
 void RDRN_Module::ScriptDomain::TickAllScripts() 
 {
+	if (m_scripts == nullptr)
+		return;
+
     for (int i = 0; i < m_scripts->Length; i++)
 	{
         RDRN_Module::ScriptDomain::ScriptTick(i);

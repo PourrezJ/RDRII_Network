@@ -1,25 +1,35 @@
 #pragma once
 
 #include "Main.hpp"
-#include "../core/core.hpp"
-#include "../util/fiber.hpp"
 #include "ManagedLog.h"
 #include "ManagedGlobals.h"
-#include "../hooking/input-hook.hpp"
 #include "Input.h"
 
+#include "../core/core.hpp"
+#include "../util/fiber.hpp"
+#include "../hooking/input-hook.hpp"
+#include "../core/logs.hpp"
+
 #pragma unmanaged
+bool sGameReloaded;
+
 namespace rh2
 {
     void ClrInit() 
     {
+        rh2::logs::g_hLog->log("Clr Init");
+
         ManagedInit();
+        /*
+        while (true) {
+            ManagedTick();
+            rh2::ScriptWait(std::chrono::milliseconds(0));
+        }*/
+    }
 
-        while (true)
-        {
-
-            ScriptWait(std::chrono::milliseconds(0));
-        }
+    void ClrTick() 
+    {
+        ManagedTick();
     }
 }
 
@@ -90,6 +100,10 @@ void ManagedInit()
     RDRN_Module::LogManager::WriteLog("Created ScriptDomain!");
 
     RDRN_Module::ManagedGlobals::g_scriptDomain->FindAllTypes();
+}
 
-   
+void ManagedTick() {
+    if (RDRN_Module::ManagedGlobals::g_scriptDomain != nullptr) {
+        RDRN_Module::ManagedGlobals::g_scriptDomain->TickAllScripts();
+    }
 }

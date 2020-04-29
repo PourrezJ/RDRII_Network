@@ -94,9 +94,9 @@ int main()
 
     printf("RDR2.exe found PID: %u\n", dwPid);
 
-    if (InjectDLL(dwPid, L"RedHook2.dll"))
+    if (InjectDLL(dwPid, L"RDRN_Module.dll"))
     {
-        printf("RedHook2.dll loaded\n");
+        printf("RDRN_Module.dll loaded\n");
     }
 
     printf("Closing in 5 seconds\n");

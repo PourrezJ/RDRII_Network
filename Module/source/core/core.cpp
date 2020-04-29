@@ -7,7 +7,6 @@
 #include "../hooking/command-hook.hpp"
 #include "../hooking/input-hook.hpp"
 #include "../invoker/invoker.hpp"
-#include "../scripting/script.hpp"
 #include "../logger/log-mgr.hpp"
 #include "logs.hpp"
 
@@ -38,17 +37,10 @@ namespace rh2
 
     std::unique_ptr<hooking::CommandHook> g_waitHook;
 
-    Script*                              g_activeScript = nullptr;
-    std::vector<std::pair<hMod, Script>> g_scripts;
-    std::unordered_set<hMod>             g_modules;
-
-    std::shared_mutex g_scriptMutex;
-
     Fiber g_gameFiber;
 
     bool InitializeHooks();
     bool InitializeCommandHooks();
-    void LoadMods();
     void CreateLogs();
 
     bool Init(hMod module)
@@ -154,26 +146,28 @@ namespace rh2
         }
         logs::g_hLog->log("Natives initialized");
 
-        logs::g_hLog->log("Loading Domain");
-        std::thread thrd(LoadMods);
-        thrd.detach();
+        rh2::ClrInit();
 
         return true;
     }
 
     void Unload()
     {
+        CreateThread(nullptr, THREAD_ALL_ACCESS, CleanupThread, nullptr, NULL, nullptr);    
+    }
+
+    DWORD WINAPI CleanupThread(LPVOID lparam) {
         using namespace std::chrono_literals;
 
         if (g_unloading)
-            return;
+            return false;
         g_unloading = true;
 
         logs::g_hLog->log("Removing input hook");
         if (!hooking::input::RemoveHook())
         {
             logs::g_hLog->fatal("Failed to remove input hook");
-            return;
+            return false;
         }
         logs::g_hLog->log("Input hook removed");
 
@@ -181,13 +175,13 @@ namespace rh2
         if (!hooking::DisableHooks())
         {
             logs::g_hLog->fatal("Failed to disable hooks");
-            return;
+            return false;
         }
         logs::g_hLog->log("Hooks disabled");
         if (!hooking::RemoveHooks())
         {
             logs::g_hLog->fatal("Failed to remove hooks");
-            return;
+            return false;
         }
         logs::g_hLog->log("Hooks removed");
 
@@ -196,7 +190,7 @@ namespace rh2
         if (st != MH_OK)
         {
             logs::g_hLog->fatal("Failed to unitialized Minhook {} ({})", MH_StatusToString(st), st);
-            return;
+            return false;
         }
         logs::g_hLog->log("Minhook uninitialized");
 
@@ -207,7 +201,7 @@ namespace rh2
         logs::g_hLog->log("RDRII: Network unloaded");
 
         logging::LogMgr::DeleteAllLogs();
-
+        FreeConsole();
         FreeLibraryAndExitThread(static_cast<HMODULE>(g_module), 0);
     }
 
@@ -232,17 +226,9 @@ namespace rh2
         // GET_HASH_OF_THIS_SCRIPT_NAME
         if (Invoker::Invoke<u32>(0xBC2C927F5C264960ull) == 0x27eb33d7u) // main
         {
-            std::lock_guard _(g_scriptMutex);
-            for (auto& [_, script] : g_scripts)
-            {
-                g_activeScript = &script;
-                script.update();
-                g_activeScript = nullptr;
-            }
+            //std::lock_guard _(g_scriptMutex);
+            rh2::ClrTick();
         }
-
-         if (RDRN_Module::ManagedGlobals::g_scriptDomain != nullptr)
-            RDRN_Module::ManagedGlobals::g_scriptDomain->TickAllScripts();
 
         g_waitHook->orig(info);
     }
@@ -285,67 +271,4 @@ namespace rh2
         return g_rage__scrThread__GetCmdFromHash;
     }
 
-    void ScriptRegister(hMod module, const Script& script)
-    {
-        std::lock_guard _(g_scriptMutex);
-        g_scripts.push_back(std::pair(module, script));
-        logs::g_hLog->log("Script registred by {}", module);
-    }
-
-    void ScriptUnregister(hMod module)
-    {
-        logs::g_hLog->log("Unloading module {}", module);
-        i32 numScripts = 0;
-        for (auto it = g_scripts.begin(); it != g_scripts.end(); ++it)
-        {
-            if (it->first == module)
-            {
-                ++numScripts;
-                if (it = g_scripts.erase(it); it == g_scripts.end())
-                {
-                    break;
-                }
-            }
-        }
-
-        g_modules.erase(module);
-        logs::g_hLog->log("Module {} unloaded with {} scripts", module, numScripts);
-        FreeLibraryAndExitThread(static_cast<HMODULE>(module), 0);
-    }
-
-    void ScriptWait(const std::chrono::high_resolution_clock::duration& duration)
-    {
-        if (g_activeScript)
-        {
-            g_activeScript->wait(duration);
-        }
-    }
-
-    void LoadMods()
-    { 
-        //using namespace std::filesystem;
-
-        //for (auto it = directory_iterator("scripts/"); it != directory_iterator(); ++it)
-        //{
-        //    if (it->path().extension() == ".asi")
-        //    {
-        //        auto  name   = it->path().filename().string();
-        //        void* module = LoadLibraryW(it->path().wstring().c_str());
-        //        if (module)
-        //        {
-        //            g_modules.insert(module);
-        //            logs::g_hLog->log("Loaded {} (handle: {})", name, module);
-        //        }
-        //        else
-        //        {
-        //            logs::g_hLog->log("Failed to load {} ({:X})", name, GetLastError());
-        //        }
-        //    }
-        //}
-
-        ScriptRegister(g_module, ClrInit);
-
-
-        logs::g_hLog->log("Mods loaded");
-    }
 } // namespace rh2

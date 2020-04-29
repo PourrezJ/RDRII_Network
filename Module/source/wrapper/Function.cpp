@@ -20,7 +20,7 @@
 generic<typename T> T RDRN_Module::Native::Function::Call(Hash hash,
                                                           ... array<InputArgument^> ^ arguments)
 {
-	rh2::Invoker::NativeInit((UINT64)hash);
+	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
 	for each (InputArgument^ arg in arguments) { 
                 rh2::Invoker::NativePush(arg->_data);
 	}
@@ -36,7 +36,7 @@ generic<typename T> T RDRN_Module::Native::Function::Call(Hash hash,
 void RDRN_Module::Native::Function::Call(Hash hash,
                                          ... array<InputArgument^> ^ arguments)
 {
-	rh2::Invoker::NativeInit((UINT64)hash);
+	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
 	for each (auto arg in arguments) {
                 rh2::Invoker::NativePush(EncodeObject(arg));
 	}
