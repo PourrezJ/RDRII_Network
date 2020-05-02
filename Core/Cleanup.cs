@@ -3,7 +3,7 @@ using RDRN_Module;
 using RDRN_Module.Native;
 using System;
 
-namespace RDRNetwork
+namespace RDRN_Core
 {
     internal class CleanupGame : Script
     {
@@ -20,7 +20,6 @@ namespace RDRNetwork
             Function.Call(Hash.SET_RANDOM_VEHICLE_DENSITY_MULTIPLIER_THIS_FRAME, 0f);
             Function.Call(Hash.SET_VEHICLE_DENSITY_MULTIPLIER_THIS_FRAME, 0f);
             Function.Call(Hash.SET_SCENARIO_PED_DENSITY_MULTIPLIER_THIS_FRAME, 0f);
-
 
             Function.Call(Hash.SET_PLAYER_HEALTH_RECHARGE_MULTIPLIER, Game.Player.Handle, 0f);
 

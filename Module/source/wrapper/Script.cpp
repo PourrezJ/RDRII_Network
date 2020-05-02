@@ -35,7 +35,7 @@ void RDRN_Module::Script::Wait(int ms)
 #endif
 
 	m_fiberWait = ms;
-	ScriptSwitchToMainFiber(m_fiberMain);
+	//ScriptSwitchToMainFiber(m_fiberMain);
 }
 
 void RDRN_Module::Script::Yield()

@@ -130,7 +130,7 @@ RDRN_Module::Script^ RDRN_Module::ScriptDomain::GetExecuting()
 	}
 
 	for each (auto script in m_scripts) {
-		if (script != nullptr && script->m_fiberCurrent == currentFiber) {
+		if (script != nullptr/* && script->m_fiberCurrent == currentFiber*/) {
 			return script;
 		}
 	}
