@@ -245,7 +245,17 @@ namespace RDRN_API
 
 			return GetClosest(position, Prop.ToArray());
 		}*/
-		
+		/*
+		public static Ped[] GetNearbyPeds()
+		{
+			int[] peds = new int[1024];
+			int entityCount = Function.Call(Hash.GET_PED_NEARBY_PEDS, Game.Player.Handle, peds, -1.0);
+
+			List<Ped> Peds = new List<Ped>();
+			for (int i = 0; i < entityCount; i++)
+				Peds.Add(new Ped(peds[i]));
+		}
+		*/
 		public static Ped CreatePed(PedHash hash, Vector3 position, float heading = 0f, bool isNet = true, bool isMission = true)
 		{
 			var model = new Model(hash);

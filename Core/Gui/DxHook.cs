@@ -127,7 +127,7 @@ namespace RDRN_Core.Gui.DirectXHook
             }
         }
 
-        public bool Started { get; private set; }
+        public static bool Started { get; private set; }
         public DXGI.Device DxgiDevice { get; private set; }
         public SharpDX.Direct2D1.Device D2dDevice { get; private set; }
 
@@ -248,7 +248,7 @@ namespace RDRN_Core.Gui.DirectXHook
                     lock (ImageElements)
                     {
                         for (int i = 0; i < ImageElements.Count; i++)
-                            ImageElements[i].Draw();
+                            ImageElements[i]?.Draw();
                     }
                 }
                 catch(Exception ex)
@@ -257,7 +257,7 @@ namespace RDRN_Core.Gui.DirectXHook
                 }
             }
 
-            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(2, 2, 20, 50), textBrush);
+            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(2, 2, 20, 0), textBrush);
             
             CurrentRenderTarget2D1.EndDraw();
 

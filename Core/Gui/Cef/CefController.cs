@@ -32,7 +32,6 @@ namespace RDRN_Core.Gui.Cef
 
         private static bool _justShownCursor;
         private static long _lastShownCursor = 0;
-        internal static PointF _lastMousePoint;
         private static Keys _lastKey;
 
         internal static CefEventFlags GetMouseModifiers(bool leftbutton, bool rightButton)
@@ -56,39 +55,34 @@ namespace RDRN_Core.Gui.Cef
                 }
             }
             */
-
             if (ShowCursor)
             {
-                Game.DisableAllControlsThisFrame(0);
+                var mousePos = ControlManager.MousePos;
+                var mouseX = mousePos.X;
+                var mouseY = mousePos.Y;
 
-                var res = Main.Screen;
-                var mouseX = Game.GetDisabledControlNormal(0, Control.CursorX) * res.Width;
-                var mouseY = Game.GetDisabledControlNormal(0, Control.CursorY) * res.Height;
-                
-                 _lastMousePoint = new PointF(mouseX, mouseY);
-                
-                 if (CEFManager.Cursor != null)
-                 {
-                     CEFManager.Cursor.Position = new Point((int)mouseX, (int)mouseY);
-                 }
+                if (CEFManager.Cursor != null)
+                {
+                    CEFManager.Cursor.Position = mousePos;
+                }
                  
-                 var mouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
-                 var mouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
-                 var mouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
+                var mouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
+                var mouseDownRN = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
+                var mouseUp = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
 
-                 var rmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
-                 var rmouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
-                 var rmouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
+                var rmouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
+                var rmouseDownRN = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
+                var rmouseUp = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
 
-                 var wumouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollUp);
-                 var wdmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollDown);
+                var wumouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorScrollUp);
+                var wdmouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorScrollDown);
 
                 foreach (var browser in CEFManager.Browsers)
                 {
                     if (!browser.IsInitialized()) 
                         continue;
 
-                     if (!browser._hasFocused)
+                    if (!browser._hasFocused)
                      {
                          browser._browser.GetHost().SetFocus(true);
                          browser._browser.GetHost().SendFocusEvent(true);
@@ -138,10 +132,11 @@ namespace RDRN_Core.Gui.Cef
                      }
                  }
             }
+            /*
             else
             {
                 Function.Call(Hash._SET_MOUSE_CURSOR_ACTIVE_THIS_FRAME);
-            }
+            }*/
         }
 
         public override void OnKeyDown(KeyEventArgs args)

@@ -44,11 +44,6 @@ namespace RDRN_Core.Gui.Cef
                 "--show-fps-counter"
             };
 
-            var args2 = new[]
-            {
-                ""
-            };
-
             var cefMainArgs = new CefMainArgs(args);
             var cefApp = new MainCefApp();
 
@@ -100,7 +95,7 @@ namespace RDRN_Core.Gui.Cef
         {
            if (Cursor == null)
                Cursor = ImageElement.FromFile(Main.RDRNetworkPath + "\\images\\cef\\cursor.png", new PointF());
-            Cursor.Hidden = hidden;
+           Cursor.Hidden = hidden;
         }
 
         internal static readonly List<Browser> Browsers = new List<Browser>();

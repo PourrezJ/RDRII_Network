@@ -16,12 +16,6 @@ namespace RDRN_Core.Gui.Cef
 
         internal PointF Position;
 
-        private byte[] sPixelBuffer;
-        private byte[] sPopupPixelBufer;
-        private CefRectangle _popupSize;
-        private bool _popupShow;
-
-
         public MainCefClient(Browser browser, int windowWidth, int windowHeight)
         {
             _renderHandler = new MainCefRenderHandler(browser, windowWidth, windowHeight);

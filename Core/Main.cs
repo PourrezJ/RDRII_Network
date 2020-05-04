@@ -6,6 +6,9 @@ using RDRN_Module.Native;
 using RDRN_Core.Gui.DirectXHook;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using SharpDX.DXGI;
 
 namespace RDRN_Core
 {
@@ -28,7 +31,9 @@ namespace RDRN_Core
             }
         }
 
-        public DxHook DxHook { get; private set; }
+        internal static PointF MousePos;
+
+        internal static DxHook DxHook { get; private set; }
 
         public override void OnInit()
         {
@@ -43,14 +48,18 @@ namespace RDRN_Core
             LogManager.WriteLog("Cef Initializing");
             CEFManager.InitializeCef();
 
+            new ControlManager();
+
             LogManager.WriteLog("Core Initialized");
+
+            var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
+            CefController.ShowCursor = true;
 
             base.OnInit();
         }
 
         internal void StartMainMenu()
         {
-
             LogManager.WriteLog("Enter on Start Main Menu");
             InStartMenu = true;
 
@@ -66,9 +75,6 @@ namespace RDRN_Core
             model.Request();
             
             Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());
-
-            var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
-            CefController.ShowCursor = true;
         }
 
         private static bool firstTick;
@@ -84,6 +90,19 @@ namespace RDRN_Core
             {
                 World.CurrentWeather = WeatherType.Sunny;
                 Function.Call(Hash.PAUSE_CLOCK, true);
+
+
+                Function.Call(Hash._SET_MOUSE_CURSOR_ACTIVE_THIS_FRAME);
+
+                //Game.DisableAllControlsThisFrame(2);
+                /*
+                Game.EnableControlThisFrame(0, Control.CursorX);
+                Game.EnableControlThisFrame(0, Control.CursorY);
+                */
+                var res = Main.Screen;
+
+                var mouseX = Game.GetControlNormal(0, Control.CursorX) * res.Width;
+                var mouseY = Game.GetControlNormal(0, Control.CursorY) * res.Height;
             }
 
             Game.TimeScale = 1;

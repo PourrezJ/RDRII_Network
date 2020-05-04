@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cleanup.cs" />
+    <Compile Include="ControlManager.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\LocalHandle.cs" />
     <Compile Include="Gui\Cef\Browser.cs" />

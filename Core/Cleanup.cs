@@ -73,6 +73,8 @@ namespace RDRN_Core
     {
         public override void OnTick()
         {
+            return;
+
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClub, true);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClubSecondary, true);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.EnterCheatCode, true);
