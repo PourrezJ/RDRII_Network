@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -260,7 +261,16 @@ namespace Launcher
             try
             {
                 m.OpenProcess(rdr2.Id);
+                
                 m.InjectDll(Path.Combine(RDRNFolder, "bin\\RDRN_Module.dll"));
+                /*
+                Task.Run(async () =>
+                {
+                    var native_base = await m.AoBScan("0F B6 C1 48 8D 15 ? ? ? ? 4C 8B C9");
+                    if (native_base != null)
+                        MessageBox.Show("penis");
+                });*/
+                
             }
             catch (Exception ex)
             {

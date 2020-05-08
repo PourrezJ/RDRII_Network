@@ -30,10 +30,10 @@ namespace rh2
     std::atomic_bool g_unloading = false;
     hMod             g_module;
 
-    MemoryLocation g_PatchVectorResults;
-    MemoryLocation g_s_CommandHash;
-    MemoryLocation g_rage__scrThread__GetCmdFromHash;
-    MemoryLocation g_rage__scrProgram__sm_Globals;
+    //MemoryLocation g_PatchVectorResults;
+   // MemoryLocation g_s_CommandHash;
+    //MemoryLocation g_rage__scrThread__GetCmdFromHash;
+    //MemoryLocation g_rage__scrProgram__sm_Globals;
 
     std::unique_ptr<hooking::CommandHook> g_waitHook;
 
@@ -81,7 +81,7 @@ namespace rh2
             return false;
         }
         logs::g_hLog->log("Game window found");
-
+        /*
         logs::g_hLog->log("Searching patterns");
 
         // Find sigs
@@ -108,7 +108,7 @@ namespace rh2
             false;
 
         logs::g_hLog->log("Patterns found");
-
+        */
         logs::g_hLog->log("Initializing Minhook");
         auto st = MH_Initialize();
         if (st != MH_OK)
@@ -125,21 +125,24 @@ namespace rh2
         }
         logs::g_hLog->log("Hooks initialized");
 
+        /*
         logs::g_hLog->log("Waiting for natives");
         while (!(*s_CommandHash))
         {
             std::this_thread::sleep_for(100ms);
         }
         logs::g_hLog->log("Natives loaded");
-
+        */
+        /*
         logs::g_hLog->log("Initializing input hook");
         if (!hooking::input::InitializeHook())
         {
             return false;
-        }
+        }*/
         logs::g_hLog->log("Input hook initialized");
 
         logs::g_hLog->log("Initializing native hooks");
+        
         if (!InitializeCommandHooks())
         {
             return false;
@@ -224,6 +227,7 @@ namespace rh2
         }
 
         // GET_HASH_OF_THIS_SCRIPT_NAME
+
         if (Invoker::Invoke<u32>(0xBC2C927F5C264960ull) == 0x27eb33d7u) // main
         {
             //std::lock_guard _(g_scriptMutex);
@@ -255,7 +259,7 @@ namespace rh2
     {
         return g_gameFiber;
     }
-
+    /*
     MemoryLocation GetPatchVectorResults()
     {
         return g_PatchVectorResults;
@@ -269,6 +273,6 @@ namespace rh2
     MemoryLocation Get_rage__scrThread__GetCmdFromHash()
     {
         return g_rage__scrThread__GetCmdFromHash;
-    }
+    }*/
 
 } // namespace rh2

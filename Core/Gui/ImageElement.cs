@@ -113,11 +113,7 @@ namespace RDRN_Core.Gui
 
             try
             {
-                lock (DirectXHook.DxHook.CurrentRenderTarget2D1)
-                {
-                    DirectXHook.DxHook.CurrentRenderTarget2D1.DrawBitmap(D2D1Bitmap, new SharpDX.Mathematics.Interop.RawRectangleF(Position.X, Position.Y, Position.X + Width, Position.Y + Height), 1.0f, BitmapInterpolationMode.NearestNeighbor);
-
-                }
+                DirectXHook.DxHook.CurrentRenderTarget2D1.DrawBitmap(D2D1Bitmap, new SharpDX.Mathematics.Interop.RawRectangleF(Position.X, Position.Y, Position.X + Width, Position.Y + Height), 1.0f, BitmapInterpolationMode.NearestNeighbor);
             }
             catch (Exception ex)
             {

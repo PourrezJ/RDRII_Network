@@ -1,4 +1,5 @@
 ﻿using RDRN_API;
+using RDRN_API.Native;
 using RDRN_Module;
 using RDRN_Module.Native;
 using System;
@@ -73,7 +74,12 @@ namespace RDRN_Core
     {
         public override void OnTick()
         {
-            return;
+
+            if (Game.IsDisabledControlJustPressed(2, Control.FrontendPause))
+            {
+                Function.Call(Hash.SET_FRONTEND_ACTIVE, false);
+                Function.Call(Hash._LAUNCH_APP_WITH_ENTRY, "PLAYER_MENU", "mp_moonshine_selection");
+            }
 
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClub, true);
             Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.FrontendSocialClubSecondary, true);

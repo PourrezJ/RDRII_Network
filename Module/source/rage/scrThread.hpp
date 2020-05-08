@@ -15,7 +15,7 @@ namespace rage
     class scrThread
     {
       public:
-        static NativeHandler GetCmdFromHash(const rh2::NativeHash hash);
+       // static NativeHandler GetCmdFromHash(const rh2::NativeHash hash);
 
         class Info
         {

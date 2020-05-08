@@ -1,6 +1,8 @@
 ﻿using RDRN_Core.Gui.DirectXHook;
+using RDRN_Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -42,12 +44,6 @@ namespace RDRN_Core
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern IntPtr GetCurrentProcess();
 
         internal ControlManager()
         {

@@ -2,15 +2,11 @@
 
 #include "invoker.hpp"
 
-#include "../core/core.hpp"
 #include "../hash_to_address_table.hpp"
-#include <exception>
-#include <Windows.h>
-#include <unordered_map>
+#include "../memory/patternscan.hpp"
 
 namespace rh2
 {
-    std::unordered_map<u64, NativeHandler> g_handlerCache;
     NativeHash                             g_commandHash = 0x0;
     rage::scrThread::Info                  g_callInfo;
 
@@ -29,31 +25,32 @@ namespace rh2
     {
         if (auto handler = GetCommandHandler(g_commandHash))
         {
-            __try
-            {
-                handler(&g_callInfo);
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER)
-            {
-            }
+            handler(&g_callInfo);
         }
 
         return reinterpret_cast<u64*>(g_callInfo.GetResultPointer());
     }
 
-    static uintptr_t base_address; 
+    NativeHandler Invoker::GetCommandHandler(NativeHash native_hash)
+    {        /*
+        printf("Address: %p\n", native_hash);
 
-    NativeHandler Invoker::GetCommandHandler(NativeHash command)
-    {
-        if (base_address == NULL)
-            base_address = (uintptr_t)GetModuleHandleA(0);
+        uint16_t native = rh2::PatternScan("\x0F\xB6\xC1\x48\x8D\x15\x00\x00\x00\x00\x4C\x8B\xC9", "xxxxxx????xxx");
+        auto get_native_address = reinterpret_cast<uintptr_t(*)(uint64_t)>(native);
+        
+        //auto get_native_address = reinterpret_cast<uintptr_t(*)(uint64_t)>((uintptr_t(GetModuleHandleW(0))) + 0x2a4fcc8);
+        return (NativeHandler)(get_native_address(native_hash));*/
 
-        auto it = nativehash_to_address_table.find(command);
+        auto base_address = (uintptr_t)GetModuleHandleA(0);
+
+        auto it = nativehash_to_address_table.find(native_hash);
         if (it != nativehash_to_address_table.end())
         {
-            if (it->first == command)
+            if (it->first == native_hash)
                 return (NativeHandler)(base_address + it->second);
         }
+        else
+            printf("Can't find address: %p\n", native_hash);
         return 0;
     }
 }

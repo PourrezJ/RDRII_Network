@@ -1,9 +1,8 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 
 #pragma unmanaged
-#include <Windows.h>
-
 #include "core/core.hpp"
+
 
 DWORD WINAPI ControlThread(const LPVOID param)
 {

@@ -1,22 +1,22 @@
 #include "../invoker/invoker.hpp"
 #include "Function.h"
 
-#include "NativeObjects.h"
 #include "ManagedGlobals.h"
-#include "ManagedLog.h"
 
 
-//#include "../export.hpp"
-
-//#include "Config.h"
-
-//#include "DllMain.h"
-
-
-#pragma unmanaged
-//#include <redhook2.h>
 #pragma managed
 
+System::UInt64* RDRN_Module::Native::Func::InvokeManaged(Hash hash, ... array<System::UInt64> ^arguments)
+{
+	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
+
+	for each (System::UInt64 data in arguments) {
+		rh2::Invoker::NativePush(data);
+	}
+
+	return rh2::Invoker::NativeCall();
+}
+/*
 generic<typename T> T RDRN_Module::Native::Function::Call(Hash hash,
                                                           ... array<InputArgument^> ^ arguments)
 {
@@ -42,22 +42,22 @@ void RDRN_Module::Native::Function::Call(Hash hash,
 	}
     rh2::Invoker::NativeCall();
 }
-
-System::IntPtr RDRN_Module::Native::Function::AddStringPool(System::String^ string)
+*/
+System::IntPtr RDRN_Module::Native::Func::AddStringPool(System::String^ string)
 {
 	auto managedBuffer = System::Text::Encoding::UTF8->GetBytes(string);
 	unsigned char* buffer = new unsigned char[managedBuffer->Length + 1];
 	buffer[managedBuffer->Length] = '\0';
 	System::IntPtr ret(buffer);
 	System::Runtime::InteropServices::Marshal::Copy(managedBuffer, 0, ret, managedBuffer->Length);
-	RDRN_Module::Native::Function::UnmanagedStrings->Add(ret);
+	RDRN_Module::Native::Func::UnmanagedStrings->Add(ret);
 	return ret;
 }
 
-void RDRN_Module::Native::Function::ClearStringPool()
+void RDRN_Module::Native::Func::ClearStringPool()
 {
-	for each (auto ptr in RDRN_Module::Native::Function::UnmanagedStrings) {
+	for each (auto ptr in RDRN_Module::Native::Func::UnmanagedStrings) {
 		delete[] ptr.ToPointer();
 	}
-	RDRN_Module::Native::Function::UnmanagedStrings->Clear();
+	RDRN_Module::Native::Func::UnmanagedStrings->Clear();
 }

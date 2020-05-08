@@ -54,7 +54,7 @@ namespace RDRN_API
 		private static WeatherType _currentWeather;
 		public static WeatherType CurrentWeather
 		{
-			get => GetCurrentWeatherType();
+			//get => GetCurrentWeatherType();
 			set {
 				_currentWeather = value;
 				Function.Call(Hash._SET_WEATHER_TYPE_TRANSITION, (uint)GetCurrentWeatherType(), (uint)value, 1f);
@@ -65,24 +65,21 @@ namespace RDRN_API
 		public static WeatherType NextWeather
 		{
 			get {
-				GetCurrentWeatherType();
+				//GetCurrentWeatherType();
 				return _nextWeather;
 			}
 		}
 
 		private static WeatherType GetCurrentWeatherType()
 		{
-			Weather currentWeather = Weather.Clear;
-			Weather nextWeather = Weather.Clear;
-			float percent = 0f;
-
-			unsafe
-			{
-				Function.Call(Hash._GET_WEATHER_TYPE_TRANSITION, currentWeather, nextWeather, percent);
-
-			}
-
-			if (percent >= 0.5f)
+			var currentWeather = new OutputArgument();
+			var nextWeather = new OutputArgument();
+			var percent = new OutputArgument();
+			Function.Call(Hash._GET_WEATHER_TYPE_TRANSITION, currentWeather, nextWeather, percent);
+			_currentWeather = currentWeather.GetResult<WeatherType>();
+			_nextWeather = nextWeather.GetResult<WeatherType>();
+			var pct = percent.GetResult<float>();
+			if (pct >= 0.5f)
 			{
 				return _nextWeather;
 			}
@@ -556,18 +553,15 @@ namespace RDRN_API
 		}
 		public static Vector3 GetSafeCoordForPed(Vector3 position, bool sidewalk, int flags)
 		{
-			Vector3 outPos;
+			OutputArgument outPos = new OutputArgument();
 
-			unsafe
+			if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, sidewalk, outPos, flags))
 			{
-				if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, sidewalk, &outPos, flags))
-				{
-					return outPos;
-				}
-				else
-				{
-					return Vector3.Zero;
-				}
+				return outPos.GetResult<Vector3>();
+			}
+			else
+			{
+				return Vector3.Zero;
 			}
 		}
 
@@ -581,13 +575,27 @@ namespace RDRN_API
 		}
 		public static Vector3 GetNextPositionOnStreet(Vector3 position, bool unoccupied)
 		{
-			Vector3 outPos;
+			OutputArgument outPos = new OutputArgument();
 
-			unsafe
+			if (unoccupied)
 			{
-				Function.Call(Hash.GET_NTH_CLOSEST_VEHICLE_NODE, position.X, position.Y, position.Z, 0, &outPos, unoccupied ? 0 : 1, 0x40400000, 0);
+				for (int i = 1; i < 40; i++)
+				{
+					Function.Call(Hash.GET_NTH_CLOSEST_VEHICLE_NODE, position.X, position.Y, position.Z, i, outPos, 1, 0x40400000, 0);
+					Vector3 newPos = outPos.GetResult<Vector3>();
+					return newPos;
+					/*if (!Function.Call<bool>(Hash.IS_POINT_OBSCURED_BY_A_MISSION_ENTITY, newPos.X, newPos.Y, newPos.Z, 5.0f, 5.0f, 5.0f, 0))
+					{
+						return newPos;
+					}*/ // unnamed native
+				}
 			}
-			return outPos;
+			else if (Function.Call<bool>(Hash.GET_NTH_CLOSEST_VEHICLE_NODE, position.X, position.Y, position.Z, 1, outPos, 1, 0x40400000, 0))
+			{
+				return outPos.GetResult<Vector3>();
+			}
+
+			return Vector3.Zero;
 		}
 
 		public static Vector3 GetNextPositionOnSidewalk(Vector2 position)
@@ -596,21 +604,19 @@ namespace RDRN_API
 		}
 		public static Vector3 GetNextPositionOnSidewalk(Vector3 position)
 		{
-			Vector3 outPos;
-			unsafe
+			OutputArgument outPos = new OutputArgument();
+
+			if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, true, outPos, 0))
 			{
-				if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, true, &outPos, 0))
-				{
-					return outPos;
-				}
-				else if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, false, &outPos, 0))
-				{
-					return outPos;
-				}
-				else
-				{
-					return Vector3.Zero;
-				}
+				return outPos.GetResult<Vector3>();
+			}
+			else if (Function.Call<bool>(Hash.GET_SAFE_COORD_FOR_PED, position.X, position.Y, position.Z, false, outPos, 0))
+			{
+				return outPos.GetResult<Vector3>();
+			}
+			else
+			{
+				return Vector3.Zero;
 			}
 		}
 

@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="core\core.cpp" />
+    <ClCompile Include="core\logs.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="hooking\command-hook.cpp" />
+    <ClCompile Include="hooking\detour-hook.cpp" />
+    <ClCompile Include="hooking\input-hook.cpp" />
+    <ClCompile Include="invoker\crossmapping.cpp" />
+    <ClCompile Include="invoker\invoker.cpp" />
+    <ClCompile Include="logger\file-log.cpp" />
+    <ClCompile Include="logger\helpers.cpp" />
+    <ClCompile Include="logger\log-mgr.cpp" />
+    <ClCompile Include="logger\log.cpp" />
+    <ClCompile Include="memory\helpers.cpp" />
+    <ClCompile Include="memory\memory-location.cpp" />
+    <ClCompile Include="memory\patternscan.cpp" />
+    <ClCompile Include="rage\scrProgram.cpp" />
+    <ClCompile Include="rage\scrThread.cpp" />
+    <ClCompile Include="util\fiber.cpp" />
+    <ClCompile Include="wrapper\Function.cpp" />
+    <ClCompile Include="wrapper\Input.cpp" />
+    <ClCompile Include="wrapper\Main.cpp" />
+    <ClCompile Include="wrapper\ManagedLog.cpp" />
+    <ClCompile Include="wrapper\Script.cpp" />
+    <ClCompile Include="wrapper\ScriptDomain.cpp" />
+    <ClCompile Include="wrapper\Math\Vector2.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="wrapper\Math\Vector3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="wrapper\Math\Matrix.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="wrapper\Math\Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\core.hpp" />
+    <ClInclude Include="core\HookThread.hpp" />
+    <ClInclude Include="core\logs.hpp" />
+    <ClInclude Include="hash_to_address_table.hpp" />
+    <ClInclude Include="hooking\command-hook.hpp" />
+    <ClInclude Include="hooking\detour-hook.hpp" />
+    <ClInclude Include="hooking\input-hook.hpp" />
+    <ClInclude Include="invoker\invoker.hpp" />
+    <ClInclude Include="logger\file-log.hpp" />
+    <ClInclude Include="logger\generic-file-logger.hpp" />
+    <ClInclude Include="logger\generic-logger.hpp" />
+    <ClInclude Include="logger\helpers.hpp" />
+    <ClInclude Include="logger\log-mgr.hpp" />
+    <ClInclude Include="logger\log.hpp" />
+    <ClInclude Include="logger\logging.hpp" />
+    <ClInclude Include="logger\metric-logger.hpp" />
+    <ClInclude Include="rage\scrProgram.hpp" />
+    <ClInclude Include="rage\scrThread.hpp" />
+    <ClInclude Include="types.hpp" />
+    <ClInclude Include="memory\helpers.hpp" />
+    <ClInclude Include="memory\memory-location.hpp" />
+    <ClInclude Include="memory\patternscan.hpp" />
+    <ClInclude Include="util\fiber.hpp" />
+    <ClInclude Include="wrapper\Function.h" />
+    <ClInclude Include="wrapper\INativeValue.h" />
+    <ClInclude Include="wrapper\Input.h" />
+    <ClInclude Include="wrapper\Main.hpp" />
+    <ClInclude Include="wrapper\ManagedGlobals.h" />
+    <ClInclude Include="wrapper\ManagedLog.h" />
+    <ClInclude Include="wrapper\NativeHashes.hpp" />
+    <ClInclude Include="wrapper\Script.h" />
+    <ClInclude Include="wrapper\ScriptDomain.h" />
+    <ClInclude Include="wrapper\Math\Vector2.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper\Math\Vector3.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper\Math\Matrix.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="wrapper\Math\Quaternion.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Math">
+      <UniqueIdentifier>{60d8671f-8154-4e12-8987-1ea474b814a8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -30,11 +30,12 @@ namespace rh2::hooking::input
 
     bool InitializeHook()
     {
+        /*
         g_windowHandle = FindWindowA("sgaWindow", "Red Dead Redemption 2");
 
         g_oWndProc = reinterpret_cast<WNDPROC>(
             SetWindowLongPtr(g_windowHandle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WndProc)));
-
+        */
         return g_oWndProc != nullptr;
     }
 

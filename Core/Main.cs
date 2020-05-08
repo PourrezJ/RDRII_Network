@@ -9,6 +9,8 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using SharpDX.DXGI;
+using RDRN_Core.Utils;
+using RDRN_Module.Math;
 
 namespace RDRN_Core
 {
@@ -31,8 +33,6 @@ namespace RDRN_Core
             }
         }
 
-        internal static PointF MousePos;
-
         internal static DxHook DxHook { get; private set; }
 
         public override void OnInit()
@@ -48,12 +48,10 @@ namespace RDRN_Core
             LogManager.WriteLog("Cef Initializing");
             CEFManager.InitializeCef();
 
+            LogManager.WriteLog("Control Manager Initializing");
             new ControlManager();
 
             LogManager.WriteLog("Core Initialized");
-
-            var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
-            CefController.ShowCursor = true;
 
             base.OnInit();
         }
@@ -69,26 +67,37 @@ namespace RDRN_Core
             Function.Call(Hash._SHOW_LOADING_SCREEN, 1122662550, 347053089, 0, "RED DEAD REDEMPTION II", "Network", "Loading...");
 
             World.CurrentDayTime = new TimeSpan(12, 0, 0);
+            /*
+           Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
+           Console.WriteLine("model request");
+           model.Request();
 
-            Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
-            Console.WriteLine("model request");
-            model.Request();
-            
-            Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());
+           var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
+           CefController.ShowCursor = true;
+
+           Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());*/
         }
 
         private static bool firstTick;
         public override void OnTick()
         {
+            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+
+
+            //var pos = Game.Player.Character.Position;
+
+           // Console.WriteLine($"{pos.X} {pos.Y} {pos.Z}");
+
             if (!firstTick)
             {
                 firstTick = true;
                 StartMainMenu();
             }
+            return;
 
             if (InStartMenu)
             {
-                World.CurrentWeather = WeatherType.Sunny;
+               // World.CurrentWeather = WeatherType.Sunny;
                 Function.Call(Hash.PAUSE_CLOCK, true);
 
 

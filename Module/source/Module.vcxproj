@@ -194,15 +194,12 @@
     <ClCompile Include="util\fiber.cpp" />
     <ClCompile Include="wrapper\Function.cpp" />
     <ClCompile Include="wrapper\Input.cpp" />
-    <ClCompile Include="wrapper\InputArgument.cpp" />
     <ClCompile Include="wrapper\Main.cpp" />
     <ClCompile Include="wrapper\ManagedLog.cpp" />
     <ClCompile Include="wrapper\Math\Matrix.cpp" />
     <ClCompile Include="wrapper\Math\Quaternion.cpp" />
     <ClCompile Include="wrapper\Math\Vector2.cpp" />
     <ClCompile Include="wrapper\Math\Vector3.cpp" />
-    <ClCompile Include="wrapper\NativeObjects.cpp" />
-    <ClCompile Include="wrapper\OutputArgument.cpp" />
     <ClCompile Include="wrapper\Script.cpp" />
     <ClCompile Include="wrapper\ScriptDomain.cpp" />
   </ItemGroup>
@@ -210,7 +207,6 @@
     <ClInclude Include="core\core.hpp" />
     <ClInclude Include="core\HookThread.hpp" />
     <ClInclude Include="core\logs.hpp" />
-    <ClInclude Include="gta\GtaThread.hpp" />
     <ClInclude Include="hash_to_address_table.hpp" />
     <ClInclude Include="hooking\command-hook.hpp" />
     <ClInclude Include="hooking\detour-hook.hpp" />
@@ -234,7 +230,6 @@
     <ClInclude Include="wrapper\Function.h" />
     <ClInclude Include="wrapper\INativeValue.h" />
     <ClInclude Include="wrapper\Input.h" />
-    <ClInclude Include="wrapper\InputArgument.h" />
     <ClInclude Include="wrapper\Main.hpp" />
     <ClInclude Include="wrapper\ManagedGlobals.h" />
     <ClInclude Include="wrapper\ManagedLog.h" />
@@ -243,8 +238,6 @@
     <ClInclude Include="wrapper\Math\Vector2.hpp" />
     <ClInclude Include="wrapper\Math\Vector3.hpp" />
     <ClInclude Include="wrapper\NativeHashes.hpp" />
-    <ClInclude Include="wrapper\NativeObjects.h" />
-    <ClInclude Include="wrapper\OutputArgument.h" />
     <ClInclude Include="wrapper\Script.h" />
     <ClInclude Include="wrapper\ScriptDomain.h" />
   </ItemGroup>

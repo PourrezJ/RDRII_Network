@@ -262,7 +262,7 @@ namespace RDRN_API
 		public void PlaceOnNextStreet()
 		{
 			Vector3 pos = Position;
-			Vector3 outPos;
+			OutputArgument outPos = new OutputArgument();
 
 			for (int i = 1; i < 40; i++)
 			{
@@ -270,12 +270,13 @@ namespace RDRN_API
 				float val;
 				unsafe
 				{
-					Function.Call(Hash.GET_NTH_CLOSEST_VEHICLE_NODE_WITH_HEADING, pos.X, pos.Y, pos.Z, i, &outPos, &heading, &val, 1, 0x40400000, 0);
+					Function.Call(Hash.GET_NTH_CLOSEST_VEHICLE_NODE_WITH_HEADING, pos.X, pos.Y, pos.Z, i, outPos, &heading, &val, 1, 0x40400000, 0);
 				}
+				Vector3 newPos = outPos.GetResult<Vector3>();
 
 				if (1 == 1)
 				{
-					Position = outPos;
+					Position = newPos;
 					PlaceOnGround();
 					Heading = heading;
 					break;

@@ -163,7 +163,7 @@ void RDRN_Module::ScriptDomain::ScriptTick(int scriptIndex)
 	}
 
 	try {
-		RDRN_Module::Native::Function::ClearStringPool();
+		RDRN_Module::Native::Func::ClearStringPool();
 	} catch (System::Exception^ ex) {
 		RDRN_Module::LogManager::WriteLog("*** Exception while clearing string pool: {0}", ex->ToString());
 	} catch (...) {

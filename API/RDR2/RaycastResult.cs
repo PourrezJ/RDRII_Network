@@ -7,53 +7,34 @@ namespace RDRN_API
 {
 	public struct RaycastResult
 	{
-		public RaycastResult(int handle) : this()
+		public Entity HitEntity { get; }
+
+		public Vector3 HitPosition { get; }
+
+		public Vector3 SurfaceNormal { get; }
+
+		public bool DitHit { get; }
+
+		public bool DitHitEntity { get; }
+
+		public int Result { get; }
+
+		public RaycastResult(int handle)
 		{
-			Vector3 hitPositionArg;
-			bool hitSomethingArg;
-			int entityHandleArg;
-			Vector3 surfaceNormalArg;
-			unsafe
-			{
-				Result = Function.Call<int>(Hash.GET_SHAPE_TEST_RESULT, handle, &hitSomethingArg, &hitPositionArg, &surfaceNormalArg, &entityHandleArg);
-			}
+			var hitPos = new OutputArgument();
+			var ditHit = new OutputArgument();
+			var entity = new OutputArgument();
+			var normal = new OutputArgument();
 
-			DidHit = hitSomethingArg;
-			HitPosition = hitPositionArg;
-			SurfaceNormal = surfaceNormalArg;
-			HitEntity = Entity.FromHandle(entityHandleArg);
+			Result = Function.Call<int>(Hash.GET_SHAPE_TEST_RESULT, handle, ditHit, hitPos, normal, entity);
+
+			var entityId = entity.GetResult<int>();
+			HitPosition = hitPos.GetResult<Vector3>();
+			HitEntity = entityId == 0 || HitPosition == default ? null : Entity.FromHandle(entityId);
+			DitHitEntity = HitEntity != null && HitPosition != default && HitEntity.EntityType != 0;
+			DitHit = ditHit.GetResult<bool>();
+			SurfaceNormal = normal.GetResult<Vector3>();
 		}
-
-		/// <summary>
-		/// Gets the raycast result code.
-		/// </summary>
-		public int Result { get; private set; }
-
-		/// <summary>
-		/// Gets the <see cref="Entity" /> this raycast collided with.
-		/// <remarks>Returns <c>null</c> if the raycast didn't collide with any <see cref="Entity"/>.</remarks>
-		/// </summary>
-		public Entity HitEntity { get; private set; }
-		/// <summary>
-		/// Gets the world coordinates where this raycast collided.
-		/// <remarks>Returns <see cref="Vector3.Zero"/> if the raycast didn't collide with anything.</remarks>
-		/// </summary>
-		public Vector3 HitPosition { get; private set; }
-
-		/// <summary>
-		/// Gets the normal of the surface where this raycast collided.
-		/// <remarks>Returns <see cref="Vector3.Zero"/> if the raycast didn't collide with anything.</remarks>
-		/// </summary>
-		public Vector3 SurfaceNormal { get; private set; }
-
-		/// <summary>
-		/// Gets a value indicating whether this raycast collided with anything.
-		/// </summary>
-		public bool DidHit { get; private set; }
-		/// <summary>
-		/// Gets a value indicating whether this raycast collided with any <see cref="Entity"/>.
-		/// </summary>
-		public bool DidHitEntity { get { return !ReferenceEquals(HitEntity, null); } }
 	}
 
 	[Flags]

@@ -51,14 +51,11 @@ namespace RDRN_API
 
 		public void GetDimensions(out Vector3 minimum, out Vector3 maximum)
 		{
-			Vector3 min, max;
-			unsafe
-			{
-				Function.Call(NativeHash.GET_MODEL_DIMENSIONS, Hash, &min, &max);
-			}
-
-			minimum = min;
-			maximum = max;
+			var outmin = new OutputArgument();
+			var outmax = new OutputArgument();
+			Function.Call(RDRN_Module.Native.Hash.GET_MODEL_DIMENSIONS, Hash, outmin, outmax);
+			minimum = outmin.GetResult<Vector3>();
+			maximum = outmax.GetResult<Vector3>();
 		}
 		public Vector3 GetDimensions()
 		{

@@ -47,6 +47,13 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Native\Function.cs" />
+    <Compile Include="Native\INativeValue.cs" />
+    <Compile Include="Native\InputArgument.cs" />
+    <Compile Include="Native\Native.cs" />
+    <Compile Include="Native\NativeHelper.cs" />
+    <Compile Include="Native\NativeMemory.cs" />
+    <Compile Include="Native\OutputArgument.cs" />
     <Compile Include="RDR2.NaturalMotion\Euphoria.cs" />
     <Compile Include="RDR2.NaturalMotion\EuphoriaBase.cs" />
     <Compile Include="RDR2.NaturalMotion\EuphoriaHelpers.cs" />

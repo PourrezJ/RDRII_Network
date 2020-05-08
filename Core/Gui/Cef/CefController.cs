@@ -66,16 +66,16 @@ namespace RDRN_Core.Gui.Cef
                     CEFManager.Cursor.Position = mousePos;
                 }
                  
-                var mouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
-                var mouseDownRN = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
-                var mouseUp = Game.IsEnabledControlJustPressed(0, Control.CursorAccept);
+                var mouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
+                var mouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
+                var mouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
 
-                var rmouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
-                var rmouseDownRN = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
-                var rmouseUp = Game.IsEnabledControlJustPressed(0, Control.CursorCancel);
+                var rmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
+                var rmouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
+                var rmouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
 
-                var wumouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorScrollUp);
-                var wdmouseDown = Game.IsEnabledControlJustPressed(0, Control.CursorScrollDown);
+                var wumouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollUp);
+                var wdmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollDown);
 
                 foreach (var browser in CEFManager.Browsers)
                 {
@@ -101,9 +101,14 @@ namespace RDRN_Core.Gui.Cef
                              .SendMouseMoveEvent(ev, false);
 
                          if (mouseDown)
-                             browser._browser
-                                 .GetHost()
-                                 .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1);
+                        {
+                            browser._browser
+    .GetHost()
+    .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1); browser._browser
+     .GetHost()
+     .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1);
+                            Console.WriteLine("click");
+                        }
 
                          if (mouseUp)
                              browser._browser

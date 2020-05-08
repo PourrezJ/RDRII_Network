@@ -444,13 +444,9 @@ namespace RDRN_API
 
 		public Vector3 GetLastWeaponImpactCoords()
 		{
-			Vector3 outCoords;
-			unsafe
-			{
-				if (Function.Call<bool>(Hash.GET_PED_LAST_WEAPON_IMPACT_COORD, Handle, &outCoords))
-					return outCoords;
-			}
-
+			var outCoords = new OutputArgument();
+			if (Function.Call<bool>(Hash.GET_PED_LAST_WEAPON_IMPACT_COORD, Handle, outCoords))
+				return outCoords.GetResult<Vector3>();
 			return Vector3.Zero;
 		}
 
