@@ -6,6 +6,7 @@
 using RDRN_API.Native;
 using RDRN_Module.Native;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 
 namespace RDRN_API
@@ -238,7 +239,7 @@ namespace RDRN_API
 		{
 			Function.Call(Hash.CANCEL_MUSIC_EVENT, musicFile); // Needs a general Game.StopMusic()
 		}
-
+		/*
 		public static int GenerateHash(string input)
 		{
 			if (string.IsNullOrEmpty(input))
@@ -247,6 +248,29 @@ namespace RDRN_API
 			}
 
 			return Function.Call<int>(Hash.GET_HASH_KEY, input);
+		}*/
+
+		public static int GenerateHash(string text)
+		{
+			if (string.IsNullOrEmpty(text))
+			{
+				return 0;
+			}
+
+			byte[] bytes = Encoding.UTF8.GetBytes(text.ToLowerInvariant());
+
+			uint num = 0u;
+
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				num += (uint)bytes[i];
+				num += num << 10;
+				num ^= num >> 6;
+			}
+			num += num << 3;
+			num ^= num >> 11;
+
+			return (int)(num + (num << 15));
 		}
 
 		public static string GetGXTEntry(string entry)

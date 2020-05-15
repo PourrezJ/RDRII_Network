@@ -44,7 +44,7 @@ namespace RDRN_Core.Gui.Cef
             return mod;
         }
 
-        public override void OnTick()
+        public void OnTick()
         {
             /*
             lock (CEFManager.Browsers) // needed for accelerated Paint
@@ -144,7 +144,7 @@ namespace RDRN_Core.Gui.Cef
             }*/
         }
 
-        public override void OnKeyDown(KeyEventArgs args)
+        public void OnKeyDown(KeyEventArgs args)
         {
             if (!ShowCursor) return;
 
@@ -201,7 +201,7 @@ namespace RDRN_Core.Gui.Cef
             }
         }
 
-        public override void OnKeyUp(KeyEventArgs args)
+        public void OnKeyUp(KeyEventArgs args)
         {
             if (!ShowCursor) 
                 return;

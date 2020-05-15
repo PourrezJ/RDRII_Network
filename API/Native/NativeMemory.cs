@@ -11,7 +11,7 @@ namespace RDRN_API.Native
 {
 	public static unsafe class NativeMemory
 	{	
-		static unsafe byte* FindPattern(string pattern, string mask)
+		internal static unsafe byte* FindPattern(string pattern, string mask)
 		{
 			ProcessModule module = Process.GetCurrentProcess().MainModule;
 
@@ -34,7 +34,7 @@ namespace RDRN_API.Native
 
 		static NativeMemory()
 		{
-			byte* address;
+			//byte* address;
 
 			// Get relative address and add it to the instruction address.
 			/*
@@ -66,11 +66,14 @@ namespace RDRN_API.Native
 			EntityModel2Func = GetDelegateForFunctionPointer<EntityModel2FuncDelegate>(
 				new IntPtr(address - 0x46));
 
-			*/
+			
 			// Find entity pools
 			address = FindPattern("\x48\x8B\x05\x00\x00\x00\x00\x41\x0F\xBF\xC8\x0F\xBF\x40\x10", "xxx????xxxxxxxx");
 			PedPoolAddress = (ulong*)(*(int*)(address + 3) + address + 7);
-			/*
+
+			Console.WriteLine("===================> Ped Pool Address <==================");
+
+			
 			address = FindPattern("\x48\x8B\x05\x00\x00\x00\x00\x8B\x78\x10\x85\xFF", "xxx????xxxxx");
 			ObjectPoolAddress = (ulong*)(*(int*)(address + 3) + address + 7);
 
@@ -569,34 +572,7 @@ namespace RDRN_API.Native
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			bool CheckEntity(ulong address)
 			{
-				if (address == 0)
-					return false;
 
-				if (doPosCheck)
-				{
-					float[] position = new float[3];
-
-					fixed (float* posPtr = &position[0])
-					{
-						NativeMemory.EntityPosFunc(address, posPtr);
-					}
-
-					float x = this.position[0] - position[0];
-					float y = this.position[1] - position[1];
-					float z = this.position[2] - position[2];
-					float distanceSquared = (x * x) + (y * y) + (z * z);
-					if (distanceSquared > radiusSquared)
-						return false;
-				}
-
-				if (doModelCheck)
-				{
-					// Ugly workaround because function addresses are invalid on latest game patch
-					int handle = NativeMemory.AddEntityToPoolFunc(address);
-					int modelHash = *(int*)RDRN_Module.Native.Func.InvokeManaged(RDRN_Module.Native.Hash.GET_ENTITY_MODEL, (ulong)handle);
-					if (!Array.Exists(modelHashes, x => x == modelHash))
-						return false;
-				}
 
 				return true;
 			}

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using SharpDX.DXGI;
 using RDRN_Core.Utils;
 using RDRN_Module.Math;
+using System.Reflection;
 
 namespace RDRN_Core
 {
@@ -37,6 +38,7 @@ namespace RDRN_Core
 
         public override void OnInit()
         {
+            
             LogManager.WriteLog("Core Initializing");
 
             LogManager.WriteLog("PrepareNetwork configuration");
@@ -50,77 +52,72 @@ namespace RDRN_Core
 
             LogManager.WriteLog("Control Manager Initializing");
             new ControlManager();
+            
+
 
             LogManager.WriteLog("Core Initialized");
-
-            base.OnInit();
         }
 
         internal void StartMainMenu()
         {
             LogManager.WriteLog("Enter on Start Main Menu");
             InStartMenu = true;
-
+            Game.Player.Character.Position = new Vector3(0, 0, 70);
             Function.Call(Hash.SHUTDOWN_LOADING_SCREEN);
             Game.FadeScreenIn(1000);
             Function.Call(Hash.SET_PLAYER_CONTROL, Game.Player.Handle, 1, 0, 0);
-            Function.Call(Hash._SHOW_LOADING_SCREEN, 1122662550, 347053089, 0, "RED DEAD REDEMPTION II", "Network", "Loading...");
+            
 
             World.CurrentDayTime = new TimeSpan(12, 0, 0);
             /*
            Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
            Console.WriteLine("model request");
            model.Request();
-
+           Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString())
            var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
            CefController.ShowCursor = true;
 
-           Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());*/
+           ;*/
         }
 
         private static bool firstTick;
+
         public override void OnTick()
         {
-            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
-
-
-            //var pos = Game.Player.Character.Position;
-
-           // Console.WriteLine($"{pos.X} {pos.Y} {pos.Z}");
-
             if (!firstTick)
             {
+
                 firstTick = true;
                 StartMainMenu();
             }
-            return;
 
             if (InStartMenu)
             {
-               // World.CurrentWeather = WeatherType.Sunny;
+                World.CurrentWeather = WeatherType.Sunny;
                 Function.Call(Hash.PAUSE_CLOCK, true);
 
 
                 Function.Call(Hash._SET_MOUSE_CURSOR_ACTIVE_THIS_FRAME);
 
                 //Game.DisableAllControlsThisFrame(2);
-                /*
+                
                 Game.EnableControlThisFrame(0, Control.CursorX);
                 Game.EnableControlThisFrame(0, Control.CursorY);
-                */
+                
                 var res = Main.Screen;
 
                 var mouseX = Game.GetControlNormal(0, Control.CursorX) * res.Width;
                 var mouseY = Game.GetControlNormal(0, Control.CursorY) * res.Height;
+
+                Console.WriteLine($"x: {mouseX} y: {mouseY}");
             }
 
             Game.TimeScale = 1;
 
-            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+            //Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
 
             World.CurrentDayTime = new TimeSpan(12, 0, 0);
 
-            base.OnTick();
         }
     }
 }

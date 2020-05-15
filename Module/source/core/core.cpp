@@ -17,29 +17,31 @@
 #include <fmt/format.h>
 #include <unordered_map>
 #include <filesystem>
-#include <mutex>
 #include <atomic>
 #include <unordered_set>
 
-#include <fstream>
+#include <shared_mutex>
 #include "../wrapper/Main.hpp"
 #include "../wrapper/ManagedGlobals.h"
 
 namespace rh2
 {
     std::atomic_bool g_unloading = false;
-    hMod             g_module;
+    std::shared_mutex g_scriptMutex;
+
 
     //MemoryLocation g_PatchVectorResults;
    // MemoryLocation g_s_CommandHash;
     //MemoryLocation g_rage__scrThread__GetCmdFromHash;
     //MemoryLocation g_rage__scrProgram__sm_Globals;
 
+    MemoryLocation g_loadingScreen;
+
     std::unique_ptr<hooking::CommandHook> g_waitHook;
 
     Fiber g_gameFiber;
+    hMod g_module;
 
-    bool InitializeHooks();
     bool InitializeCommandHooks();
     void CreateLogs();
 
@@ -66,20 +68,24 @@ namespace rh2
         logs::g_hLog->log("Waiting for game window");
 
         // Wait for the game window, otherwise we can't do much
+        
         auto timeout = high_resolution_clock::now() + 20s;
         while (!FindWindowA("sgaWindow", "Red Dead Redemption 2") &&
                high_resolution_clock::now() < timeout)
         {
             std::this_thread::sleep_for(100ms);
         }
-        std::this_thread::sleep_for(2s);
+        std::this_thread::sleep_for(10s);
+        
+
 
         // Check if waiting for the window timed out
+        /*
         if (high_resolution_clock::now() >= timeout)
         {
             logs::g_hLog->fatal("Timed out");
             return false;
-        }
+        }*/
         logs::g_hLog->log("Game window found");
         /*
         logs::g_hLog->log("Searching patterns");
@@ -109,6 +115,16 @@ namespace rh2
 
         logs::g_hLog->log("Patterns found");
         */
+
+        MemoryLocation loc;
+
+        if (loc = "8A 05 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ?"_Scan)
+        {
+            g_loadingScreen = loc.get_call();
+
+        }
+
+
         logs::g_hLog->log("Initializing Minhook");
         auto st = MH_Initialize();
         if (st != MH_OK)
@@ -117,13 +133,6 @@ namespace rh2
             return false;
         }
         logs::g_hLog->log("Minhook initialized");
-
-        logs::g_hLog->log("Initializing hooks");
-        if (!InitializeHooks())
-        {
-            return false;
-        }
-        logs::g_hLog->log("Hooks initialized");
 
         /*
         logs::g_hLog->log("Waiting for natives");
@@ -208,11 +217,6 @@ namespace rh2
         FreeLibraryAndExitThread(static_cast<HMODULE>(g_module), 0);
     }
 
-    bool InitializeHooks()
-    {
-        return true;
-    }
-
     void MyWait(rage::scrThread::Info* info)
     {
         if (g_unloading)
@@ -227,13 +231,12 @@ namespace rh2
         }
 
         // GET_HASH_OF_THIS_SCRIPT_NAME
-
         if (Invoker::Invoke<u32>(0xBC2C927F5C264960ull) == 0x27eb33d7u) // main
         {
-            //std::lock_guard _(g_scriptMutex);
+            std::lock_guard _(g_scriptMutex);
             rh2::ClrTick();
         }
-
+        
         g_waitHook->orig(info);
     }
 
@@ -259,6 +262,11 @@ namespace rh2
     {
         return g_gameFiber;
     }
+
+    hMod GetModule() {
+        return g_module;
+    }
+
     /*
     MemoryLocation GetPatchVectorResults()
     {

@@ -6,6 +6,7 @@
 #include "../types.hpp"
 
 #include <chrono>
+#include <Psapi.h>
 
 namespace rh2
 {
@@ -15,11 +16,7 @@ namespace rh2
 
     Fiber GetGameFiber();
 
-    MemoryLocation GetPatchVectorResults();
-
-    MemoryLocation Get_s_CommandHash();
-
-    MemoryLocation Get_rage__scrThread__GetCmdFromHash();
+    hMod GetModule();
 
     DWORD WINAPI CleanupThread(LPVOID lparam);
     template<typename T>
@@ -31,4 +28,4 @@ namespace rh2
         return *reinterpret_cast<T**>(
             &rage::scrProgram::sm_Globals[index >> 18 & 0x3F][index & 0x3FFFF]);
     }
-} // namespace rh2
+}

@@ -3,6 +3,7 @@
 #include "../types.hpp"
 #include "detour-hook.hpp"
 #include "../rage/scrThread.hpp"
+#include "../invoker/invoker.hpp"
 
 namespace rh2::hooking
 {

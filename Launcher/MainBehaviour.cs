@@ -194,7 +194,8 @@ namespace Launcher
             ProcessStartInfo info = new ProcessStartInfo()
             {
                 FileName = value.Contains("737465616D") ? "steam://run/1174180" : Path.Combine(settings.GamePath, "RDR2.exe"),
-                UseShellExecute = false
+                UseShellExecute = false,
+                //Arguments = "-scOfflineOnly -minmodeapp=rdr2 -user_restart -doneUpgrade"
             };
             Process whatever = Process.Start(info);
             #endregion

@@ -1,11 +1,9 @@
 #include "command-hook.hpp"
 
-#include "../invoker/invoker.hpp"
-
 namespace rh2::hooking
 {
     CommandHook::CommandHook(const NativeHash native, NativeHandler detour) :
-        DetourHook(Invoker::GetCommandHandler(native), detour)
+        DetourHook(rh2::Invoker::GetCommandHandler(native), detour)
     {
     }
 

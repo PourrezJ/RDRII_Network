@@ -155,7 +155,7 @@ namespace RDRN_API.UI
 			}
 			catch (Exception ex)
 			{
-				LogManager.WriteLog(/*RDR2DN.Log.Level.Error, */ex.ToString());
+				//LogManager.WriteLog(/*RDR2DN.Log.Level.Error, */ex.ToString());
 			}
 		}
 		// Space Conversion

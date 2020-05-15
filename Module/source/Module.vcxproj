@@ -180,7 +180,6 @@
     <ClCompile Include="hooking\command-hook.cpp" />
     <ClCompile Include="hooking\detour-hook.cpp" />
     <ClCompile Include="hooking\input-hook.cpp" />
-    <ClCompile Include="invoker\crossmapping.cpp" />
     <ClCompile Include="invoker\invoker.cpp" />
     <ClCompile Include="logger\file-log.cpp" />
     <ClCompile Include="logger\helpers.cpp" />
@@ -205,7 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\core.hpp" />
-    <ClInclude Include="core\HookThread.hpp" />
     <ClInclude Include="core\logs.hpp" />
     <ClInclude Include="hash_to_address_table.hpp" />
     <ClInclude Include="hooking\command-hook.hpp" />

@@ -6,45 +6,54 @@ namespace RDRN_API.Native
 {
 	public static class Function
 	{
+		private static object lockObj = new object();
+
 		public static T Call<T>(Hash hash, params InputArgument[] arguments)
 		{
-			ulong[] args = new ulong[arguments.Length];
-			for (int i = 0; i < arguments.Length; ++i)
+			lock (lockObj)
 			{
-				args[i] = arguments[i].data;
-			}
-
-			unsafe
-			{
-				var res = RDRN_Module.Native.Func.InvokeManaged(hash, args);
-
-				// The result will be null when this method is called from a thread other than the main thread
-				if (res == null)
+				ulong[] args = new ulong[arguments.Length];
+				for (int i = 0; i < arguments.Length; ++i)
 				{
-					throw new InvalidOperationException("Native.Function.Call can only be called from the main thread.");
+					args[i] = arguments[i].data;
 				}
 
-				if (typeof(T).IsEnum || typeof(T).IsPrimitive || typeof(T) == typeof(Vector3) || typeof(T) == typeof(Vector2))
+				unsafe
 				{
-					return ObjectFromNative<T>(res);
+					
+					var res = RDRN_Module.Native.Func.InvokeManaged(hash, args);
+
+					// The result will be null when this method is called from a thread other than the main thread
+					if (res == null)
+					{
+						throw new InvalidOperationException("Native.Function.Call can only be called from the main thread.");
+					}
+
+					if (typeof(T).IsEnum || typeof(T).IsPrimitive || typeof(T) == typeof(Vector3) || typeof(T) == typeof(Vector2))
+					{
+						return ObjectFromNative<T>(res);
+					}
+					else
+					{
+						return (T)ObjectFromNative(typeof(T), res);
+					}
 				}
-				else
-				{
-					return (T)ObjectFromNative(typeof(T), res);
-				}
-			}
+			}			
 		}
 		public static void Call(Hash hash, params InputArgument[] arguments)
 		{
-			ulong[] args = new ulong[arguments.Length];
-			for (int i = 0; i < arguments.Length; ++i)
+			lock (lockObj)
 			{
-				args[i] = arguments[i].data;
-			}
+				ulong[] args = new ulong[arguments.Length];
+				for (int i = 0; i < arguments.Length; ++i)
+				{
+					args[i] = arguments[i].data;
+				}
 
-			unsafe
-			{
-				RDRN_Module.Native.Func.InvokeManaged(hash, args);
+				unsafe
+				{
+					RDRN_Module.Native.Func.InvokeManaged(hash, args);
+				}
 			}
 		}
 
@@ -84,7 +93,8 @@ namespace RDRN_API.Native
 			if (value is string valueString)
 			{
 				//return (ulong)SHVDN.ScriptDomain.CurrentDomain.PinString(valueString).ToInt64();
-				return (ulong)RDRN_Module.Native.Func.AddStringPool(valueString).ToInt64();
+				//return (ulong)RDRN_Module.Native.Func.AddStringPool(valueString).ToInt64();
+				return 0; //temp fix invoker
 			}
 
 			// Scripting types

@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\memory">
+      <UniqueIdentifier>{be4a5cd5-112c-4975-9514-3cd6911e453e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\invoker">
+      <UniqueIdentifier>{a69e8d10-4d80-4eca-8542-f5e411340373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\main">
+      <UniqueIdentifier>{55fcf9ea-96f6-4dfb-b363-89b128142955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{c1eb1672-cada-4add-b074-c3e605be1075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\hooking">
+      <UniqueIdentifier>{2f6a6434-967b-4a83-a659-828ccb7ad78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\logs">
+      <UniqueIdentifier>{9ade249b-a3ca-4bd2-8186-7a13a026d9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\managed">
+      <UniqueIdentifier>{9c77cf1a-1c4e-4a52-8361-55c33cf1ab89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\managed\Math">
+      <UniqueIdentifier>{fefc8e67-24e4-4680-9afb-fe6053bfce42}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main\rdr2_main.cpp">
+      <Filter>Source Files\main</Filter>
+    </ClCompile>
+    <ClCompile Include="memory\memory-location.cpp">
+      <Filter>Source Files\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="hooking\input_hook.cpp">
+      <Filter>Source Files\hooking</Filter>
+    </ClCompile>
+    <ClCompile Include="hooking\natives_hook.cpp">
+      <Filter>Source Files\hooking</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\fiber.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Script.cpp">
+      <Filter>Source Files\managed</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\ScriptDomain.cpp">
+      <Filter>Source Files\managed</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Main.cpp">
+      <Filter>Source Files\managed</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Math\Matrix.cpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Math\Quaternion.cpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Math\Vector2.cpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="managed\Math\Vector3.cpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="invoker\invoker.hpp">
+      <Filter>Source Files\invoker</Filter>
+    </ClInclude>
+    <ClInclude Include="main\rdr2_main.hpp">
+      <Filter>Source Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="memory\memory-location.hpp">
+      <Filter>Source Files\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memory\memory.hpp">
+      <Filter>Source Files\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="logs\unManagedLog.hpp">
+      <Filter>Source Files\logs</Filter>
+    </ClInclude>
+    <ClInclude Include="hooking\input_hook.hpp">
+      <Filter>Source Files\hooking</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\fiber.hpp">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="hooking\natives_hook.hpp">
+      <Filter>Source Files\hooking</Filter>
+    </ClInclude>
+    <ClInclude Include="invoker\hash_to_address_table.hpp">
+      <Filter>Source Files\invoker</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\NativeHashes.hpp">
+      <Filter>Source Files\managed</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Script.hpp">
+      <Filter>Source Files\managed</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\ScriptDomain.hpp">
+      <Filter>Source Files\managed</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Main.hpp">
+      <Filter>Source Files\managed</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Math\Matrix.hpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Math\Quaternion.hpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Math\Vector2.hpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="managed\Math\Vector3.hpp">
+      <Filter>Source Files\managed\Math</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

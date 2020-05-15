@@ -10,7 +10,7 @@ namespace RDRN_Core
     {
         private static DateTime LastDateTime = DateTime.Now;
 
-        public override void OnTick()
+        public void OnTick()
         {
             Function.Call(Hash.SET_RANDOM_TRAINS, false);
 
@@ -66,13 +66,12 @@ namespace RDRN_Core
                     }
                 }*/
             }
-            base.OnTick();
         }
     }
 
     internal class Controls : Script
     {
-        public override void OnTick()
+        public void OnTick()
         {
 
             if (Game.IsDisabledControlJustPressed(2, Control.FrontendPause))

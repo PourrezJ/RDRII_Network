@@ -54,7 +54,7 @@ namespace RDRN_API
 		private static WeatherType _currentWeather;
 		public static WeatherType CurrentWeather
 		{
-			//get => GetCurrentWeatherType();
+			get => GetCurrentWeatherType();
 			set {
 				_currentWeather = value;
 				Function.Call(Hash._SET_WEATHER_TYPE_TRANSITION, (uint)GetCurrentWeatherType(), (uint)value, 1f);
@@ -65,7 +65,7 @@ namespace RDRN_API
 		public static WeatherType NextWeather
 		{
 			get {
-				//GetCurrentWeatherType();
+				GetCurrentWeatherType();
 				return _nextWeather;
 			}
 		}

@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CefGlue", "CefGlue\CefGlue.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RDRN_UI", "CEfExtern\RDRN_UI.csproj", "{29AB08DF-F0D9-40DC-BD79-4BFEAEF77748}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Module2", "Module2\module2.vcxproj", "{2CF1E42F-C24E-429C-BE89-20622C8638F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,16 @@ Global
 		{29AB08DF-F0D9-40DC-BD79-4BFEAEF77748}.Release|x64.Build.0 = Release|Any CPU
 		{29AB08DF-F0D9-40DC-BD79-4BFEAEF77748}.Release|x86.ActiveCfg = Release|Any CPU
 		{29AB08DF-F0D9-40DC-BD79-4BFEAEF77748}.Release|x86.Build.0 = Release|Any CPU
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Debug|x64.ActiveCfg = Debug|x64
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Debug|x64.Build.0 = Debug|x64
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Debug|x86.ActiveCfg = Debug|Win32
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Debug|x86.Build.0 = Debug|Win32
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Release|x64.ActiveCfg = Release|x64
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Release|x64.Build.0 = Release|x64
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Release|x86.ActiveCfg = Release|Win32
+		{2CF1E42F-C24E-429C-BE89-20622C8638F7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

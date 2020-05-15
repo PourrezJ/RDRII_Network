@@ -1,20 +1,28 @@
 #include "../invoker/invoker.hpp"
 #include "Function.h"
-
 #include "ManagedGlobals.h"
+#include "ManagedLog.h"
 
 
 #pragma managed
 
 System::UInt64* RDRN_Module::Native::Func::InvokeManaged(Hash hash, ... array<System::UInt64> ^arguments)
 {
-	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
+	try
+	{
+		rh2::Invoker::NativeInit((rh2::NativeHash)hash);
 
-	for each (System::UInt64 data in arguments) {
-		rh2::Invoker::NativePush(data);
+		for each (System::UInt64 data in arguments) {
+			rh2::Invoker::NativePush(data);
+		}
+
+		return rh2::Invoker::NativeCall();
+	}
+	catch (...)
+	{
+		RDRN_Module::LogManager::WriteLog("Invoke Managed Error");
 	}
 
-	return rh2::Invoker::NativeCall();
 }
 /*
 generic<typename T> T RDRN_Module::Native::Function::Call(Hash hash,
