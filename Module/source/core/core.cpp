@@ -142,12 +142,12 @@ namespace rh2
         }
         logs::g_hLog->log("Natives loaded");
         */
-        /*
+        
         logs::g_hLog->log("Initializing input hook");
         if (!hooking::input::InitializeHook())
         {
             return false;
-        }*/
+        }
         logs::g_hLog->log("Input hook initialized");
 
         logs::g_hLog->log("Initializing native hooks");

@@ -1,6 +1,5 @@
 #pragma once
-
-#include <cstdint>
+#include "../core/core.hpp"
 
 namespace rh2::hooking::input
 {
@@ -15,8 +14,4 @@ namespace rh2::hooking::input
     bool InitializeHook();
 
     bool RemoveHook();
-
-    void AddCallback(KeyboardCallback callback);
-
-    void RemoveCallback(KeyboardCallback callback);
-} // namespace rh2::hooking::input
+} 

@@ -13,6 +13,7 @@ namespace RDRN_Module
 		void* m_fiberCurrent;
 		int m_fiberWait;
 		System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::Keys>^>^ m_keyboardEvents = gcnew System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::Keys>^>();
+		System::Collections::Concurrent::ConcurrentQueue<System::Windows::Forms::MouseButtons>^ m_mouseEvents = gcnew System::Collections::Concurrent::ConcurrentQueue<System::Windows::Forms::MouseButtons>();
 
 	public:
 		Script();
@@ -24,6 +25,8 @@ namespace RDRN_Module
 		virtual void OnTick();
 		virtual void OnKeyDown(System::Windows::Forms::KeyEventArgs^ args);
 		virtual void OnKeyUp(System::Windows::Forms::KeyEventArgs^ args);
+		virtual void OnMouseDown(System::Windows::Forms::MouseButtons button);
+		//virtual void OnMouseUp(System::Windows::Forms::MouseEventArgs^ args);
 
 		static Script^ GetExecuting();
 		static void WaitExecuting(int ms);

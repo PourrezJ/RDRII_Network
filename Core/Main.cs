@@ -12,6 +12,7 @@ using SharpDX.DXGI;
 using RDRN_Core.Utils;
 using RDRN_Module.Math;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace RDRN_Core
 {
@@ -66,18 +67,25 @@ namespace RDRN_Core
             Function.Call(Hash.SHUTDOWN_LOADING_SCREEN);
             Game.FadeScreenIn(1000);
             Function.Call(Hash.SET_PLAYER_CONTROL, Game.Player.Handle, 1, 0, 0);
-            
+
+            World.CurrentWeather = WeatherType.Sunny;
+            Function.Call(Hash.PAUSE_CLOCK, true);
 
             World.CurrentDayTime = new TimeSpan(12, 0, 0);
-            /*
-           Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
-           Console.WriteLine("model request");
-           model.Request();
-           Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString())
-           var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
-           CefController.ShowCursor = true;
+            
+            Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
+            Console.WriteLine("model request");
+            model.Request();
+            Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());
+            var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
+            CefController.ShowCursor = true;
 
-           ;*/
+
+            Game.TimeScale = 1;
+
+            //Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+
+
         }
 
         private static bool firstTick;
@@ -93,30 +101,12 @@ namespace RDRN_Core
 
             if (InStartMenu)
             {
-                World.CurrentWeather = WeatherType.Sunny;
-                Function.Call(Hash.PAUSE_CLOCK, true);
 
 
-                Function.Call(Hash._SET_MOUSE_CURSOR_ACTIVE_THIS_FRAME);
 
-                //Game.DisableAllControlsThisFrame(2);
-                
-                Game.EnableControlThisFrame(0, Control.CursorX);
-                Game.EnableControlThisFrame(0, Control.CursorY);
-                
-                var res = Main.Screen;
-
-                var mouseX = Game.GetControlNormal(0, Control.CursorX) * res.Width;
-                var mouseY = Game.GetControlNormal(0, Control.CursorY) * res.Height;
-
-                Console.WriteLine($"x: {mouseX} y: {mouseY}");
             }
 
-            Game.TimeScale = 1;
 
-            //Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
-
-            World.CurrentDayTime = new TimeSpan(12, 0, 0);
 
         }
     }

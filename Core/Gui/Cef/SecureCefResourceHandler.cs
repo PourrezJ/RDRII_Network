@@ -112,16 +112,6 @@ namespace RDRN_Core.Gui.Cef
             Stream = null;
         }
 
-        protected override bool CanGetCookie(CefCookie cookie)
-        {
-            return true;
-        }
-
-        protected override bool CanSetCookie(CefCookie cookie)
-        {
-            return true;
-        }
-
         private static MemoryStream GetStream(string text, Encoding encoding, bool includePreamble)
         {
             if (includePreamble)
@@ -170,6 +160,24 @@ namespace RDRN_Core.Gui.Cef
         public static SecureCefResourceHandler FromStream(Stream stream, string mimeType = DefaultMimeType)
         {
             return new SecureCefResourceHandler(mimeType) { Stream = stream };
+        }
+
+        protected override bool Open(CefRequest request, out bool handleRequest, CefCallback callback)
+        {
+            handleRequest = true;
+            return true;
+        }
+
+        protected override bool Skip(long bytesToSkip, out long bytesSkipped, CefResourceSkipCallback callback)
+        {
+            bytesSkipped = bytesToSkip;
+            return true;
+        }
+
+        protected override bool Read(IntPtr dataOut, int bytesToRead, out int bytesRead, CefResourceReadCallback callback)
+        {
+            bytesRead = bytesToRead;
+            return true;
         }
     }
 }

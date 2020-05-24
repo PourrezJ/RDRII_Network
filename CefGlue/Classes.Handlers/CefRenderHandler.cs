@@ -310,7 +310,7 @@
 
         /// <summary>
         /// Called when the web view wants to update the mouse cursor during a
-        /// drag & drop operation. |operation| describes the allowed operation
+        /// drag &amp; drop operation. |operation| describes the allowed operation
         /// (none, move, copy, link).
         /// </summary>
         protected virtual void UpdateDragCursor(CefBrowser browser, CefDragOperationsMask operation)
@@ -390,5 +390,22 @@
         /// the character range.
         /// </summary>
         protected virtual void OnTextSelectionChanged(CefBrowser browser, string selectedText, CefRange selectedRange) { }
+
+
+        private void on_virtual_keyboard_requested(cef_render_handler_t* self, cef_browser_t* browser, CefTextInputMode input_mode)
+        {
+            CheckSelf(self);
+
+            var mBrowser = CefBrowser.FromNative(browser);
+            OnVirtualKeyboardRequested(mBrowser, input_mode);
+        }
+
+        /// <summary>
+        /// Called when an on-screen keyboard should be shown or hidden for the
+        /// specified |browser|. |input_mode| specifies what kind of keyboard
+        /// should be opened. If |input_mode| is CEF_TEXT_INPUT_MODE_NONE, any
+        /// existing keyboard for this browser should be hidden.
+        /// </summary>
+        protected virtual void OnVirtualKeyboardRequested(CefBrowser browser, CefTextInputMode inputMode) { }
     }
 }

@@ -1,14 +1,9 @@
-﻿using RDRN_Core.Gui.DirectXHook;
-using RDRN_Core.Utils;
+﻿using RDRN_Core.Gui.Cef;
+using RDRN_Core.Gui.DirectXHook;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RDRN_Core
 {
@@ -34,6 +29,25 @@ namespace RDRN_Core
         public int Bottom;      // y position of lower-right corner
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public class MouseHookStruct
+    {
+        public POINT pt;
+        public int hwnd;
+        public int wHitTestCode;
+        public int dwExtraInfo;
+    }
+
+    enum MouseMessages
+    {
+        WM_LBUTTONDOWN = 0x0201,
+        WM_LBUTTONUP = 0x0202,
+        WM_MOUSEMOVE = 0x0200,
+        WM_MOUSEWHEEL = 0x020A,
+        WM_RBUTTONDOWN = 0x0204,
+        WM_RBUTTONUP = 0x0205
+    }
+
     internal class ControlManager
     {
         internal static PointF MousePos { get; private set; }
@@ -42,8 +56,9 @@ namespace RDRN_Core
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetCursorPos(out POINT lpPoint);
 
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
+        [DllImport("user32.dll")]
+        static extern bool ScreenToClient(IntPtr hWnd, ref POINT lpPoint);
+
 
         internal ControlManager()
         {
@@ -58,21 +73,20 @@ namespace RDRN_Core
                 if (DxHook.Started)
                 {
                     GetCursorPos(out POINT point);
-                    GetWindowRect(DxHook.SwapChain.Description.OutputHandle, out RECT rect);
 
-                    var x = point.X - rect.Left;
-                    var y = point.Y - rect.Top;
+                    if (ScreenToClient(DxHook.SwapChain.Description.OutputHandle, ref point))
+                    {
+                        MousePos = new PointF((point.X < 0 ? 0 : point.X) , (point.Y < 0 ? 0 : point.Y));
 
-                    if (x > rect.Right)
-                        x = rect.Right;
+                        if (CEFManager.Cursor != null)
+                        {
+                            CEFManager.Cursor.Position = MousePos;
+                        }
 
-                    if (y > rect.Bottom)
-                        y = rect.Bottom;
-
-                    MousePos = new PointF(x < 0 ? 0 : x, y < 0 ? 0 : y);
-
-                    //Console.WriteLine((MousePos.X).ToString() + " " + (MousePos.Y).ToString());
+                        //Console.WriteLine((MousePos.X).ToString() + " " + (MousePos.Y).ToString());
+                    } 
                 }
+                Thread.Sleep(10);
             }
         }
     }

@@ -52,3 +52,29 @@ void RDRN_Module::Input::PauseKeyboardEvents(bool paused)
 {
 	RDRN_Module::Input::_captureKeyboardEvents = !paused;
 }
+
+void ManagedScriptMouseMessage(unsigned long key)
+{
+	if (RDRN_Module::ManagedGlobals::g_scriptDomain == nullptr) {
+		return;
+	}
+
+	System::Windows::Forms::MouseButtons mouseKey;
+
+	switch (key) {
+	case 512:
+		//OnKeyUp
+		break;
+	case 513:
+		//gauche
+		mouseKey = System::Windows::Forms::MouseButtons::Left;
+		break;
+
+	case 514:
+		mouseKey = System::Windows::Forms::MouseButtons::Right;
+		//droit
+		break;
+	}
+
+	RDRN_Module::ManagedGlobals::g_scriptDomain->QueueMouseEvent(mouseKey);
+}

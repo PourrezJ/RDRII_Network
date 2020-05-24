@@ -59,6 +59,14 @@ void RDRN_Module::Script::OnKeyUp(System::Windows::Forms::KeyEventArgs^ args)
 {
 }
 
+void RDRN_Module::Script::OnMouseDown(System::Windows::Forms::MouseButtons button)
+{
+}
+/*
+void RDRN_Module::Script::OnMouseUp(System::Windows::Forms::MouseEventArgs^ args)
+{
+}*/
+
 RDRN_Module::Script^ RDRN_Module::Script::GetExecuting()
 {
 	return RDRN_Module::ManagedGlobals::g_scriptDomain->GetExecuting();

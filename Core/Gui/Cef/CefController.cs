@@ -4,6 +4,7 @@ using RDRN_Module;
 using RDRN_Module.Native;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Xilium.CefGlue;
 using Control = RDRN_API.Control;
@@ -44,7 +45,7 @@ namespace RDRN_Core.Gui.Cef
             return mod;
         }
 
-        public void OnTick()
+        public override void OnTick()
         {
             /*
             lock (CEFManager.Browsers) // needed for accelerated Paint
@@ -57,25 +58,25 @@ namespace RDRN_Core.Gui.Cef
             */
             if (ShowCursor)
             {
-                var mousePos = ControlManager.MousePos;
-                var mouseX = mousePos.X;
-                var mouseY = mousePos.Y;
+                Game.DisableAllControlsThisFrame(0);
 
-                if (CEFManager.Cursor != null)
-                {
-                    CEFManager.Cursor.Position = mousePos;
-                }
-                 
-                var mouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
-                var mouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
-                var mouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorAccept);
+                var screen = Main.Screen;
 
-                var rmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
-                var rmouseDownRN = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
-                var rmouseUp = Game.IsEnabledControlJustPressed(2, Control.CursorCancel);
+                var mousePos = CEFManager.Cursor?.Position ?? new PointF();
+                var mouseX = mousePos.X/* * screen.Width*/;
+                var mouseY = mousePos.Y /** screen.Height*/;
 
-                var wumouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollUp);
-                var wdmouseDown = Game.IsEnabledControlJustPressed(2, Control.CursorScrollDown);
+
+                var mouseDown = Game.IsDisabledControlJustPressed(0, Control.Attack);
+                var mouseDownRN = Game.IsDisabledControlJustPressed(0, Control.Attack);
+                var mouseUp = Game.IsDisabledControlJustPressed(0, Control.Attack);
+
+                var rmouseDown = Game.IsDisabledControlJustPressed(0, Control.Aim);
+                var rmouseDownRN = Game.IsDisabledControlJustPressed(0, Control.Aim);
+                var rmouseUp = Game.IsDisabledControlJustPressed(0, Control.Aim);
+
+                var wumouseDown = Game.IsDisabledControlJustPressed(0, Control.CursorScrollUp);
+                var wdmouseDown = Game.IsDisabledControlJustPressed(0, Control.CursorScrollDown);
 
                 foreach (var browser in CEFManager.Browsers)
                 {
@@ -100,14 +101,11 @@ namespace RDRN_Core.Gui.Cef
                              .GetHost()
                              .SendMouseMoveEvent(ev, false);
 
-                         if (mouseDown)
+                        if (mouseDown)
                         {
                             browser._browser
-    .GetHost()
-    .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1); browser._browser
-     .GetHost()
-     .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1);
-                            Console.WriteLine("click");
+                            .GetHost()
+                            .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1);
                         }
 
                          if (mouseUp)
@@ -144,8 +142,11 @@ namespace RDRN_Core.Gui.Cef
             }*/
         }
 
-        public void OnKeyDown(KeyEventArgs args)
+
+
+        public override void OnKeyDown(KeyEventArgs args)
         {
+            
             if (!ShowCursor) return;
 
             if (_justShownCursor && Util.TickCount - _lastShownCursor < 500)
@@ -201,7 +202,7 @@ namespace RDRN_Core.Gui.Cef
             }
         }
 
-        public void OnKeyUp(KeyEventArgs args)
+        public override void OnKeyUp(KeyEventArgs args)
         {
             if (!ShowCursor) 
                 return;
@@ -216,6 +217,11 @@ namespace RDRN_Core.Gui.Cef
                 kEvent.WindowsKeyCode = (int)args.KeyCode;
                 browser._browser.GetHost().SendKeyEvent(kEvent);
             }
+        }
+
+        public override void OnMouseDown(MouseButtons button)
+        {
+            Console.WriteLine(button.ToString());
         }
     }
 }

@@ -88,14 +88,19 @@ namespace RDRN_Core.Gui.Cef
             return base.Equals(obj);
         }
 
-        protected override void OnBrowserCreated(CefBrowser browser)
+        protected override void OnBrowserCreated(CefBrowser browser, CefDictionaryValue extraInfo)
         {
-            base.OnBrowserCreated(browser);
+            base.OnBrowserCreated(browser, extraInfo);
         }
 
-        protected override bool OnProcessMessageReceived(CefBrowser browser, CefProcessId sourceProcess, CefProcessMessage message)
+        protected override bool OnProcessMessageReceived(CefBrowser browser, CefFrame frame, CefProcessId sourceProcess, CefProcessMessage message)
         {
-            return base.OnProcessMessageReceived(browser, sourceProcess, message);
+            return base.OnProcessMessageReceived(browser, frame, sourceProcess, message);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace RDRN_API.Native
 
 		static NativeMemory()
 		{
-			//byte* address;
+			byte* address;
 
 			// Get relative address and add it to the instruction address.
 			/*
@@ -66,13 +66,13 @@ namespace RDRN_API.Native
 			EntityModel2Func = GetDelegateForFunctionPointer<EntityModel2FuncDelegate>(
 				new IntPtr(address - 0x46));
 
-			
+			*/
 			// Find entity pools
-			address = FindPattern("\x48\x8B\x05\x00\x00\x00\x00\x41\x0F\xBF\xC8\x0F\xBF\x40\x10", "xxx????xxxxxxxx");
+			address = FindPattern("\x48\x89\x5c\x24\x00\x48\x89\x6c\x24\x00\x48\x89\x74\x24\x00\x57\x48\x83\xec\x00\x8b\x15\x00\x00\x00\x00\x48\x8b\xf1\x48\x83\xc1\x00\x33\xff", "xxxx?xxxx?xxxx?xxxx?xx????xxxxxx?xx");
 			PedPoolAddress = (ulong*)(*(int*)(address + 3) + address + 7);
 
 			Console.WriteLine("===================> Ped Pool Address <==================");
-
+			/*
 			
 			address = FindPattern("\x48\x8B\x05\x00\x00\x00\x00\x8B\x78\x10\x85\xFF", "xxx????xxxxx");
 			ObjectPoolAddress = (ulong*)(*(int*)(address + 3) + address + 7);
