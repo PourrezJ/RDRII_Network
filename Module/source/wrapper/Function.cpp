@@ -1,6 +1,5 @@
 #include "../invoker/invoker.hpp"
 #include "Function.h"
-#include "ManagedGlobals.h"
 #include "ManagedLog.h"
 
 

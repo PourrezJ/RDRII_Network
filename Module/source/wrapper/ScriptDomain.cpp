@@ -1,208 +1,468 @@
+
 #include "ScriptDomain.h"
 
-#include "Function.h"
+using namespace System;
+using namespace System::Threading;
+using namespace System::Reflection;
+using namespace System::Collections::Generic;
+namespace WinForms = System::Windows::Forms;
 
-#include "ManagedGlobals.h"
-#include "ManagedLog.h"
-
-#pragma unmanaged
-#include <Windows.h>
-#pragma managed
-
-RDRN_Module::ScriptDomain::ScriptDomain()
+namespace
 {
-	System::AppDomain::CurrentDomain->UnhandledException += gcnew System::UnhandledExceptionEventHandler(this, &RDRN_Module::ScriptDomain::OnUnhandledException);
-	System::AppDomain::CurrentDomain->AssemblyResolve += gcnew System::ResolveEventHandler(this, &RDRN_Module::ScriptDomain::OnAssemblyResolve);
-
-	RDRN_Module::ManagedGlobals::g_scriptDomain = this;
+	inline void SignalAndWait(AutoResetEvent^ toSignal, AutoResetEvent^ toWaitOn)
+	{
+		toSignal->Set();
+		toWaitOn->WaitOne();
+	}
+	inline bool SignalAndWait(AutoResetEvent^ toSignal, AutoResetEvent^ toWaitOn, int timeout)
+	{
+		toSignal->Set();
+		return toWaitOn->WaitOne(timeout);
+	}
 }
 
-void RDRN_Module::ScriptDomain::FindAllTypes()
+namespace RDRN_Module
 {
-	auto ret = gcnew System::Collections::Generic::List<System::Type^>();
+	void Log(String^ logLevel, ... array<String^>^ message)
+	{
+		DateTime now = DateTime::Now;
+		String^ logpath = IO::Path::ChangeExtension(Assembly::GetExecutingAssembly()->Location, ".log");
 
-	CurrentDir = System::Reflection::Assembly::GetExecutingAssembly()->Location;
-	CurrentDir = System::IO::Path::GetDirectoryName(CurrentDir);
+		logpath = logpath->Insert(logpath->IndexOf(".log"), "-" + now.ToString("yyyy-MM-dd"));
 
-	auto file = System::IO::Path::Combine(CurrentDir, "Scripts\\RDRN_Core.dll");
-
-	auto fileName = System::IO::Path::GetFileName(file);
-
-	System::Reflection::Assembly^ assembly = nullptr;
-	try {
-		//System::Reflection::Assembly::LoadFrom(cefcore);
-		assembly = System::Reflection::Assembly::LoadFrom(file);
-	}
-	catch (System::Exception ^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Assembly load exception for {0}: {1}", fileName, ex->ToString());
-	}
-	catch (...) {
-		RDRN_Module::LogManager::WriteLog("*** Unmanaged exception while loading assembly!");
-	}
-
-	RDRN_Module::LogManager::WriteLog("Loaded assembly {0}", assembly);
-
-	try {
-		for each (auto type in assembly->GetTypes()) {
-			if (!type->IsSubclassOf(RDRN_Module::Script::typeid)) {
-				continue;
-			}
-
-			ret->Add(type);
-
-			RDRN_Module::LogManager::WriteLog("Registered type {0}", type->FullName);
-		}
-	}
-	catch (System::Reflection::ReflectionTypeLoadException ^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Exception while iterating types: {0}", ex->ToString());
-		for each (auto loaderEx in ex->LoaderExceptions) {
-			RDRN_Module::LogManager::WriteLog("***    {0}", loaderEx->ToString());
-		}
-		//continue;
-	}
-	catch (System::Exception ^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Exception while iterating types: {0}", ex->ToString());
-		//continue;
-	}
-	catch (...) {
-		RDRN_Module::LogManager::WriteLog("*** Unmanaged exception while iterating types");
-		//continue;
-	}
-
-	m_types = ret->ToArray();
-	m_scripts = gcnew array<RDRN_Module::Script^>(m_types->Length);
-
-	RDRN_Module::LogManager::WriteLog("{0} script types found:", m_types->Length);
-	for (int i = 0; i < m_types->Length; i++) {
-		RDRN_Module::LogManager::WriteLog("  {0}: {1}", i, m_types[i]->FullName);
-
-		RDRN_Module::Script ^ script = nullptr;
 		try
 		{
-            script = static_cast<RDRN_Module::Script ^>( System::Activator::CreateInstance(m_types[i]));
-		}
-		catch (System::Reflection::ReflectionTypeLoadException ^ ex)
-		{
-			RDRN_Module::LogManager::WriteLog("*** Exception while instantiating script: {0}", ex->ToString());
-			for each(auto loaderEx in ex->LoaderExceptions)
+			auto fs = gcnew IO::FileStream(logpath, IO::FileMode::Append, IO::FileAccess::Write, IO::FileShare::Read);
+			auto sw = gcnew IO::StreamWriter(fs);
+
+			try
 			{
-				RDRN_Module::LogManager::WriteLog("***    {0}", loaderEx->ToString());
+				sw->Write(String::Concat("[", now.ToString("HH:mm:ss"), "] ", logLevel, " "));
+
+				for each (String ^ string in message)
+				{
+					sw->Write(string);
+				}
+
+				sw->WriteLine();
 			}
-			continue;
-		}
-		catch (System::Exception ^ ex)
-		{
-			RDRN_Module::LogManager::WriteLog("*** Exception while instantiating script: {0}", ex->ToString());
-            continue;
+			finally
+			{
+				sw->Close();
+				fs->Close();
+			}
 		}
 		catch (...)
 		{
-			RDRN_Module::LogManager::WriteLog("*** Unmanaged exception while instantiating script!");
-            continue;
+			return;
+		}
+	}
+	Assembly^ HandleResolve(Object^ sender, ResolveEventArgs^ args)
+	{
+		auto assembly = Script::typeid->Assembly;
+		auto assemblyName = gcnew AssemblyName(args->Name);
+
+		if (assemblyName->Name->StartsWith("ScriptHookVDotNet", StringComparison::CurrentCultureIgnoreCase))
+		{
+			if (assemblyName->Version->Major != assembly->GetName()->Version->Major)
+			{
+				Log("[WARNING]", "A script references v", assemblyName->Version->ToString(3), " which may not be compatible with the current v" + assembly->GetName()->Version->ToString(3), ".");
+			}
+
+			return assembly;
 		}
 
-		try
-        {
-            script->OnInit();
-            m_scripts[i] = script;
-        }
-        catch (System::Exception ^ ex)
-        {
-            RDRN_Module::LogManager::WriteLog("*** Exception in script OnInit: {0}", ex->ToString());
-            continue;
-        }
-        catch (...)
-        {
-			RDRN_Module::LogManager::WriteLog("*** Unmanaged exception in script OnInit!");
-            continue;
-        }
+		return nullptr;
 	}
-}
+	void HandleUnhandledException(Object^ sender, UnhandledExceptionEventArgs^ args)
+	{
+		if (!args->IsTerminating)
+		{
+			Log("[ERROR]", "Caught unhandled exception:", Environment::NewLine, args->ExceptionObject->ToString());
+		}
+		else
+		{
+			Log("[ERROR]", "Caught fatal unhandled exception:", Environment::NewLine, args->ExceptionObject->ToString());
+		}
+	}
 
+	ScriptDomain::ScriptDomain() : _appdomain(System::AppDomain::CurrentDomain), _executingThreadId(Thread::CurrentThread->ManagedThreadId)
+	{
+		sCurrentDomain = this;
 
-RDRN_Module::Script^ RDRN_Module::ScriptDomain::GetExecuting()
-{
-	void* currentFiber = GetCurrentFiber();
+		_appdomain->AssemblyResolve += gcnew ResolveEventHandler(&HandleResolve);
+		_appdomain->UnhandledException += gcnew UnhandledExceptionEventHandler(&HandleUnhandledException);
 
-	// I don't know if GetCurrentFiber ever returns null, but whatever
-	if (currentFiber == nullptr) {
+		Log("[INFO]", "Created new script domain with v", ScriptDomain::typeid->Assembly->GetName()->Version->ToString(3), ".");
+	}
+	ScriptDomain::~ScriptDomain()
+	{
+		CleanupStrings();
+	}
+
+	ScriptDomain^ ScriptDomain::Load(String^ path)
+	{
+		path = IO::Path::GetFullPath(path);
+		
+		auto setup = gcnew AppDomainSetup();
+		setup->ApplicationBase = path;
+		setup->ShadowCopyFiles = "true";
+		setup->ShadowCopyDirectories = path;
+
+		auto appdomain = System::AppDomain::CreateDomain("ScriptDomain_" + (path->GetHashCode() * Environment::TickCount).ToString("X"), nullptr, setup, gcnew Security::PermissionSet(Security::Permissions::PermissionState::Unrestricted));
+		appdomain->InitializeLifetimeService();
+
+		ScriptDomain^ scriptdomain = nullptr;
+
+		try
+		{
+			scriptdomain = static_cast<ScriptDomain^>(appdomain->CreateInstanceFromAndUnwrap(ScriptDomain::typeid->Assembly->Location, ScriptDomain::typeid->FullName));
+		}
+		catch (Exception^ ex)
+		{
+			Log("[ERROR]", "Failed to create script domain '", appdomain->FriendlyName, "':", Environment::NewLine, ex->ToString());
+
+			System::AppDomain::Unload(appdomain);
+
+			return nullptr;
+		}
+
+		Log("[INFO]", "Loading scripts from '", path, "' into script domain '", appdomain->FriendlyName, "' ...");
+
+		if (IO::Directory::Exists(path))
+		{
+			auto filenameAssemblies = gcnew List<String^>();
+
+			try
+			{
+				filenameAssemblies->AddRange(IO::Directory::GetFiles(path, "*.dll", IO::SearchOption::AllDirectories));
+			}
+			catch (Exception^ ex)
+			{
+				Log("[ERROR]", "Failed to reload scripts:", Environment::NewLine, ex->ToString());
+
+				System::AppDomain::Unload(appdomain);
+
+				return nullptr;
+			}
+
+			for each (String ^ filename in filenameAssemblies)
+			{
+				scriptdomain->LoadAssembly(filename);
+			}
+		}
+		else
+		{
+			Log("[ERROR]", "Failed to reload scripts because the directory is missing.");
+		}
+
+		return scriptdomain;
+	}
+
+	bool ScriptDomain::LoadAssembly(String^ filename)
+	{
+		Assembly^ assembly = nullptr;
+
+		try
+		{
+			assembly = Assembly::LoadFrom(filename);
+		}
+		catch (Exception^ ex)
+		{
+			Log("[ERROR]", "Failed to load assembly '", IO::Path::GetFileName(filename), "':", Environment::NewLine, ex->ToString());
+
+			return false;
+		}
+
+		return LoadAssembly(filename, assembly);
+	}
+
+	bool ScriptDomain::LoadAssembly(String^ filename, Assembly^ assembly)
+	{
+		unsigned int count = 0;
+
+		try
+		{
+			for each (auto type in assembly->GetTypes())
+			{
+				if (!type->IsSubclassOf(Script::typeid))
+				{
+					continue;
+				}
+
+				count++;
+				_scriptTypes->Add(gcnew Tuple<String^, Type^>(filename, type));
+			}
+		}
+		catch (ReflectionTypeLoadException^ ex)
+		{
+			Log("[ERROR]", "Failed to load assembly '", IO::Path::GetFileName(filename), "':", Environment::NewLine, ex->ToString());
+
+			return false;
+		}
+
+		Log("[INFO]", "Found ", count.ToString(), " script(s) in '", IO::Path::GetFileName(filename), "'.");
+
+		return count != 0;
+	}
+
+	void ScriptDomain::Unload(ScriptDomain^% domain)
+	{
+		Log("[INFO]", "Unloading script domain ...");
+
+		domain->Abort();
+
+		System::AppDomain^ appdomain = domain->AppDomain;
+
+		delete domain;
+
+		try
+		{
+			System::AppDomain::Unload(appdomain);
+		}
+		catch (Exception^ ex)
+		{
+			Log("[ERROR]", "Failed to unload deleted script domain:", Environment::NewLine, ex->ToString());
+		}
+
+		domain = nullptr;
+
+		GC::Collect();
+	}
+
+	Script^ ScriptDomain::InstantiateScript(Type^ scriptType)
+	{
+		if (!scriptType->IsSubclassOf(Script::typeid))
+		{
+			return nullptr;
+		}
+
+		Log("[INFO]", "Instantiating script '", scriptType->FullName, "' in script domain '", Name, "' ...");
+
+		try
+		{
+			return static_cast<Script^>(Activator::CreateInstance(scriptType));
+		}
+		catch (MissingMethodException^)
+		{
+			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "' because no public default constructor was found.");
+		}
+		catch (TargetInvocationException^ ex)
+		{
+			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "' because constructor threw an exception:", Environment::NewLine, ex->InnerException->ToString());
+		}
+		catch (Exception^ ex)
+		{
+			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "':", Environment::NewLine, ex->ToString());
+		}
+
 		return nullptr;
 	}
 
-	for each (auto script in m_scripts) {
-		if (script != nullptr/* && script->m_fiberCurrent == currentFiber*/) {
-			return script;
-		}
-	}
-
-	return nullptr;
-}
-
-void RDRN_Module::ScriptDomain::TickAllScripts() 
-{
-	if (m_scripts == nullptr)
-		return;
-
-    for (int i = 0; i < m_scripts->Length; i++)
+	void ScriptDomain::Start()
 	{
-        RDRN_Module::ScriptDomain::ScriptTick(i);
-	}
-}
-
-void RDRN_Module::ScriptDomain::ScriptTick(int scriptIndex)
-{
-	try {
-		auto script = m_scripts[scriptIndex];
-		if (script != nullptr) {
-			script->ProcessOneTick();
+		if (_runningScripts->Count != 0 || _scriptTypes->Count == 0)
+		{
+			return;
 		}
-	} catch (System::Exception^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Exception in script ProcessOneTick: {0}", ex->ToString());
-	} catch (...) {
-		RDRN_Module::LogManager::WriteLog("*** Unmanaged exception in script ProcessOneTick!");
-	}
 
-	try {
-		RDRN_Module::Native::Func::ClearStringPool();
-	} catch (System::Exception^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Exception while clearing string pool: {0}", ex->ToString());
-	} catch (...) {
-		RDRN_Module::LogManager::WriteLog("*** Unmanaged exception while clearning string pool!");
-	}
-}
+		String^ assemblyPath = Assembly::GetExecutingAssembly()->Location;
+		String^ assemblyFilename = IO::Path::GetFileNameWithoutExtension(assemblyPath);
 
+		for each (String ^ path in IO::Directory::GetFiles(IO::Path::GetDirectoryName(assemblyPath), "*.log"))
+		{
+			if (!path->StartsWith(assemblyFilename))
+			{
+				continue;
+			}
 
-void RDRN_Module::ScriptDomain::QueueKeyboardEvent(System::Tuple<bool, System::Windows::Forms::Keys>^ ev)
-{
-	for each (auto script in m_scripts) {
-		if (script == nullptr) {
-			continue;
+			try
+			{
+				TimeSpan logAge = DateTime::Now - DateTime::Parse(IO::Path::GetFileNameWithoutExtension(path)->Substring(path->IndexOf('-') + 1));
+
+				// Delete logs older than 5 days
+				if (logAge.Days >= 5)
+				{
+					IO::File::Delete(path);
+				}
+			}
+			catch (...)
+			{
+				continue;
+			}
 		}
-		script->m_keyboardEvents->Enqueue(ev);
+
+		Log("[INFO]", "Starting ", _scriptTypes->Count.ToString(), " script(s) ...");
+
+		for each (auto scriptType in _scriptTypes)
+		{
+			Script^ script = InstantiateScript(scriptType->Item2);
+
+			if (Object::ReferenceEquals(script, nullptr))
+			{
+				continue;
+			}
+
+			script->_running = true;
+			script->_filename = scriptType->Item1;
+			script->_scriptdomain = this;
+			script->_thread = gcnew Thread(gcnew ThreadStart(script, &Script::MainLoop));
+
+			script->_thread->Start();
+
+			Log("[INFO]", "Started script '", script->Name, "'.");
+
+			_runningScripts->Add(script);
+		}
 	}
-}
+	void ScriptDomain::Abort()
+	{
+		Log("[INFO]", "Stopping ", _runningScripts->Count.ToString(), " script(s) ...");
 
-void RDRN_Module::ScriptDomain::OnUnhandledException(System::Object^ sender, System::UnhandledExceptionEventArgs^ e)
-{
-	RDRN_Module::LogManager::WriteLog("*** Unhandled exception: {0}", e->ExceptionObject->ToString());
-}
+		for each (Script ^ script in _runningScripts)
+		{
+			script->Abort();
 
-System::Reflection::Assembly^ RDRN_Module::ScriptDomain::OnAssemblyResolve(System::Object^ sender, System::ResolveEventArgs^ args)
-{
-	if (args->RequestingAssembly != nullptr) {
-		RDRN_Module::LogManager::WriteLog("Resolving assembly: \"{0}\" from: \"{1}\"", args->Name, args->RequestingAssembly->FullName);
-	} else {
-		RDRN_Module::LogManager::WriteLog("Resolving assembly: \"{0}\"", args->Name);
+			delete script;
+		}
+
+		_scriptTypes->Clear();
+		_runningScripts->Clear();
+
+		GC::Collect();
+	}
+	void ScriptDomain::AbortScript(Script^ script)
+	{
+		if (Object::ReferenceEquals(script->_thread, nullptr))
+		{
+			return;
+		}
+
+		script->_running = false;
+
+		script->_thread->Abort();
+		script->_thread = nullptr;
+
+		Log("[INFO]", "Aborted script '", script->Name, "'.");
+	}
+	void ScriptDomain::DoTick()
+	{
+		// Execute scripts
+		for each (Script ^ script in _runningScripts)
+		{
+			if (!script->_running)
+			{
+				continue;
+			}
+
+			_executingScript = script;
+
+			while ((script->_running = SignalAndWait(script->_continueEvent, script->_waitEvent, 5000)) && _taskQueue->Count > 0)
+			{
+				_taskQueue->Dequeue()->Run();
+			}
+
+			_executingScript = nullptr;
+
+			if (!script->_running)
+			{
+				Log("[ERROR]", "Script '", script->Name, "' is not responding! Aborting ...");
+
+				AbortScript(script);
+				continue;
+			}
+		}
+
+		// Clean up pinned strings
+		CleanupStrings();
+	}
+	void ScriptDomain::DoKeyboardMessage(WinForms::Keys key, bool status, bool statusCtrl, bool statusShift, bool statusAlt)
+	{
+		const int keycode = static_cast<int>(key);
+
+		if (keycode < 0 || keycode >= _keyboardState->Length)
+		{
+			return;
+		}
+
+		_keyboardState[keycode] = status;
+
+		if (_recordKeyboardEvents)
+		{
+			if (statusCtrl)
+			{
+				key = key | WinForms::Keys::Control;
+			}
+			if (statusShift)
+			{
+				key = key | WinForms::Keys::Shift;
+			}
+			if (statusAlt)
+			{
+				key = key | WinForms::Keys::Alt;
+			}
+
+			auto args = gcnew WinForms::KeyEventArgs(key);
+			auto eventinfo = gcnew Tuple<bool, WinForms::KeyEventArgs^>(status, args);
+
+			for each (Script ^ script in _runningScripts)
+			{
+				script->_keyboardEvents->Enqueue(eventinfo);
+			}
+		}
 	}
 
-	auto exeAssembly = System::Reflection::Assembly::GetExecutingAssembly();
-	if (args->Name == exeAssembly->FullName) {
-		RDRN_Module::LogManager::WriteLog("  Returning exeAssembly: \"{0}\"", exeAssembly->FullName);
-		return exeAssembly;
+	void ScriptDomain::PauseKeyboardEvents(bool pause)
+	{
+		_recordKeyboardEvents = !pause;
 	}
+	void ScriptDomain::ExecuteTask(IScriptTask^ task)
+	{
+		if (Thread::CurrentThread->ManagedThreadId == _executingThreadId)
+		{
+			task->Run();
+		}
+		else
+		{
+			_taskQueue->Enqueue(task);
 
-	return args->RequestingAssembly;
+			SignalAndWait(ExecutingScript->_waitEvent, ExecutingScript->_continueEvent);
+		}
+	}
+	IntPtr ScriptDomain::PinString(String^ string)
+	{
+		const int size = Text::Encoding::UTF8->GetByteCount(string);
+		IntPtr handle(new unsigned char[size + 1]());
 
-	//RDR2::WriteLog("  Returning nullptr");
-	//return nullptr;
+		Runtime::InteropServices::Marshal::Copy(Text::Encoding::UTF8->GetBytes(string), 0, handle, size);
+
+		_pinnedStrings->Add(handle);
+
+		return handle;
+	}
+	void ScriptDomain::CleanupStrings()
+	{
+		for each (IntPtr handle in _pinnedStrings)
+		{
+			delete[] handle.ToPointer();
+		}
+
+		_pinnedStrings->Clear();
+	}
+	String^ ScriptDomain::LookupScriptFilename(Type^ type)
+	{
+		for each (auto scriptType in _scriptTypes)
+		{
+			if (scriptType->Item2 == type)
+			{
+				return scriptType->Item1;
+			}
+		}
+
+		return String::Empty;
+	}
+	Object^ ScriptDomain::InitializeLifetimeService()
+	{
+		return nullptr;
+	}
 }

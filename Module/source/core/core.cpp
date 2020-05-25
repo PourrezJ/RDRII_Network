@@ -17,7 +17,6 @@
 
 #include "../wrapper/Main.hpp"
 #include "../wrapper/ManagedGlobals.h"
-
 namespace rh2
 {
     std::atomic_bool g_unloading = false;

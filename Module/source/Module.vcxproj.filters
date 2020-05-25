@@ -68,9 +68,6 @@
     <ClCompile Include="wrapper\ScriptDomain.cpp">
       <Filter>managed</Filter>
     </ClCompile>
-    <ClCompile Include="wrapper\Input.cpp">
-      <Filter>managed</Filter>
-    </ClCompile>
     <ClCompile Include="wrapper\Main.cpp">
       <Filter>managed</Filter>
     </ClCompile>
@@ -170,13 +167,7 @@
     <ClInclude Include="wrapper\INativeValue.h">
       <Filter>managed</Filter>
     </ClInclude>
-    <ClInclude Include="wrapper\Input.h">
-      <Filter>managed</Filter>
-    </ClInclude>
     <ClInclude Include="wrapper\Main.hpp">
-      <Filter>managed</Filter>
-    </ClInclude>
-    <ClInclude Include="wrapper\ManagedGlobals.h">
       <Filter>managed</Filter>
     </ClInclude>
     <ClInclude Include="wrapper\ManagedLog.h">
@@ -191,6 +182,7 @@
     <ClInclude Include="core\script.hpp">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="wrapper\ManagedGlobals.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">

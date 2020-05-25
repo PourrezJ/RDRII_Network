@@ -1,116 +1,115 @@
-#include <cstdio>
 
-#include "Script.h"
+#include "ScriptDomain.h"
 
-#include "ManagedGlobals.h"
-#include "ManagedLog.h"
+using namespace System;
+using namespace System::Threading;
+using namespace System::Collections::Concurrent;
+namespace WinForms = System::Windows::Forms;
 
-//#include "Config.h"
-
-#pragma unmanaged
-#include <Windows.h>
-#undef Yield
-
-//#include "UnmanagedLog.h"
-
-static void ScriptSwitchToMainFiber(void* fiber)
+namespace RDRN_Module
 {
-	SwitchToFiber(fiber);
-}
-#pragma managed
+	extern void HandleUnhandledException(Object^ sender, UnhandledExceptionEventArgs^ args);
 
-
-RDRN_Module::Script::Script()
-{
-	m_fiberMain = nullptr;
-	m_fiberWait = 0;
-}
-
-void RDRN_Module::Script::Wait(int ms)
-{
-#ifdef THROW_ON_WRONG_FIBER_YIELD
-	if (GetCurrentFiber() != m_fiberCurrent) {
-		throw gcnew System::Exception(System::String::Format("Illegal fiber wait {0} from invalid thread:\n{1}", ms, System::Environment::StackTrace));
+	Script::Script() : _filename(ScriptDomain::CurrentDomain->LookupScriptFilename(this)), _scriptdomain(ScriptDomain::CurrentDomain)
+	{
 	}
-#endif
 
-	m_fiberWait = ms;
-	//ScriptSwitchToMainFiber(m_fiberMain);
-}
-
-void RDRN_Module::Script::Yield()
-{
-	Wait(0);
-}
-
-void RDRN_Module::Script::OnInit()
-{
-}
-
-void RDRN_Module::Script::OnTick()
-{
-}
-
-void RDRN_Module::Script::OnKeyDown(System::Windows::Forms::KeyEventArgs^ args)
-{
-}
-
-void RDRN_Module::Script::OnKeyUp(System::Windows::Forms::KeyEventArgs^ args)
-{
-}
-
-void RDRN_Module::Script::OnMouseDown(System::Windows::Forms::MouseButtons button)
-{
-}
-/*
-void RDRN_Module::Script::OnMouseUp(System::Windows::Forms::MouseEventArgs^ args)
-{
-}*/
-
-RDRN_Module::Script^ RDRN_Module::Script::GetExecuting()
-{
-	return RDRN_Module::ManagedGlobals::g_scriptDomain->GetExecuting();
-}
-
-void RDRN_Module::Script::WaitExecuting(int ms)
-{
-	auto script = GetExecuting();
-	if (script == nullptr) {
-		throw gcnew System::Exception("Illegal call to WaitExecuting() from a non-script fiber!");
+	int Script::Interval::get()
+	{
+		return _interval;
 	}
-	script->Wait(ms);
-}
-
-void RDRN_Module::Script::YieldExecuting()
-{
-	WaitExecuting(0);
-}
-
-void RDRN_Module::Script::ProcessOneTick()
-{
-	System::Tuple<bool, System::Windows::Forms::Keys>^ ev = nullptr;
-
-	while (m_keyboardEvents->TryDequeue(ev)) {
-		try {
-			if (ev->Item1) {
-				OnKeyDown(gcnew System::Windows::Forms::KeyEventArgs(ev->Item2));
-			} else {
-				OnKeyUp(gcnew System::Windows::Forms::KeyEventArgs(ev->Item2));
-			}
-		} catch (System::Exception^ ex) {
-			if (ev->Item1) {
-				RDRN_Module::LogManager::WriteLog("*** Exception during OnKeyDown: {0}", ex->ToString());
-			} else {
-				RDRN_Module::LogManager::WriteLog("*** Exception during OnKeyUp: {0}", ex->ToString());
-			}
+	void Script::Interval::set(int value)
+	{
+		if (value < 0)
+		{
+			value = 0;
 		}
+
+		_interval = value;
 	}
 
-	try {
-		OnTick();
-	} catch (System::Exception^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Exception during OnTick: {0}", ex->ToString());
-	} catch (...) {
-		RDRN_Module::LogManager::WriteLog("*** Unmanaged exception during OnTick in {0}", GetType()->FullName);
+	void Script::Abort()
+	{
+		try
+		{
+			Aborted(this, EventArgs::Empty);
+		}
+		catch (Exception^ ex)
+		{
+			HandleUnhandledException(this, gcnew UnhandledExceptionEventArgs(ex, true));
+		}
+
+		_waitEvent->Set();
+
+		_scriptdomain->AbortScript(this);
+	}
+	void Script::Wait(int ms)
+	{
+		Script^ script = ScriptDomain::ExecutingScript;
+
+		if (Object::ReferenceEquals(script, nullptr) || !script->_running)
+		{
+			throw gcnew InvalidOperationException("Illegal call to 'Script.Wait()' outside main loop!");
+		}
+
+		const auto resume = DateTime::UtcNow + TimeSpan::FromMilliseconds(ms);
+
+		do
+		{
+			script->_waitEvent->Set();
+			script->_continueEvent->WaitOne();
+		} while (DateTime::UtcNow < resume);
+	}
+	void Script::Yield()
+	{
+		Wait(0);
+	}
+
+	void Script::MainLoop()
+	{
+		// Wait for domain to run scripts
+		_continueEvent->WaitOne();
+
+		// Run main loop
+		while (_running)
+		{
+			Tuple<bool, WinForms::KeyEventArgs^>^ keyevent = nullptr;
+
+			// Process events
+			while (_keyboardEvents->TryDequeue(keyevent))
+			{
+				try
+				{
+					if (keyevent->Item1)
+					{
+						KeyDown(this, keyevent->Item2);
+					}
+					else
+					{
+						KeyUp(this, keyevent->Item2);
+					}
+				}
+				catch (Exception^ ex)
+				{
+					HandleUnhandledException(this, gcnew UnhandledExceptionEventArgs(ex, false));
+					break;
+				}
+			}
+
+			try
+			{
+				Tick(this, EventArgs::Empty);
+			}
+			catch (Exception^ ex)
+			{
+				HandleUnhandledException(this, gcnew UnhandledExceptionEventArgs(ex, true));
+
+				Abort();
+				break;
+			}
+
+			// Yield execution to next tick
+			Wait(_interval);
+		}
 	}
 }

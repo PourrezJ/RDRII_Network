@@ -1,37 +1,75 @@
+
 #pragma once
-//#include "stdafx.h"
-#include <windows.h>
 #undef Yield
-#include <WinBase.h>
 
 namespace RDRN_Module
 {
+#pragma region Forward Declarations
+	ref class ScriptDomain;
+#pragma endregion
+
+	[System::AttributeUsage(System::AttributeTargets::Class, AllowMultiple = true)]
+	public ref class RequireScript : System::Attribute
+	{
+	public:
+		RequireScript(System::Type^ dependency) : _dependency(dependency) { }
+
+	internal:
+		System::Type^ _dependency;
+	};
+
 	public ref class Script abstract
 	{
-	internal:
-		void* m_fiberMain;
-		void* m_fiberCurrent;
-		int m_fiberWait;
-		System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::Keys>^>^ m_keyboardEvents = gcnew System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::Keys>^>();
-		System::Collections::Concurrent::ConcurrentQueue<System::Windows::Forms::MouseButtons>^ m_mouseEvents = gcnew System::Collections::Concurrent::ConcurrentQueue<System::Windows::Forms::MouseButtons>();
-
 	public:
 		Script();
 
-		void Wait(int ms);
-		void Yield();
+		static void Wait(int ms);
+		static void Yield();
 
-		virtual void OnInit();
-		virtual void OnTick();
-		virtual void OnKeyDown(System::Windows::Forms::KeyEventArgs^ args);
-		virtual void OnKeyUp(System::Windows::Forms::KeyEventArgs^ args);
-		virtual void OnMouseDown(System::Windows::Forms::MouseButtons button);
-		//virtual void OnMouseUp(System::Windows::Forms::MouseEventArgs^ args);
+		event System::EventHandler^ Tick;
+		event System::Windows::Forms::KeyEventHandler^ KeyUp;
+		event System::Windows::Forms::KeyEventHandler^ KeyDown;
+		event System::EventHandler^ Aborted;
 
-		static Script^ GetExecuting();
-		static void WaitExecuting(int ms);
-		static void YieldExecuting();
+		property System::String^ Name
+		{
+			System::String^ get()
+			{
+				return GetType()->FullName;
+			}
+		}
+		property System::String^ Filename
+		{
+			System::String^ get()
+			{
+				return _filename;
+			}
+		}
+
+		void Abort();
+
+		virtual System::String^ ToString() override
+		{
+			return Name;
+		}
+
+	protected:
+		property int Interval
+		{
+			int get();
+			void set(int value);
+		}
+
 	internal:
-		void ProcessOneTick();
+		void MainLoop();
+
+		int _interval = 0;
+		bool _running = false;
+		System::String^ _filename;
+		ScriptDomain^ _scriptdomain;
+		System::Threading::Thread^ _thread;
+		System::Threading::AutoResetEvent^ _waitEvent = gcnew System::Threading::AutoResetEvent(false);
+		System::Threading::AutoResetEvent^ _continueEvent = gcnew System::Threading::AutoResetEvent(false);
+		System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::KeyEventArgs^>^>^ _keyboardEvents = gcnew System::Collections::Concurrent::ConcurrentQueue<System::Tuple<bool, System::Windows::Forms::KeyEventArgs^>^>();
 	};
 }

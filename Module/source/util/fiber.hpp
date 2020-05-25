@@ -1,5 +1,6 @@
 #pragma once
 
+#pragma unmanaged
 namespace rh2
 {
     class Fiber

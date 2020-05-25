@@ -194,7 +194,6 @@
     <ClCompile Include="rage\scrThread.cpp" />
     <ClCompile Include="util\fiber.cpp" />
     <ClCompile Include="wrapper\Function.cpp" />
-    <ClCompile Include="wrapper\Input.cpp" />
     <ClCompile Include="wrapper\Main.cpp" />
     <ClCompile Include="wrapper\ManagedLog.cpp" />
     <ClCompile Include="wrapper\Math\Matrix.cpp" />
@@ -230,7 +229,6 @@
     <ClInclude Include="util\fiber.hpp" />
     <ClInclude Include="wrapper\Function.h" />
     <ClInclude Include="wrapper\INativeValue.h" />
-    <ClInclude Include="wrapper\Input.h" />
     <ClInclude Include="wrapper\Main.hpp" />
     <ClInclude Include="wrapper\ManagedGlobals.h" />
     <ClInclude Include="wrapper\ManagedLog.h" />

@@ -1,18 +1,36 @@
 #pragma once
 
 #include "Main.hpp"
-#include "ManagedLog.h"
+
 
 #pragma managed
+#include "ManagedLog.h"
+#include "ScriptDomain.h"
+
+ref struct ScriptHook
+{
+    static RDRN_Module::ScriptDomain^ Domain = nullptr;
+};
+
 bool ManagedInit()
 {
-    System::Console::WriteLine("CLR INIT OK!:");
-    return true;
+    auto location = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+    System::Console::WriteLine(location);
+
+    ScriptHook::Domain = RDRN_Module::ScriptDomain::Load(System::IO::Path::Combine(System::IO::Path::GetDirectoryName(location), "Scripts"));
+
+    if (!System::Object::ReferenceEquals(ScriptHook::Domain, nullptr))
+    {
+        ScriptHook::Domain->Start();
+
+        return true;
+    }
+
+    return false;
 }
 
-void ManagedTick()
-{
-    System::Console::WriteLine("Tick");
+void ManagedTick() {
+
 }
 
 #pragma unmanaged
