@@ -75,7 +75,7 @@ namespace RDRN_Core
             
             Model model = new Model(PedHash.A_C_Horse_Turkoman_DarkBay);
             Console.WriteLine("model request");
-            model.Request();
+            model.Request(250);
             Console.WriteLine("Model changed: " + Game.Player.ChangeModel(model).ToString());
             var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
             CefController.ShowCursor = true;

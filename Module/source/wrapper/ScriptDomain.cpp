@@ -182,17 +182,6 @@ void RDRN_Module::ScriptDomain::QueueKeyboardEvent(System::Tuple<bool, System::W
 	}
 }
 
-void RDRN_Module::ScriptDomain::QueueMouseEvent(System::Windows::Forms::MouseButtons ev)
-{
-
-	for each (auto script in m_scripts) {
-		if (script == nullptr) {
-			continue;
-		}
-		script->m_mouseEvents->Enqueue(ev);
-	}
-}
-
 void RDRN_Module::ScriptDomain::OnUnhandledException(System::Object^ sender, System::UnhandledExceptionEventArgs^ e)
 {
 	RDRN_Module::LogManager::WriteLog("*** Unhandled exception: {0}", e->ExceptionObject->ToString());

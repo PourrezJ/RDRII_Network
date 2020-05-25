@@ -1,7 +1,6 @@
 #pragma once
 
 void ManagedScriptKeyboardMessage(unsigned long key, unsigned short repeats, unsigned char scanCode, bool isExtended, bool isWithAlt, bool wasDownBefore, bool isUpNow);
-void ManagedScriptMouseMessage(unsigned long key);
 
 namespace RDRN_Module
 {

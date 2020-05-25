@@ -23,8 +23,6 @@ namespace RDRN_Module
 
 		void QueueKeyboardEvent(System::Tuple<bool, System::Windows::Forms::Keys>^ ev);
 
-		void QueueMouseEvent(System::Windows::Forms::MouseButtons ev);
-
 		void OnUnhandledException(System::Object^ sender, System::UnhandledExceptionEventArgs^ e);
 		System::Reflection::Assembly^ OnAssemblyResolve(System::Object^ sender, System::ResolveEventArgs^ args);
 
