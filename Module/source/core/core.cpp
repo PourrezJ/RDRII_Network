@@ -2,6 +2,7 @@
 #pragma unmanaged
 #include "core.hpp"
 #include "logs.hpp"
+#include "script.hpp"
 
 #include "../hooking/detour-hook.hpp"
 #include "../hooking/command-hook.hpp"
@@ -26,6 +27,7 @@ namespace rh2
 
     Fiber g_gameFiber;
     hMod g_module;
+    Script g_clrScript = nullptr;
 
     bool InitializeCommandHooks();
     void CreateLogs();
@@ -87,7 +89,7 @@ namespace rh2
         }
         logs::g_hLog->log("Natives initialized");
 
-        rh2::ClrInit();
+        scriptRegister(rh2::ClrInit);
 
         return true;
     }
@@ -163,7 +165,11 @@ namespace rh2
         if (Invoker::Invoke<u32>(0xBC2C927F5C264960ull) == 0x27eb33d7u) // main
         {
             std::lock_guard _(g_scriptMutex);
-            rh2::ClrTick();
+
+            Script* script = &g_clrScript;
+
+            if (script != nullptr)
+                script->update();
         }
         
         g_waitHook->orig(info);
@@ -186,6 +192,21 @@ namespace rh2
         logs::g_hLog = logging::LogMgr::CreateLog<logging::GenericFileLogger>(
             "hook_log", "RedHook2/logs/hook.log");
     }
+
+    void scriptRegister(void (*LP_SCRIPT_MAIN)())
+    {
+        Script& script = rh2::Script(LP_SCRIPT_MAIN);
+        g_clrScript = script;
+    }
+
+    void ScriptWait(uint32_t duration)
+    {
+        Script* script = &g_clrScript;
+
+        if (script != nullptr)
+            script->wait(std::chrono::milliseconds(duration));
+    }
+
 
     Fiber GetGameFiber()
     {

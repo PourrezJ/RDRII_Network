@@ -14,6 +14,9 @@ namespace rh2
 
     void Unload();
 
+    void scriptRegister(void(*LP_SCRIPT_MAIN)());
+    void ScriptWait(uint32_t duration);
+
     Fiber GetGameFiber();
 
     hMod GetModule();

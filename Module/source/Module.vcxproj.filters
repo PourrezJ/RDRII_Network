@@ -14,9 +14,6 @@
     <ClCompile Include="wrapper\Math\Quaternion.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="core\core.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="core\logs.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     <ClCompile Include="wrapper\ManagedLog.cpp">
       <Filter>managed</Filter>
     </ClCompile>
+    <ClCompile Include="core\core.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
     <ClCompile Include="core\script.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -97,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="wrapper\Math\Quaternion.hpp">
       <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="core\core.hpp">
-      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\logs.hpp">
       <Filter>core</Filter>
@@ -187,6 +184,9 @@
     </ClInclude>
     <ClInclude Include="wrapper\NativeHashes.hpp">
       <Filter>managed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\core.hpp">
+      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\script.hpp">
       <Filter>core</Filter>

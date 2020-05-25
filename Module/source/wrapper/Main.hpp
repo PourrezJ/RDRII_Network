@@ -2,9 +2,8 @@
 namespace rh2
 {
     void ClrInit();
-    void ClrTick();
-}   
+}
 
-void ManagedInit();
+bool ManagedInit();
 
 void ManagedTick();
