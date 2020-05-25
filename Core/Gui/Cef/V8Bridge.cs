@@ -47,7 +47,7 @@ namespace RDRN_Core.Gui.Cef
 
                             LogManager.WriteLog("-> Executing callback...");
 
-                            object output = father._callback.Call(arguments[0].GetStringValue(), args.ToArray());
+                            object output = father.Callback.Call(arguments[0].GetStringValue(), args.ToArray());
 
                             LogManager.WriteLog("-> Callback executed!");
 
@@ -58,7 +58,7 @@ namespace RDRN_Core.Gui.Cef
                     case "resourceEval":
                         {
                             LogManager.WriteLog("-> Entering resource eval");
-                            object output = father._callback.Eval(arguments[0].GetStringValue());
+                            object output = father.Callback.Eval(arguments[0].GetStringValue());
                             LogManager.WriteLog("-> callback executed!");
 
                             returnValue = V8Helper.CreateValue(output);

@@ -2,14 +2,11 @@
 using System.Security;
 using Xilium.CefGlue;
 using RDRN_Module;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
 using RDRN_Core.Gui.DirectXHook;
 using SharpDX.DXGI;
 using System.Collections.Generic;
 using SharpDX;
 using SharpDX.Direct2D1;
-using SharpDX.WIC;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
@@ -21,7 +18,7 @@ namespace RDRN_Core.Gui.Cef
     {
         private int windowHeight;
 
-        public ImageElement ImageElement { get; }
+        internal static ImageElement ImageElement;
 
         private int windowWidth;
 
@@ -61,8 +58,8 @@ namespace RDRN_Core.Gui.Cef
         public void Dispose()
         {
             CefRenderHandlers.Remove(this);
-          //  imageElement?.Dispose();
-          // imageElement = null;
+            ImageElement?.Dispose();
+            ImageElement = null;
         }
 
         protected override void OnCursorChange(CefBrowser browser, IntPtr cursorHandle, CefCursorType type, CefCursorInfo customCursorInfo)
@@ -115,44 +112,45 @@ namespace RDRN_Core.Gui.Cef
             if (ImageElement == null)
                 return;
 
-            lock (ImageElement)
+            int stride = width * sizeof(int);
+            var length = height * stride;
+
+            using (var tempStream = new SharpDX.DataStream(height * stride, true, true))
             {
-                int stride = width * sizeof(int);
-                var length = height * stride;
-
-                using (var tempStream = new SharpDX.DataStream(height * stride, true, true))
+                for (int y = 0; y < height; y++)
                 {
-                    for (int y = 0; y < height; y++)
+                    int offset = stride * y;
+                    for (int x = 0; x < width; x++)
                     {
-                        int offset = stride * y;
-                        for (int x = 0; x < width; x++)
-                        {
-                            // Not optimized 
-                            byte B = Marshal.ReadByte(buffer, offset++);
-                            byte G = Marshal.ReadByte(buffer, offset++);
-                            byte R = Marshal.ReadByte(buffer, offset++);
-                            byte A = Marshal.ReadByte(buffer, offset++);
-                            int rgba = R | (G << 8) | (B << 16) | (A << 24);
-                            tempStream.Write(rgba);
-                        }
+                        // Not optimized 
+                        byte B = Marshal.ReadByte(buffer, offset++);
+                        byte G = Marshal.ReadByte(buffer, offset++);
+                        byte R = Marshal.ReadByte(buffer, offset++);
+                        byte A = Marshal.ReadByte(buffer, offset++);
+                        int rgba = R | (G << 8) | (B << 16) | (A << 24);
+                        tempStream.Write(rgba);
                     }
-
-                    tempStream.Position = 0;
-                    ImageElement.Position = this.browser.Position;
-                    ImageElement.Height = height;
-                    ImageElement.Width = width;
-
-                    ImageElement.D2D1Bitmap = new SharpDX.Direct2D1.Bitmap(
-                                                DxHook.CurrentRenderTarget2D1,
-                                                new SharpDX.Size2(width, height),
-                                                tempStream,
-                                                stride,
-                                                new BitmapProperties(new SharpDX.Direct2D1.PixelFormat(Format.R8G8B8A8_UNorm, SharpDX.Direct2D1.AlphaMode.Premultiplied)));
-
-                    tempStream.Close();
-                    tempStream.Dispose();
                 }
-            } 
+
+                tempStream.Position = 0;
+                ImageElement.Position = this.browser.Position;
+                ImageElement.Height = height;
+                ImageElement.Width = width;
+
+                if (DxHook.CurrentRenderTarget2D1 != null)
+                {
+                    ImageElement.D2D1Bitmap = new SharpDX.Direct2D1.Bitmap(
+                            DxHook.CurrentRenderTarget2D1,
+                            new SharpDX.Size2(width, height),
+                            tempStream,
+                            stride,
+                            new BitmapProperties(new SharpDX.Direct2D1.PixelFormat(Format.R8G8B8A8_UNorm, SharpDX.Direct2D1.AlphaMode.Premultiplied)));
+
+                }
+
+                tempStream.Close();
+                tempStream.Dispose();
+            }
         }
 
         protected override void OnScrollOffsetChanged(CefBrowser browser, double x, double y)

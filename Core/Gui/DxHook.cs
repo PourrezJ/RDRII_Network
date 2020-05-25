@@ -55,13 +55,12 @@ namespace RDRN_Core.Gui.DirectXHook
         public delegate void SignalDelegate(IntPtr commandQueuePtr, IntPtr fenceRef, ulong value);
 
         private HookWrapper<PresentDelegate> hookPresent;
-        private HookWrapper<DrawInstancedDelegate> hookDrawInstanced;
-        private HookWrapper<DrawIndexedInstancedDelegate> hookDrawIndexedInstanced;
+        //private HookWrapper<DrawInstancedDelegate> hookDrawInstanced;
+        //private HookWrapper<DrawIndexedInstancedDelegate> hookDrawIndexedInstanced;
         private HookWrapper<ExecuteCommandListsDelegate> hookExecuteCommandLists;
-        private HookWrapper<SignalDelegate> hookSignalDelegate;
+        //private HookWrapper<SignalDelegate> hookSignalDelegate;
 
         private bool init = false;
-        private bool shutdown = false;
 
         public static DXGI.SwapChain3 SwapChain;
         public static D3D12.CommandQueue CommandQueue;
@@ -243,23 +242,25 @@ namespace RDRN_Core.Gui.DirectXHook
 
             if (ImageElements.Count > 0)
             {
-                try
+                lock (ImageElements)
                 {
-                    lock (ImageElements)
+                    for (int i = 0; i < ImageElements.Count; i++)
                     {
-                        for (int i = 0; i < ImageElements.Count; i++)
-                            ImageElements[i]?.Draw();
+                        ImageElements[i]?.Draw();
                     }
-                }
-                catch(Exception ex)
-                {
-                    LogManager.Exception(ex, "DX Render");
                 }
             }
 
-            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(2, 2, 20, 0), textBrush);
+            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(20, 20, 20, 20), textBrush);
+            try
+            {
+                CurrentRenderTarget2D1.EndDraw();
+            }
+            catch(SharpDX.SharpDXException ex)
+            {
+                LogManager.Exception(ex);
+            }
             
-            CurrentRenderTarget2D1.EndDraw();
 
             Device11on12.ReleaseWrappedResources(new SharpDX.Direct3D11.Resource[] { wrappedBackBuffers[frameIndex] }, 1);
 
@@ -308,16 +309,16 @@ namespace RDRN_Core.Gui.DirectXHook
         public void Dispose()
         {
             hookPresent.Dispose();
-            hookDrawInstanced.Dispose();
-            hookDrawIndexedInstanced.Dispose();
+            //hookDrawInstanced.Dispose();
+            //hookDrawIndexedInstanced.Dispose();
             hookExecuteCommandLists.Dispose();
-            hookSignalDelegate.Dispose();
+            //hookSignalDelegate.Dispose();
 
             SharpDX.Utilities.Dispose(ref Device12);
         }
         #endregion
 
-        #region Moved
+        #region Methods
 
         private List<IntPtr> GetProcAddress()
         {

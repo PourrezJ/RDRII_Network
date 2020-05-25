@@ -7,12 +7,12 @@ namespace RDRN_Core.Gui.Cef
 {
     internal class MainCefClient : CefClient
     {
-        private readonly MainCefLoadHandler _loadHandler;
-        private readonly MainCefRenderHandler _renderHandler;
-        private readonly MainLifeSpanHandler _lifeSpanHandler;
-        private readonly ContextMenuRemover _contextMenuHandler;
+        internal readonly MainCefLoadHandler _loadHandler;
+        internal readonly MainCefRenderHandler _renderHandler;
+        internal readonly MainLifeSpanHandler _lifeSpanHandler;
+        internal readonly ContextMenuRemover _contextMenuHandler;
 
-        public event EventHandler OnCreated;
+        internal event EventHandler OnCreated;
 
         internal PointF Position;
 

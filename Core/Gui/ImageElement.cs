@@ -12,7 +12,7 @@ using PixelFormat = SharpDX.Direct2D1.PixelFormat;
 
 namespace RDRN_Core.Gui
 {
-    public class ImageElement
+    public class ImageElement : IDisposable
     {
         private SharpDX.Direct2D1.Bitmap d2d1Bitmap;
 
@@ -113,12 +113,20 @@ namespace RDRN_Core.Gui
 
             try
             {
-                DirectXHook.DxHook.CurrentRenderTarget2D1.DrawBitmap(D2D1Bitmap, new SharpDX.Mathematics.Interop.RawRectangleF(Position.X, Position.Y, Position.X + Width, Position.Y + Height), 1.0f, BitmapInterpolationMode.NearestNeighbor);
+                DirectXHook.DxHook.CurrentRenderTarget2D1?.DrawBitmap(D2D1Bitmap, new SharpDX.Mathematics.Interop.RawRectangleF(Position.X, Position.Y, Position.X + Width, Position.Y + Height), 1.0f, BitmapInterpolationMode.NearestNeighbor);
             }
-            catch (Exception ex)
+            catch (SharpDX.SharpDXException ex)
             {
                 LogManager.Exception(ex);
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            if (D2D1Bitmap != null && !D2D1Bitmap.IsDisposed)
+                D2D1Bitmap.Dispose();
+
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -9,17 +9,17 @@ namespace RDRN_Core.Gui.Cef
 {
     internal class Browser : IDisposable
     {
-        internal MainCefClient _client;
-        internal CefBrowser _browser;
-        internal BrowserJavascriptCallback _callback;
-
-        internal CefV8Context _mainContext;
+        internal MainCefClient Client;
+        internal CefBrowser browser;
+        internal BrowserJavascriptCallback Callback;
+        internal CefV8Context MainContext;
+        internal bool HasFocused;
 
         internal readonly bool _localMode;
-        internal bool _hasFocused;
+        
 
         public CefBrowserHost GetHost()
-            => _browser.GetHost();
+            => browser.GetHost();
 
         private bool _headless = false;
         public bool Headless
@@ -27,7 +27,7 @@ namespace RDRN_Core.Gui.Cef
             get => _headless;
             set
             {
-                _client.SetHidden(value);
+                Client.SetHidden(value);
                 _headless = value;
             }
         }
@@ -39,7 +39,7 @@ namespace RDRN_Core.Gui.Cef
             set
             {
                 _position = value;
-                _client.SetPosition(value.X, value.Y);
+                Client.SetPosition(value.X, value.Y);
             }
         }
 
@@ -51,7 +51,7 @@ namespace RDRN_Core.Gui.Cef
             get => _size;
             set
             {
-                _client.SetSize(value.Width, value.Height);
+                Client.SetSize(value.Width, value.Height);
                 _size = value;
             }
         }
@@ -61,7 +61,7 @@ namespace RDRN_Core.Gui.Cef
         public void Eval(string code)
         {
             if (!_localMode) return;
-            _browser.GetMainFrame().ExecuteJavaScript(code, null, 0);
+            browser.GetMainFrame().ExecuteJavaScript(code, null, 0);
         }
 
         public void Call(string method, params object[] arguments)
@@ -94,7 +94,7 @@ namespace RDRN_Core.Gui.Cef
             }
             callString += ");";
 
-            _browser.GetMainFrame().ExecuteJavaScript(callString, null, 0);
+            browser.GetMainFrame().ExecuteJavaScript(callString, null, 0);
         }
 
         internal Browser(V8ScriptEngine father, string url, Size browserSize, bool localMode)
@@ -128,21 +128,21 @@ namespace RDRN_Core.Gui.Cef
 
                 };
 
-                _client = new MainCefClient(this, browserSize.Width, browserSize.Height);
+                Client = new MainCefClient(this, browserSize.Width, browserSize.Height);
 
                 Size = browserSize;
                 _localMode = localMode;
-                _callback = new BrowserJavascriptCallback(father, this);
+                Callback = new BrowserJavascriptCallback(father, this);
 
-                _client.OnCreated += (sender, args) =>
+                Client.OnCreated += (sender, args) =>
                 {
-                    _browser = sender as CefBrowser;
+                    browser = sender as CefBrowser;
                     LogManager.WriteLog("-> Browser created!");
                     GoToPage("https://www.twitch.tv/directory");
                     LogManager.WriteLog("-> Browser created! 2");
                 };
                 LogManager.WriteLog("--> Browser: Creating Browser");
-                CefBrowserHost.CreateBrowser(windowInfo, _client, browserSettings, url);
+                CefBrowserHost.CreateBrowser(windowInfo, Client, browserSettings, url);
 
                 lock (CEFManager.Browsers)
                 {
@@ -160,45 +160,45 @@ namespace RDRN_Core.Gui.Cef
 
         internal void GoToPage(string page)
         {
-            if (_browser != null)
+            if (browser != null)
             {
                 LogManager.WriteLog("Trying to load page " + page + "...");
-                _browser.GetMainFrame().LoadUrl(page);
+                browser.GetMainFrame().LoadUrl(page);
                 LogManager.WriteLog("Page loaded ...");
             }
         }
 
         internal void GoBack()
         {
-            if (_browser != null && _browser.CanGoBack)
+            if (browser != null && browser.CanGoBack)
             {
                 LogManager.WriteLog("Trying to go back a page...");
-                _browser.GoBack();
+                browser.GoBack();
             }
         }
 
         internal void Close()
         {
-            _client.Close();
+            Client.Close();
 
-            if (_browser == null) return;
-            var host = _browser.GetHost();
+            if (browser == null) return;
+            var host = browser.GetHost();
             host.CloseBrowser(true);
             host.Dispose();
-            _browser.Dispose();
+            browser.Dispose();
         }
 
         internal string GetAddress()
         {
-            if (_browser == null) 
+            if (browser == null) 
                 return null;
-            return _browser.GetMainFrame().Url;
+            return browser.GetMainFrame().Url;
         }
 
-        internal bool IsLoading() => _browser.IsLoading;
+        internal bool IsLoading() => browser.IsLoading;
 
-        internal bool IsInitialized() => _browser != null;
+        internal bool IsInitialized() => browser != null;
 
-        public void Dispose() => _browser = null;
+        public void Dispose() => browser = null;
     }
 }

@@ -60,8 +60,6 @@ namespace RDRN_Core.Gui.Cef
             {
                 Game.DisableAllControlsThisFrame(0);
 
-                var screen = Main.Screen;
-
                 var mousePos = CEFManager.Cursor?.Position ?? new PointF();
                 var mouseX = mousePos.X/* * screen.Width*/;
                 var mouseY = mousePos.Y /** screen.Height*/;
@@ -83,11 +81,11 @@ namespace RDRN_Core.Gui.Cef
                     if (!browser.IsInitialized()) 
                         continue;
 
-                    if (!browser._hasFocused)
+                    if (!browser.HasFocused)
                      {
-                         browser._browser.GetHost().SetFocus(true);
-                         browser._browser.GetHost().SendFocusEvent(true);
-                         browser._hasFocused = true;
+                         browser.browser.GetHost().SetFocus(true);
+                         browser.browser.GetHost().SendFocusEvent(true);
+                         browser.HasFocused = true;
                      }
 
                      if (mouseX > browser.Position.X && mouseY > browser.Position.Y &&
@@ -97,39 +95,39 @@ namespace RDRN_Core.Gui.Cef
                          var ev = new CefMouseEvent((int)(mouseX - browser.Position.X), (int)(mouseY - browser.Position.Y),
                                  GetMouseModifiers(mouseDownRN, rmouseDownRN));
 
-                         browser._browser
+                         browser.browser
                              .GetHost()
                              .SendMouseMoveEvent(ev, false);
 
                         if (mouseDown)
                         {
-                            browser._browser
+                            browser.browser
                             .GetHost()
                             .SendMouseClickEvent(ev, CefMouseButtonType.Left, false, 1);
                         }
 
                          if (mouseUp)
-                             browser._browser
+                             browser.browser
                                  .GetHost()
                                  .SendMouseClickEvent(ev, CefMouseButtonType.Left, true, 1);
 
                          if (rmouseDown)
-                             browser._browser
+                             browser.browser
                                  .GetHost()
                                  .SendMouseClickEvent(ev, CefMouseButtonType.Right, false, 1);
 
                          if (rmouseUp)
-                             browser._browser
+                             browser.browser
                                  .GetHost()
                                  .SendMouseClickEvent(ev, CefMouseButtonType.Right, true, 1);
 
                          if (wdmouseDown)
-                             browser._browser
+                             browser.browser
                                  .GetHost()
                                  .SendMouseWheelEvent(ev, 0, -30);
 
                          if (wumouseDown)
-                             browser._browser
+                             browser.browser
                                  .GetHost()
                                  .SendMouseWheelEvent(ev, 0, 30);
                      }
@@ -171,7 +169,7 @@ namespace RDRN_Core.Gui.Cef
                 kEvent.Modifiers = mod;
                 kEvent.WindowsKeyCode = (int)args.KeyCode;
                 kEvent.NativeKeyCode = (int)args.KeyValue;
-                browser._browser.GetHost().SendKeyEvent(kEvent);
+                browser.browser.GetHost().SendKeyEvent(kEvent);
 
                 CefKeyEvent charEvent = new CefKeyEvent();
                 charEvent.EventType = CefKeyEventType.Char;
@@ -198,7 +196,7 @@ namespace RDRN_Core.Gui.Cef
 
                 charEvent.WindowsKeyCode = keyChar[0];*/
                 charEvent.Modifiers = mod;
-                browser._browser.GetHost().SendKeyEvent(charEvent);
+                browser.browser.GetHost().SendKeyEvent(charEvent);
             }
         }
 
@@ -215,7 +213,7 @@ namespace RDRN_Core.Gui.Cef
                 CefKeyEvent kEvent = new CefKeyEvent();
                 kEvent.EventType = CefKeyEventType.KeyUp;
                 kEvent.WindowsKeyCode = (int)args.KeyCode;
-                browser._browser.GetHost().SendKeyEvent(kEvent);
+                browser.browser.GetHost().SendKeyEvent(kEvent);
             }
         }
 

@@ -15,7 +15,7 @@ namespace RDRN_Core.Gui.Cef
                 Browser father = CefUtil.GetBrowserFromCef(browser);
                 if (father != null)
                 {
-                    father._mainContext = context;
+                    father.MainContext = context;
                     LogManager.WriteLog("-> Main context set!");
                 }
             }

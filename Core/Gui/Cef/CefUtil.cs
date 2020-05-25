@@ -21,7 +21,7 @@ namespace RDRN_Core.Gui.Cef
                 for (var index = CEFManager.Browsers.Count - 1; index >= 0; index--)
                 {
                     var b = CEFManager.Browsers[index];
-                    if (b?._browser == null || b._browser.Identifier != browser.Identifier) continue;
+                    if (b?.browser == null || b.browser.Identifier != browser.Identifier) continue;
                     father = b;
                     _cachedReferences.Add(browser.Identifier, b);
                     break;
