@@ -22,35 +22,9 @@ System::UInt64* RDRN_Module::Native::Func::InvokeManaged(Hash hash, ... array<Sy
 	{
 		RDRN_Module::LogManager::WriteLog("Invoke Managed Error");
 	}
-
-}
-/*
-generic<typename T> T RDRN_Module::Native::Function::Call(Hash hash,
-                                                          ... array<InputArgument^> ^ arguments)
-{
-	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
-	for each (InputArgument^ arg in arguments) { 
-                rh2::Invoker::NativePush(arg->_data);
-	}
-
-	System::UInt64* result = rh2::Invoker::NativeCall();
-
-	auto ret = static_cast<T>(DecodeObject(T::typeid, result));
-
-	return ret;
+	return nullptr;
 }
 
-
-void RDRN_Module::Native::Function::Call(Hash hash,
-                                         ... array<InputArgument^> ^ arguments)
-{
-	rh2::Invoker::NativeInit((rh2::NativeHash)hash);
-	for each (auto arg in arguments) {
-                rh2::Invoker::NativePush(EncodeObject(arg));
-	}
-    rh2::Invoker::NativeCall();
-}
-*/
 System::IntPtr RDRN_Module::Native::Func::AddStringPool(System::String^ string)
 {
 	auto managedBuffer = System::Text::Encoding::UTF8->GetBytes(string);
