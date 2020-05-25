@@ -1,26 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS
 #pragma unmanaged
 #include "core.hpp"
+#include "logs.hpp"
 
-#include "../memory/patternscan.hpp"
 #include "../hooking/detour-hook.hpp"
 #include "../hooking/command-hook.hpp"
 #include "../hooking/input-hook.hpp"
 #include "../invoker/invoker.hpp"
 #include "../logger/log-mgr.hpp"
-#include "logs.hpp"
 
-#include <memory>
 #include <MinHook/MinHook.h>
-#include <thread>
-#include <chrono>
 #include <fmt/format.h>
-#include <unordered_map>
 #include <filesystem>
-#include <atomic>
-#include <unordered_set>
-
 #include <shared_mutex>
+
 #include "../wrapper/Main.hpp"
 #include "../wrapper/ManagedGlobals.h"
 
@@ -28,14 +21,6 @@ namespace rh2
 {
     std::atomic_bool g_unloading = false;
     std::shared_mutex g_scriptMutex;
-
-
-    //MemoryLocation g_PatchVectorResults;
-   // MemoryLocation g_s_CommandHash;
-    //MemoryLocation g_rage__scrThread__GetCmdFromHash;
-    //MemoryLocation g_rage__scrProgram__sm_Globals;
-
-    MemoryLocation g_loadingScreen;
 
     std::unique_ptr<hooking::CommandHook> g_waitHook;
 
@@ -55,7 +40,6 @@ namespace rh2
             SetConsoleTitle("Red Dead Redemption II: Network");
         }
 
-        using namespace literals;
         using namespace std::chrono;
         using namespace std::chrono_literals;
 
@@ -77,54 +61,8 @@ namespace rh2
         }
         std::this_thread::sleep_for(10s);
         
-
-
-        // Check if waiting for the window timed out
-        /*
-        if (high_resolution_clock::now() >= timeout)
-        {
-            logs::g_hLog->fatal("Timed out");
-            return false;
-        }*/
         logs::g_hLog->log("Game window found");
-        /*
-        logs::g_hLog->log("Searching patterns");
-
-        // Find sigs
-        MemoryLocation loc;
-
-        // PatchVectorResults
-        if (loc = "8B 41 18 4C 8B C1 85 C0"_Scan)
-            g_PatchVectorResults = loc;
-        else
-            return false;
-
-        // rage::scrThread::GetCmdFromhash
-        if (loc = "E8 ? ? ? ? 8B 9C F5 ? ? ? ?"_Scan)
-        {
-            g_rage__scrThread__GetCmdFromHash = loc.get_call();
-            s_CommandHash = g_s_CommandHash = loc.get_call().add(3).get_lea();
-        }
-        else
-            return false;
-
-        if (loc = "4C 8D 05 ? ? ? ? 4D 8B 08 4D 85 C9 74 11")
-            rage::scrProgram::sm_Globals = g_rage__scrProgram__sm_Globals = loc.get_lea();
-        else
-            false;
-
-        logs::g_hLog->log("Patterns found");
-        */
-
-        MemoryLocation loc;
-
-        if (loc = "8A 05 ? ? ? ? 84 C0 75 ? C6 05 ? ? ? ? ?"_Scan)
-        {
-            g_loadingScreen = loc.get_call();
-
-        }
-
-
+        
         logs::g_hLog->log("Initializing Minhook");
         auto st = MH_Initialize();
         if (st != MH_OK)
@@ -134,15 +72,6 @@ namespace rh2
         }
         logs::g_hLog->log("Minhook initialized");
 
-        /*
-        logs::g_hLog->log("Waiting for natives");
-        while (!(*s_CommandHash))
-        {
-            std::this_thread::sleep_for(100ms);
-        }
-        logs::g_hLog->log("Natives loaded");
-        */
-        
         logs::g_hLog->log("Initializing input hook");
         if (!hooking::input::InitializeHook())
         {
@@ -266,21 +195,4 @@ namespace rh2
     hMod GetModule() {
         return g_module;
     }
-
-    /*
-    MemoryLocation GetPatchVectorResults()
-    {
-        return g_PatchVectorResults;
-    }
-
-    MemoryLocation Get_s_CommandHash()
-    {
-        return g_s_CommandHash;
-    }
-
-    MemoryLocation Get_rage__scrThread__GetCmdFromHash()
-    {
-        return g_rage__scrThread__GetCmdFromHash;
-    }*/
-
-} // namespace rh2
+}
