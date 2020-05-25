@@ -80,6 +80,9 @@
     <ClCompile Include="wrapper\ManagedLog.cpp">
       <Filter>managed</Filter>
     </ClCompile>
+    <ClCompile Include="core\script.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="types.hpp" />
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="wrapper\NativeHashes.hpp">
       <Filter>managed</Filter>
+    </ClInclude>
+    <ClInclude Include="core\script.hpp">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
