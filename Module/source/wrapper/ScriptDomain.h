@@ -1,6 +1,6 @@
 
 #pragma once
-
+#include "ManagedLog.h"
 #include "Script.h"
 
 namespace RDRN_Module

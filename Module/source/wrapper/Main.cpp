@@ -15,7 +15,6 @@ ref struct ScriptHook
 bool ManagedInit()
 {
     auto location = System::Reflection::Assembly::GetExecutingAssembly()->Location;
-    System::Console::WriteLine(location);
 
     ScriptHook::Domain = RDRN_Module::ScriptDomain::Load(System::IO::Path::Combine(System::IO::Path::GetDirectoryName(location), "Scripts"));
 

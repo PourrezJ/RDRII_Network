@@ -22,41 +22,7 @@ namespace
 }
 
 namespace RDRN_Module
-{
-	void Log(String^ logLevel, ... array<String^>^ message)
-	{
-		DateTime now = DateTime::Now;
-		String^ logpath = IO::Path::ChangeExtension(Assembly::GetExecutingAssembly()->Location, ".log");
-
-		logpath = logpath->Insert(logpath->IndexOf(".log"), "-" + now.ToString("yyyy-MM-dd"));
-
-		try
-		{
-			auto fs = gcnew IO::FileStream(logpath, IO::FileMode::Append, IO::FileAccess::Write, IO::FileShare::Read);
-			auto sw = gcnew IO::StreamWriter(fs);
-
-			try
-			{
-				sw->Write(String::Concat("[", now.ToString("HH:mm:ss"), "] ", logLevel, " "));
-
-				for each (String ^ string in message)
-				{
-					sw->Write(string);
-				}
-
-				sw->WriteLine();
-			}
-			finally
-			{
-				sw->Close();
-				fs->Close();
-			}
-		}
-		catch (...)
-		{
-			return;
-		}
-	}
+{	
 	Assembly^ HandleResolve(Object^ sender, ResolveEventArgs^ args)
 	{
 		auto assembly = Script::typeid->Assembly;
@@ -66,7 +32,7 @@ namespace RDRN_Module
 		{
 			if (assemblyName->Version->Major != assembly->GetName()->Version->Major)
 			{
-				Log("[WARNING]", "A script references v", assemblyName->Version->ToString(3), " which may not be compatible with the current v" + assembly->GetName()->Version->ToString(3), ".");
+				RDRN_Module::LogManager::WriteLog("[WARNING] A script references v" + assemblyName->Version->ToString(3) + " which may not be compatible with the current v" + assembly->GetName()->Version->ToString(3), ".");
 			}
 
 			return assembly;
@@ -78,11 +44,11 @@ namespace RDRN_Module
 	{
 		if (!args->IsTerminating)
 		{
-			Log("[ERROR]", "Caught unhandled exception:", Environment::NewLine, args->ExceptionObject->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Caught unhandled exception: \n" + args->ExceptionObject->ToString());
 		}
 		else
 		{
-			Log("[ERROR]", "Caught fatal unhandled exception:", Environment::NewLine, args->ExceptionObject->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Caught fatal unhandled exception: \n" + args->ExceptionObject->ToString());
 		}
 	}
 
@@ -93,7 +59,7 @@ namespace RDRN_Module
 		_appdomain->AssemblyResolve += gcnew ResolveEventHandler(&HandleResolve);
 		_appdomain->UnhandledException += gcnew UnhandledExceptionEventHandler(&HandleUnhandledException);
 
-		Log("[INFO]", "Created new script domain with v", ScriptDomain::typeid->Assembly->GetName()->Version->ToString(3), ".");
+		RDRN_Module::LogManager::WriteLog("[INFO] Created new script domain with  " + ScriptDomain::typeid->Assembly->GetName()->Version->ToString(3));
 	}
 	ScriptDomain::~ScriptDomain()
 	{
@@ -120,14 +86,14 @@ namespace RDRN_Module
 		}
 		catch (Exception^ ex)
 		{
-			Log("[ERROR]", "Failed to create script domain '", appdomain->FriendlyName, "':", Environment::NewLine, ex->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to create script domain '" + appdomain->FriendlyName + "': \n " + ex->ToString());
 
 			System::AppDomain::Unload(appdomain);
 
 			return nullptr;
 		}
 
-		Log("[INFO]", "Loading scripts from '", path, "' into script domain '", appdomain->FriendlyName, "' ...");
+		RDRN_Module::LogManager::WriteLog("[INFO] Loading scripts from '" + path + "' into script domain '" + appdomain->FriendlyName + "' ...");
 
 		if (IO::Directory::Exists(path))
 		{
@@ -139,7 +105,7 @@ namespace RDRN_Module
 			}
 			catch (Exception^ ex)
 			{
-				Log("[ERROR]", "Failed to reload scripts:", Environment::NewLine, ex->ToString());
+				RDRN_Module::LogManager::WriteLog("[ERROR] Failed to reload scripts: \n" + ex->ToString());
 
 				System::AppDomain::Unload(appdomain);
 
@@ -153,7 +119,7 @@ namespace RDRN_Module
 		}
 		else
 		{
-			Log("[ERROR]", "Failed to reload scripts because the directory is missing.");
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to reload scripts because the directory is missing.");
 		}
 
 		return scriptdomain;
@@ -169,7 +135,7 @@ namespace RDRN_Module
 		}
 		catch (Exception^ ex)
 		{
-			Log("[ERROR]", "Failed to load assembly '", IO::Path::GetFileName(filename), "':", Environment::NewLine, ex->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
 
 			return false;
 		}
@@ -196,19 +162,19 @@ namespace RDRN_Module
 		}
 		catch (ReflectionTypeLoadException^ ex)
 		{
-			Log("[ERROR]", "Failed to load assembly '", IO::Path::GetFileName(filename), "':", Environment::NewLine, ex->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
 
 			return false;
 		}
 
-		Log("[INFO]", "Found ", count.ToString(), " script(s) in '", IO::Path::GetFileName(filename), "'.");
+		RDRN_Module::LogManager::WriteLog("[INFO] Found " + count.ToString() + " script(s) in '" + IO::Path::GetFileName(filename) + "'.");
 
 		return count != 0;
 	}
 
 	void ScriptDomain::Unload(ScriptDomain^% domain)
 	{
-		Log("[INFO]", "Unloading script domain ...");
+		RDRN_Module::LogManager::WriteLog("[INFO] Unloading script domain ...");
 
 		domain->Abort();
 
@@ -222,7 +188,7 @@ namespace RDRN_Module
 		}
 		catch (Exception^ ex)
 		{
-			Log("[ERROR]", "Failed to unload deleted script domain:", Environment::NewLine, ex->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to unload deleted script domain: \n" + ex->ToString());
 		}
 
 		domain = nullptr;
@@ -237,7 +203,7 @@ namespace RDRN_Module
 			return nullptr;
 		}
 
-		Log("[INFO]", "Instantiating script '", scriptType->FullName, "' in script domain '", Name, "' ...");
+		RDRN_Module::LogManager::WriteLog("[INFO] Instantiating script '" + scriptType->FullName + "' in script domain '" + Name + "' ...");
 
 		try
 		{
@@ -245,15 +211,15 @@ namespace RDRN_Module
 		}
 		catch (MissingMethodException^)
 		{
-			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "' because no public default constructor was found.");
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to instantiate script '" + scriptType->FullName + "' because no public default constructor was found.");
 		}
 		catch (TargetInvocationException^ ex)
 		{
-			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "' because constructor threw an exception:", Environment::NewLine, ex->InnerException->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to instantiate script '" + scriptType->FullName + "' because constructor threw an exception: \n" + ex->InnerException->ToString());
 		}
 		catch (Exception^ ex)
 		{
-			Log("[ERROR]", "Failed to instantiate script '", scriptType->FullName, "':", Environment::NewLine, ex->ToString());
+			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to instantiate script '" + scriptType->FullName + "': \n" + ex->ToString());
 		}
 
 		return nullptr;
@@ -269,30 +235,7 @@ namespace RDRN_Module
 		String^ assemblyPath = Assembly::GetExecutingAssembly()->Location;
 		String^ assemblyFilename = IO::Path::GetFileNameWithoutExtension(assemblyPath);
 
-		for each (String ^ path in IO::Directory::GetFiles(IO::Path::GetDirectoryName(assemblyPath), "*.log"))
-		{
-			if (!path->StartsWith(assemblyFilename))
-			{
-				continue;
-			}
-
-			try
-			{
-				TimeSpan logAge = DateTime::Now - DateTime::Parse(IO::Path::GetFileNameWithoutExtension(path)->Substring(path->IndexOf('-') + 1));
-
-				// Delete logs older than 5 days
-				if (logAge.Days >= 5)
-				{
-					IO::File::Delete(path);
-				}
-			}
-			catch (...)
-			{
-				continue;
-			}
-		}
-
-		Log("[INFO]", "Starting ", _scriptTypes->Count.ToString(), " script(s) ...");
+		RDRN_Module::LogManager::WriteLog("[INFO] Starting " + _scriptTypes->Count.ToString() + " script(s) ...");
 
 		for each (auto scriptType in _scriptTypes)
 		{
@@ -310,14 +253,14 @@ namespace RDRN_Module
 
 			script->_thread->Start();
 
-			Log("[INFO]", "Started script '", script->Name, "'.");
+			RDRN_Module::LogManager::WriteLog("[INFO] Started script '" + script->Name + "'.");
 
 			_runningScripts->Add(script);
 		}
 	}
 	void ScriptDomain::Abort()
 	{
-		Log("[INFO]", "Stopping ", _runningScripts->Count.ToString(), " script(s) ...");
+		RDRN_Module::LogManager::WriteLog("[INFO] Stopping " + _runningScripts->Count.ToString() + " script(s) ...");
 
 		for each (Script ^ script in _runningScripts)
 		{
@@ -343,7 +286,7 @@ namespace RDRN_Module
 		script->_thread->Abort();
 		script->_thread = nullptr;
 
-		Log("[INFO]", "Aborted script '", script->Name, "'.");
+		RDRN_Module::LogManager::WriteLog("[INFO] Aborted script '" + script->Name + "'.");
 	}
 	void ScriptDomain::DoTick()
 	{
@@ -366,7 +309,7 @@ namespace RDRN_Module
 
 			if (!script->_running)
 			{
-				Log("[ERROR]", "Script '", script->Name, "' is not responding! Aborting ...");
+				RDRN_Module::LogManager::WriteLog("[ERROR] Script '" + script->Name + "' is not responding! Aborting ...");
 
 				AbortScript(script);
 				continue;
