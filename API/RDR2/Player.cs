@@ -126,7 +126,8 @@ namespace RDRN_API
 
 		public bool ChangeModel(Model model)
 		{
-			if (!model.IsInCdImage || !model.IsPed || !model.Request(1000))
+			
+			if (!model.IsInCdImage ||!model.IsPed ||  !model.Request(1000))
 			{
 				return false;
 			}

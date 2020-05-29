@@ -165,10 +165,8 @@ namespace rh2
         {
             std::lock_guard _(g_scriptMutex);
 
-            Script* script = &g_clrScript;
-
-            if (script != nullptr)
-                script->update();
+            if (&g_clrScript != nullptr)
+                g_clrScript.update();
         }
         
         g_waitHook->orig(info);
@@ -198,12 +196,12 @@ namespace rh2
         g_clrScript = script;
     }
 
-    void ScriptWait(uint32_t duration)
+    void ScriptWait(const std::chrono::high_resolution_clock::duration& duration)
     {
         Script* script = &g_clrScript;
 
         if (script != nullptr)
-            script->wait(std::chrono::milliseconds(duration));
+            script->wait(duration);
     }
 
 

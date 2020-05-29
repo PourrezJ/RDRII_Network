@@ -28,8 +28,18 @@ bool ManagedInit()
     return false;
 }
 
-void ManagedTick() {
+void ManagedKeyboardMessage(int key, bool status, bool statusCtrl, bool statusShift, bool statusAlt)
+{
+    if (System::Object::ReferenceEquals(ScriptHook::Domain, nullptr))
+    {
+        return;
+    }
 
+    ScriptHook::Domain->DoKeyboardMessage(static_cast<System::Windows::Forms::Keys>(key), status, statusCtrl, statusShift, statusAlt);
+}
+
+void ManagedTick() {
+    ScriptHook::Domain->DoTick();
 }
 
 #pragma unmanaged
@@ -46,7 +56,16 @@ namespace rh2
     {
         rh2::logs::g_hLog->log("Clr Init");
 
-        sGameReloaded = true;
+        ManagedInit();
+
+        while (!sGameReloaded)
+        {
+            ManagedTick();
+            rh2::ScriptWait(std::chrono::milliseconds(0));
+            //SwitchToFiber(sMainFib);
+        }
+
+        /*
         sMainFib = GetCurrentFiber();
 
         if (sScriptFib == nullptr)
@@ -70,7 +89,12 @@ namespace rh2
         {
             rh2::ScriptWait(0);
             SwitchToFiber(sScriptFib);
-        }
+        }*/
+    }
+
+    void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended, BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow)
+    {
+        ManagedKeyboardMessage(static_cast<int>(key), isUpNow == FALSE, (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0, (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0, isWithAlt != FALSE);
     }
 }
 

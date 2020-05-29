@@ -1,4 +1,5 @@
 
+#include "ManagedGlobals.h"
 #include "ScriptDomain.h"
 
 using namespace System;
@@ -25,30 +26,23 @@ namespace RDRN_Module
 {	
 	Assembly^ HandleResolve(Object^ sender, ResolveEventArgs^ args)
 	{
-		auto assembly = Script::typeid->Assembly;
-		auto assemblyName = gcnew AssemblyName(args->Name);
-
-		if (assemblyName->Name->StartsWith("ScriptHookVDotNet", StringComparison::CurrentCultureIgnoreCase))
-		{
-			if (assemblyName->Version->Major != assembly->GetName()->Version->Major)
-			{
-				RDRN_Module::LogManager::WriteLog("[WARNING] A script references v" + assemblyName->Version->ToString(3) + " which may not be compatible with the current v" + assembly->GetName()->Version->ToString(3), ".");
-			}
-
-			return assembly;
+		auto exeAssembly = System::Reflection::Assembly::GetExecutingAssembly();
+		if (args->Name == exeAssembly->FullName) {
+			RDRN_Module::LogManager::WriteLog("  Returning exeAssembly: \"{0}\"", exeAssembly->FullName);
+			return exeAssembly;
 		}
 
-		return nullptr;
+		return args->RequestingAssembly;
 	}
 	void HandleUnhandledException(Object^ sender, UnhandledExceptionEventArgs^ args)
 	{
 		if (!args->IsTerminating)
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Caught unhandled exception: \n" + args->ExceptionObject->ToString());
+			RDRN_Module::LogManager::Exception("[ERROR] Caught unhandled exception: \n" + args->ExceptionObject->ToString());
 		}
 		else
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Caught fatal unhandled exception: \n" + args->ExceptionObject->ToString());
+			RDRN_Module::LogManager::Exception("[ERROR] Caught fatal unhandled exception: \n" + args->ExceptionObject->ToString());
 		}
 	}
 
@@ -78,15 +72,13 @@ namespace RDRN_Module
 		auto appdomain = System::AppDomain::CreateDomain("ScriptDomain_" + (path->GetHashCode() * Environment::TickCount).ToString("X"), nullptr, setup, gcnew Security::PermissionSet(Security::Permissions::PermissionState::Unrestricted));
 		appdomain->InitializeLifetimeService();
 
-		ScriptDomain^ scriptdomain = nullptr;
-
 		try
 		{
-			scriptdomain = static_cast<ScriptDomain^>(appdomain->CreateInstanceFromAndUnwrap(ScriptDomain::typeid->Assembly->Location, ScriptDomain::typeid->FullName));
+			RDRN_Module::ManagedGlobals::g_scriptDomain = static_cast<ScriptDomain^>(appdomain->CreateInstanceFromAndUnwrap(ScriptDomain::typeid->Assembly->Location, ScriptDomain::typeid->FullName));
 		}
 		catch (Exception^ ex)
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to create script domain '" + appdomain->FriendlyName + "': \n " + ex->ToString());
+			RDRN_Module::LogManager::Exception("[ERROR] Failed to create script domain '" + appdomain->FriendlyName + "': \n " + ex->ToString());
 
 			System::AppDomain::Unload(appdomain);
 
@@ -97,32 +89,18 @@ namespace RDRN_Module
 
 		if (IO::Directory::Exists(path))
 		{
-			auto filenameAssemblies = gcnew List<String^>();
-
-			try
-			{
-				filenameAssemblies->AddRange(IO::Directory::GetFiles(path, "*.dll", IO::SearchOption::AllDirectories));
-			}
-			catch (Exception^ ex)
-			{
-				RDRN_Module::LogManager::WriteLog("[ERROR] Failed to reload scripts: \n" + ex->ToString());
-
-				System::AppDomain::Unload(appdomain);
-
-				return nullptr;
-			}
-
-			for each (String ^ filename in filenameAssemblies)
-			{
-				scriptdomain->LoadAssembly(filename);
-			}
+			auto file = System::IO::Path::Combine(path, "RDRN_Core.dll");
+			if (IO::File::Exists(file))
+				RDRN_Module::ManagedGlobals::g_scriptDomain->LoadAssembly(file);
+			else 
+				RDRN_Module::LogManager::Exception("[ERROR] Failed to reload scripts because the directory is missing.");
 		}
 		else
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to reload scripts because the directory is missing.");
+			RDRN_Module::LogManager::Exception("[ERROR] Failed to reload scripts because the directory is missing.");
 		}
 
-		return scriptdomain;
+		return RDRN_Module::ManagedGlobals::g_scriptDomain;
 	}
 
 	bool ScriptDomain::LoadAssembly(String^ filename)
@@ -135,7 +113,7 @@ namespace RDRN_Module
 		}
 		catch (Exception^ ex)
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
+			RDRN_Module::LogManager::Exception("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
 
 			return false;
 		}
@@ -162,7 +140,7 @@ namespace RDRN_Module
 		}
 		catch (ReflectionTypeLoadException^ ex)
 		{
-			RDRN_Module::LogManager::WriteLog("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
+			RDRN_Module::LogManager::Exception("[ERROR] Failed to load assembly '" + IO::Path::GetFileName(filename) + "': \n" + ex->ToString());
 
 			return false;
 		}
@@ -231,9 +209,6 @@ namespace RDRN_Module
 		{
 			return;
 		}
-
-		String^ assemblyPath = Assembly::GetExecutingAssembly()->Location;
-		String^ assemblyFilename = IO::Path::GetFileNameWithoutExtension(assemblyPath);
 
 		RDRN_Module::LogManager::WriteLog("[INFO] Starting " + _scriptTypes->Count.ToString() + " script(s) ...");
 

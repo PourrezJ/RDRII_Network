@@ -1,8 +1,8 @@
 #include "input-hook.hpp"
+
 #include <windows.h>
 #include <set>
 #include <exception>
-
 
 namespace rh2::hooking::input
 {
@@ -26,11 +26,11 @@ namespace rh2::hooking::input
         case WM_KEYUP:
         case WM_SYSKEYDOWN:
         case WM_SYSKEYUP: 
-            /*
-            ManagedScriptKeyboardMessage(
+            
+            rh2::ScriptKeyboardMessage(
                 static_cast<uint32_t>(wParam), lParam & 0xFFFF, (lParam >> 16) & 0xFF,
                 (lParam >> 24) & 1, (msg == WM_SYSKEYDOWN || msg == WM_SYSKEYUP),
-                (lParam >> 30) & 1, (msg == WM_SYSKEYUP || msg == WM_KEYUP));*/
+                (lParam >> 30) & 1, (msg == WM_SYSKEYUP || msg == WM_KEYUP));
             break;
         }
 

@@ -1,6 +1,7 @@
 
 #include "ScriptDomain.h"
 
+
 using namespace System;
 using namespace System::Threading;
 using namespace System::Collections::Concurrent;
@@ -46,7 +47,7 @@ namespace RDRN_Module
 	void Script::Wait(int ms)
 	{
 		Script^ script = ScriptDomain::ExecutingScript;
-
+		
 		if (Object::ReferenceEquals(script, nullptr) || !script->_running)
 		{
 			throw gcnew InvalidOperationException("Illegal call to 'Script.Wait()' outside main loop!");

@@ -8,6 +8,7 @@ using RDRN_API.Native;
 using System;
 using RDRN_Module.Native;
 using NativeHash = RDRN_Module.Native.Hash;
+using RDRN_Module;
 
 namespace RDRN_API
 {
@@ -79,8 +80,8 @@ namespace RDRN_API
 
 			while (!IsLoaded)
 			{
-				RDRN_Module.Script.YieldExecuting();
-
+				Script.Yield();
+				Request();
 				if (DateTime.UtcNow >= endtime)
 					return false;
 			}

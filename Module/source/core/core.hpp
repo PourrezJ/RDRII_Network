@@ -15,7 +15,7 @@ namespace rh2
     void Unload();
 
     void scriptRegister(void(*LP_SCRIPT_MAIN)());
-    void ScriptWait(uint32_t duration);
+	void ScriptWait(const std::chrono::high_resolution_clock::duration& duration);
 
     Fiber GetGameFiber();
 

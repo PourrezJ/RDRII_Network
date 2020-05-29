@@ -11,7 +11,7 @@ using Control = RDRN_API.Control;
 
 namespace RDRN_Core.Gui.Cef
 {
-    internal class CefController : Script
+    internal class CefController /*: Script*/
     {
         private static bool _showCursor;
 
@@ -35,6 +35,11 @@ namespace RDRN_Core.Gui.Cef
         private static long _lastShownCursor = 0;
         private static Keys _lastKey;
 
+        public CefController()
+        {
+            //Tick += OnTick;
+        }
+
         internal static CefEventFlags GetMouseModifiers(bool leftbutton, bool rightButton)
         {
             CefEventFlags mod = CefEventFlags.None;
@@ -45,7 +50,7 @@ namespace RDRN_Core.Gui.Cef
             return mod;
         }
 
-        public override void OnTick()
+        public void OnTick(object sender, EventArgs e)
         {
             /*
             lock (CEFManager.Browsers) // needed for accelerated Paint
@@ -142,7 +147,7 @@ namespace RDRN_Core.Gui.Cef
 
 
 
-        public override void OnKeyDown(KeyEventArgs args)
+        public void OnKeyDown(KeyEventArgs args)
         {
             
             if (!ShowCursor) return;
@@ -200,7 +205,7 @@ namespace RDRN_Core.Gui.Cef
             }
         }
 
-        public override void OnKeyUp(KeyEventArgs args)
+        public void OnKeyUp(KeyEventArgs args)
         {
             if (!ShowCursor) 
                 return;
@@ -215,11 +220,6 @@ namespace RDRN_Core.Gui.Cef
                 kEvent.WindowsKeyCode = (int)args.KeyCode;
                 browser.browser.GetHost().SendKeyEvent(kEvent);
             }
-        }
-
-        public override void OnMouseDown(MouseButtons button)
-        {
-            Console.WriteLine(button.ToString());
         }
     }
 }

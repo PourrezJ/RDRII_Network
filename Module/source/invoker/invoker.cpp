@@ -33,9 +33,13 @@ namespace rh2
         return reinterpret_cast<u64*>(g_callInfo.GetResultPointer());
     }
 
+    static uintptr_t native;
+
     NativeHandler Invoker::GetCommandHandler(NativeHash native_hash)
     {
-        static auto native = find_signature(0, "\x0F\xB6\xC1\x48\x8D\x15\x00\x00\x00\x00\x4C\x8B\xC9", "xxxxxx????xxx");
+        if (!native)
+            native = find_signature(0, "\x0F\xB6\xC1\x48\x8D\x15\x00\x00\x00\x00\x4C\x8B\xC9", "xxxxxx????xxx");
+
         static auto get_native_address = reinterpret_cast<uintptr_t(*)(uint64_t)>(native);
         return (NativeHandler)(get_native_address(native_hash));
     }

@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.hpp"
+#include "../wrapper/Main.hpp"
 
 namespace rh2::hooking::input
 {

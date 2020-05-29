@@ -182,7 +182,9 @@
     <ClInclude Include="core\script.hpp">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="wrapper\ManagedGlobals.h" />
+    <ClInclude Include="wrapper\ManagedGlobals.h">
+      <Filter>managed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="core">

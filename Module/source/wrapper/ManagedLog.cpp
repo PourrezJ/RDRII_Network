@@ -46,3 +46,16 @@ void RDRN_Module::LogManager::Exception(System::Exception^ exception, ... array<
 	}
 	catch (...) {}
 }
+
+void RDRN_Module::LogManager::Exception(System::String^ format, ... array<System::Object^>^ args)
+{
+	try {
+		auto writerPath = System::IO::Path::Combine(GetPath(), "..//logs//Exception.log");
+		auto writer = gcnew System::IO::StreamWriter(writerPath, true);
+		auto text = ("[{0}] {1}", System::DateTime::Now.ToString("HH:mm:ss.fff"), System::String::Format(format, args));
+		writer->WriteLine(text);
+		System::Console::WriteLine(text);
+		delete writer;
+	}
+	catch (...) {}
+}

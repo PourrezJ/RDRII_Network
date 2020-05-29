@@ -1,3 +1,4 @@
+
 #pragma once
 #include "../types.hpp"
 
@@ -51,10 +52,10 @@ namespace rh2
         {
             std::lock_guard<std::shared_mutex> lock(g_invokeMutex);
 
-           // g_invokeMutex.lock();
+            //g_invokeMutex.try_lock_shared();
             NativeInit(hash);
             (NativePush(args), ...);
-           // g_invokeMutex.unlock();
+            //g_invokeMutex.unlock_shared();
             return NativeCall<R>();
         }
 

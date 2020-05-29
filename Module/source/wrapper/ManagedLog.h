@@ -21,5 +21,6 @@ namespace RDRN_Module
 		static void WriteLog(LogLevel level, System::String^ format, ...array<System::Object^>^ args);
 
 		static void Exception(System::Exception^ exception, ...array<System::Object^>^ args);
+		static void Exception(System::String^ format, ...array<System::Object^>^ args);
 	};
 }

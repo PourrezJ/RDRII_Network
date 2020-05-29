@@ -1,5 +1,6 @@
-
 #pragma once
+#include "../core/core.hpp"
+#pragma managed
 #undef Yield
 
 namespace RDRN_Module
@@ -30,6 +31,15 @@ namespace RDRN_Module
 		event System::Windows::Forms::KeyEventHandler^ KeyUp;
 		event System::Windows::Forms::KeyEventHandler^ KeyDown;
 		event System::EventHandler^ Aborted;
+
+		property System::String^ CurrentDir
+		{
+			System::String^ get()
+			{
+				auto dir = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+				return System::IO::Path::GetDirectoryName(dir);
+			}
+		}
 
 		property System::String^ Name
 		{
