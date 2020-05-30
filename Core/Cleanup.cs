@@ -12,10 +12,10 @@ namespace RDRN_Core
 
         public CleanupGame()
         {
-            Tick += OnTick;
+
         }
 
-        public void OnTick(object sender, EventArgs e)
+        public override void OnTick()
         {
             Function.Call(Hash.SET_RANDOM_TRAINS, false);
 
@@ -78,10 +78,10 @@ namespace RDRN_Core
     {
         public Controls()
         {
-            Tick += OnTick;
+          
         }
 
-        public void OnTick(object sender, EventArgs e)
+        public override void OnTick()
         {
 
             if (Game.IsDisabledControlJustPressed(2, Control.FrontendPause))

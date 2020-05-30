@@ -263,6 +263,7 @@ namespace Launcher
             {
                 m.OpenProcess(rdr2.Id);
                 
+                m.InjectDll(Path.Combine(RDRNFolder, "bin\\ScriptHookRDR2.dll"));
                 m.InjectDll(Path.Combine(RDRNFolder, "bin\\RDRN_Module.dll"));
                 /*
                 Task.Run(async () =>

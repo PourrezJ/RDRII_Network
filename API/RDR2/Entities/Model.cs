@@ -80,7 +80,7 @@ namespace RDRN_API
 
 			while (!IsLoaded)
 			{
-				Script.Yield();
+				Script.YieldExecuting();
 				Request();
 				if (DateTime.UtcNow >= endtime)
 					return false;

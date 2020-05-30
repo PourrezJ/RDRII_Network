@@ -1,6 +1,7 @@
 ﻿using RDRN_Module.Math;
 using RDRN_Module.Native;
 using System;
+using System.Runtime.InteropServices;
 
 namespace RDRN_API.Native
 {

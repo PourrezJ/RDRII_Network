@@ -145,9 +145,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Module\source\Module.vcxproj">
-      <Project>{c90aa001-fdfc-44c3-a4ec-1ef949458af4}</Project>
-      <Name>Module</Name>
+    <ProjectReference Include="..\SHVDNPro\SHVDNPro.vcxproj">
+      <Project>{74b50c66-1ec4-4425-add9-4cae2caa8638}</Project>
+      <Name>SHVDNPro</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

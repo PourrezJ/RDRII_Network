@@ -30,29 +30,6 @@ namespace RDRN_Core
 
         private static bool firstTick;
 
-        public Main()
-        {
-            RDRNetworkPath = System.IO.Directory.GetParent(CurrentDir).FullName;
-
-            LogManager.WriteLog("Core Initializing");
-
-            LogManager.WriteLog("PrepareNetwork configuration");
-            PrepareNetwork();
-
-            LogManager.WriteLog("DirectX hook Initializing");
-            DxHook = new DxHook();
-
-            LogManager.WriteLog("Cef Initializing");
-            CEFManager.InitializeCef();
-
-            LogManager.WriteLog("Control Manager Initializing");
-            new ControlManager();
-
-            Tick += OnTick;
-          
-            LogManager.WriteLog("Core Initialized");
-        }
-
         internal void StartMainMenu()
         {
             try
@@ -71,17 +48,13 @@ namespace RDRN_Core
                 World.CurrentDayTime = new TimeSpan(12, 0, 0);
                 
                 Console.WriteLine("model request");
-                Model model = new Model(PedHash.Player_Zero);
-                
-                model.Request(1000);
+                Model model = new Model(PedHash.CS_abigailroberts);
 
-                int a = Function.Call<int>(Hash.PLAYER_ID);
+                model.Request(250);
 
-                Console.WriteLine(Game.Player.IsRidingTrain);
+                Console.WriteLine("Model is Loaded:" + model.IsLoaded);
 
-                
-
-                //Function.Call(Hash.SET_PLAYER_MODEL, a, model.Hash);
+                Game.Player.ChangeModel(model);
 
                 //Console.WriteLine("Model changed: " + changed.ToString());
                 //var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
@@ -97,7 +70,7 @@ namespace RDRN_Core
             }
         }
 
-        public void OnTick(object sender, EventArgs e)
+        public override void OnTick()
         {
             if (!firstTick)
             {
@@ -113,6 +86,28 @@ namespace RDRN_Core
 
 
             }
+        }
+
+        public override void OnInit()
+        {
+            RDRNetworkPath = System.IO.Directory.GetParent(CurrentDir).FullName;
+
+            LogManager.WriteLog("Core Initializing");
+
+            LogManager.WriteLog("PrepareNetwork configuration");
+            PrepareNetwork();
+
+            LogManager.WriteLog("DirectX hook Initializing");
+            DxHook = new DxHook();
+
+            LogManager.WriteLog("Cef Initializing");
+            CEFManager.InitializeCef();
+
+            LogManager.WriteLog("Control Manager Initializing");
+            new ControlManager();
+
+            LogManager.WriteLog("Core Initialized");
+            base.OnInit();
         }
     }
 }
