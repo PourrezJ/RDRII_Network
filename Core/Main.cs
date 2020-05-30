@@ -62,6 +62,17 @@ namespace RDRN_Core
 
                 Game.TimeScale = 1;
 
+                var time = DateTime.Now;
+
+                for(int a = 0; a < 100000; a++)
+                {
+                    Function.Call<int>(Hash.PLAYER_ID);
+                    Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+                }
+
+                var result = (DateTime.Now - time).TotalMilliseconds;
+
+                Console.WriteLine("Native 100k result: " + result);
 
             }
             catch(Exception ex)
@@ -79,7 +90,7 @@ namespace RDRN_Core
 
                 StartMainMenu();
             }
-            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+            
             if (InStartMenu)
             {
 
