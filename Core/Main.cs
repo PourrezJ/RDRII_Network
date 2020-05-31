@@ -90,7 +90,7 @@ namespace RDRN_Core
 
                 StartMainMenu();
             }
-            
+            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
             if (InStartMenu)
             {
 
@@ -118,7 +118,9 @@ namespace RDRN_Core
             new ControlManager();
 
             LogManager.WriteLog("Core Initialized");
-            base.OnInit();
+            //base.OnInit();
+
+            
         }
     }
 }

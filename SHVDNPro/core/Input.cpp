@@ -11,6 +11,8 @@ void ManagedScriptKeyboardMessage(unsigned long key, unsigned short repeats, uns
 		return;
 	}
 
+	//System::Console::WriteLine(key.ToString());
+
 	if (key >= (unsigned long)RDRN_Module::Input::_keyboardState->Length) {
 		return;
 	}

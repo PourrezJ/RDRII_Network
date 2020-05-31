@@ -28,6 +28,7 @@ void RDRN_Module::ScriptDomain::FindAllTypes()
 	System::Reflection::Assembly^ assembly = nullptr;
 	try {
 		assembly = System::Reflection::Assembly::LoadFrom(file);
+		//RDRN_Module::ManagedGlobals::g_appDomain->Load(fileName);
 	}
 	catch (System::Exception^ ex) {
 		RDRN_Module::LogManager::WriteLog("*** Assembly load exception for {0}: {1}", fileName, ex->ToString());
@@ -38,7 +39,8 @@ void RDRN_Module::ScriptDomain::FindAllTypes()
 
 	RDRN_Module::LogManager::WriteLog("Loaded assembly {0}", assembly);
 
-	try {
+	try 
+	{
 		for each (auto type in assembly->GetTypes()) {
 			if (!type->IsSubclassOf(RDRN_Module::Script::typeid)) {
 				continue;
@@ -77,6 +79,46 @@ void RDRN_Module::ScriptDomain::FindAllTypes()
 		RDRN_Module::LogManager::WriteLog("  {0}: {1}", i, m_types[i]->FullName);
 	}
 }
+
+void RDRN_Module::ScriptDomain::Unload()
+{
+	if (unload)
+		return;
+
+	unload = true;
+	RDRN_Module::LogManager::WriteLog(System::AppDomain::CurrentDomain->FriendlyName);
+	
+	try
+	{
+		System::AppDomain::Unload(System::AppDomain::CurrentDomain);
+	}
+	catch (System::AppDomainUnloadedException^ ex)
+	{
+		RDRN_Module::LogManager::WriteLog(ex->ToString());
+	}
+
+	/*
+	for each (auto script in m_scripts) {
+		script->m_fiberWait = 0;
+		script->m_fiberMain = nullptr;
+		script->m_fiberCurrent = nullptr;
+	}
+	RDRN_Module::LogManager::WriteLog("2");
+	m_types = nullptr;
+	m_scripts = nullptr;
+	*/
+
+
+	//Dispose(true);
+	//RDRN_Module::ManagedGlobals::g_scriptDomain = nullptr;
+	//System::GC::SuppressFinalize(this);
+	//System::AppDomain::Unload(System::AppDomain::CurrentDomain);
+}
+
+//void RDRN_Module::ScriptDomain::Dispose() 
+//{
+//
+//}
 
 RDRN_Module::Script^ RDRN_Module::ScriptDomain::GetExecuting()
 {
@@ -163,6 +205,9 @@ void RDRN_Module::ScriptDomain::ScriptResetWaitTime(int scriptIndex)
 
 void RDRN_Module::ScriptDomain::ScriptTick(int scriptIndex)
 {
+	if (unload)
+		return;
+
 	try {
 		auto script = m_scripts[scriptIndex];
 		if (script != nullptr) {
@@ -177,6 +222,9 @@ void RDRN_Module::ScriptDomain::ScriptTick(int scriptIndex)
 
 void RDRN_Module::ScriptDomain::QueueKeyboardEvent(System::Tuple<bool, System::Windows::Forms::Keys>^ ev)
 {
+	if (unload)
+		return;
+
 	for each (auto script in m_scripts) {
 		if (script == nullptr) {
 			continue;

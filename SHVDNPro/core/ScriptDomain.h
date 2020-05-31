@@ -2,6 +2,8 @@
 
 #include <Script.h>
 
+#include "Log.h";
+
 namespace RDRN_Module
 {
 	public ref class ScriptDomain : public System::MarshalByRefObject
@@ -9,12 +11,23 @@ namespace RDRN_Module
 	internal:
 		array<System::Type^>^ m_types;
 		array<RDRN_Module::Script^>^ m_scripts;
+		bool unload;
+
+
+		!ScriptDomain()
+		{
+			LogManager::WriteLog("ScriptDomain Dispose.");
+		}
+
+
 
 	public:
 		ScriptDomain();
 
 	public:
 		void FindAllTypes();
+
+		void Unload();
 
 		RDRN_Module::Script^ GetExecuting();
 

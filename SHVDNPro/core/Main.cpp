@@ -16,6 +16,8 @@
 
 #include <UnmanagedLog.h>
 
+bool unload;
+
 ref class ManagedEventSink
 {
 public:
@@ -99,10 +101,16 @@ static void ManagedScriptTick(int scriptIndex)
 	RDRN_Module::ManagedGlobals::g_scriptDomain->ScriptTick(scriptIndex);
 }
 
+static void ManagedUnload()
+{
+	RDRN_Module::ManagedGlobals::g_scriptDomain->Unload();
+}
+
 #pragma unmanaged
 #include <main.h>
 #include <Windows.h>
 #include <cstdarg>
+#include <iostream>
 
 struct ScriptFiberInfo
 {
@@ -118,11 +126,13 @@ static HMODULE _instance;
 
 static std::vector<ScriptFiberInfo*> _scriptFibers;
 
+static void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended, BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow);
+
 static void ScriptMainFiber(LPVOID pv)
 {
 	ScriptFiberInfo* fi = (ScriptFiberInfo*)pv;
 
-	while (true) {
+	while (!unload) {
 		if (fi->m_defect) {
 			SwitchToFiber(fi->m_fiberMain);
 			continue;
@@ -230,8 +240,44 @@ void RegisterScriptMain(int index)
 	scriptRegister(_instance, _scriptWrappers[index]);
 }
 
+DWORD WINAPI CleanupThread(LPVOID lparam)
+{
+	/*
+	unload = true;
+	FreeConsole();
+	//FreeLibraryAndExitThread(static_cast<HMODULE>(_instance), 0);
+
+	if (GetEnvironmentVariableA("SHVDNPro", nullptr, 0) == 0) {
+		UnmanagedLogWrite("DllMain detach detected SHVDNPro not running");
+		return TRUE;
+	}
+
+	SetEnvironmentVariableA("SHVDNPro", nullptr);
+
+	UnmanagedLogWrite("DllMain DLL_PROCESS_DETACH\n");
+	//keyboardHandlerUnregister(&ScriptKeyboardMessage);
+	
+	ManagedUnload();
+	scriptUnregister(_instance);
+	
+	for (auto fi : _scriptFibers) {
+		if (fi->m_initialized)
+			DeleteFiber(fi->m_fiberScript);
+	}*/
+	return true;
+}
+
 static void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended, BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow)
 {
+	bool ctrl = (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0;
+
+	if (key == 82 && !unload) // R
+	{
+		
+		//ManagedUnload();
+		//CreateThread(nullptr, THREAD_ALL_ACCESS, CleanupThread, nullptr, NULL, nullptr);
+	}
+	
 	ManagedScriptKeyboardMessage(key, repeats, scanCode, isExtended, isWithAlt, wasDownBefore, isUpNow);
 }
 #pragma managed
@@ -260,6 +306,7 @@ static void ManagedSHVDNProControl()
 }
 
 #pragma unmanaged
+
 static void SHVDNProControl()
 {
 	_fiberControl = GetCurrentFiber();
@@ -287,7 +334,7 @@ BOOL APIENTRY DllMain(HMODULE hInstance, DWORD reason, LPVOID lpReserved)
 
 		SetEnvironmentVariableA("SHVDNPro", "Melissa");
 
-		UnmanagedLogWrite("DllMain DLL_PROCESS_ATTACH\n");
+		//UnmanagedLogWrite("DllMain DLL_PROCESS_ATTACH\n");
 
 		DisableThreadLibraryCalls(hInstance);
 		_instance = hInstance;
