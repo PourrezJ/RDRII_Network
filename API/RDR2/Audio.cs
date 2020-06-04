@@ -1,8 +1,8 @@
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	public static class Audio
 	{

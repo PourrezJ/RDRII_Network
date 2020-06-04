@@ -26,9 +26,6 @@
     <ClCompile Include="core\ScriptDomain.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="core\Log.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="core\Math\Matrix.cpp">
       <Filter>core\Math</Filter>
     </ClCompile>
@@ -88,5 +85,10 @@
     <ClInclude Include="core\Function.h">
       <Filter>core</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="core\test.cs">
+      <Filter>core</Filter>
+    </None>
   </ItemGroup>
 </Project>

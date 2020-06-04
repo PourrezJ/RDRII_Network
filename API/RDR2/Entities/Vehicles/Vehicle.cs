@@ -4,14 +4,14 @@
 //
 
 using RDRN_Module.Math;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using RDRN_Module.Native;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
     public sealed class Vehicle : Entity
     {
@@ -230,7 +230,7 @@ namespace RDRN_API
 
 		public int PassengerSeats => Function.Call<int>(Hash.GET_VEHICLE_MAX_NUMBER_OF_PASSENGERS, Handle);
 
-		public Ped CreatePedOnSeat(int seat, RDRN_API.Model model)
+		public Ped CreatePedOnSeat(int seat, RDRN_Core.Model model)
 		{
 			if (!model.IsPed || !model.Request(1000))
 			{

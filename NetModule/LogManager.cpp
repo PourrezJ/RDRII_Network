@@ -1,4 +1,4 @@
-#include <Log.h>
+#include "LogManager.h"
 
 System::String^ GetPath()
 {

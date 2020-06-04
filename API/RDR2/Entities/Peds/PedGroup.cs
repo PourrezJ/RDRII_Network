@@ -3,13 +3,13 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	public class PedGroup : PoolObject, IEnumerable<Ped>, IDisposable
 	{

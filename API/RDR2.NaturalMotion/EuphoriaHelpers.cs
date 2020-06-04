@@ -4,10 +4,10 @@
 //
 
 using System;
-using RDRN_API;
+using RDRN_Core;
 using RDRN_Module.Math;
 
-namespace RDRN_API.NaturalMotion
+namespace RDRN_Core.NaturalMotion
 {
 	public enum ArmDirections
 	{

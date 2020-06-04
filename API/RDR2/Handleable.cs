@@ -5,7 +5,7 @@
 
 using RDRN_Module.Math;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	/*public interface ISpatial
 	{

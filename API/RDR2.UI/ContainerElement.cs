@@ -3,12 +3,12 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	public class ContainerElement : IElement
 	{

@@ -3,13 +3,13 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	/// <summary>
 	/// A sprite element using a built-in texture.

@@ -5,13 +5,13 @@
 
 using System.Collections.Generic;
 using RDRN_Module.Math;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 
-namespace RDRN_API.NaturalMotion
+namespace RDRN_Core.NaturalMotion
 {
 	/// <summary>
-	/// A base class for manually building a <see cref="RDRN_API.NaturalMotion.Message"/>.
+	/// A base class for manually building a <see cref="RDRN_Core.NaturalMotion.Message"/>.
 	/// </summary>
 	public class Message
 	{
@@ -137,7 +137,7 @@ namespace RDRN_API.NaturalMotion
 	}
 
 	/// <summary>
-	/// A helper class for building a <seealso cref="RDRN_API.NaturalMotion.Message" /> and sending it to a given <see cref="Ped"/>.
+	/// A helper class for building a <seealso cref="RDRN_Core.NaturalMotion.Message" /> and sending it to a given <see cref="Ped"/>.
 	/// </summary>
 	public abstract class CustomHelper : Message
 	{

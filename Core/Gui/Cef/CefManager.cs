@@ -16,7 +16,7 @@ namespace RDRN_Core.Gui.Cef
         {
             CefPath = Path.Combine(Main.RDRNetworkPath, "cef");
 
-            LogManager.WriteLog("--> InitilizeCef: Start " + CefPath);
+            LogManager.WriteLog(LogLevel.Trace, "--> InitilizeCef: Start " + CefPath);
             CefRuntime.Load(CefPath);
 
             var args = new[]
@@ -49,7 +49,7 @@ namespace RDRN_Core.Gui.Cef
 
             if (CefRuntime.ExecuteProcess(cefMainArgs, cefApp, IntPtr.Zero) != -1)
             {
-                LogManager.WriteLog("Main: CefRuntime could not execute the secondary process.");
+                LogManager.WriteLog(LogLevel.Error, "Main: CefRuntime could not execute the secondary process.");
             }
 
             var cefSettings = new CefSettings()
@@ -77,7 +77,7 @@ namespace RDRN_Core.Gui.Cef
             CefRuntime.RegisterSchemeHandlerFactory("ftp", null, new SecureSchemeFactory());
             CefRuntime.RegisterSchemeHandlerFactory("sftp", null, new SecureSchemeFactory());
             */
-            LogManager.WriteLog("--> InitilizeCef: End");
+            LogManager.WriteLog(LogLevel.Trace, "--> InitilizeCef: End");
         }
 
         internal static void DisposeCef()

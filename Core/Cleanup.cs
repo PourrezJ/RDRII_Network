@@ -1,7 +1,4 @@
-﻿using RDRN_API;
-using RDRN_API.Native;
-using RDRN_Module;
-using RDRN_Module.Native;
+﻿using RDRN_Core.Native;
 using System;
 
 namespace RDRN_Core
@@ -15,7 +12,7 @@ namespace RDRN_Core
 
         }
 
-        public override void OnTick()
+        internal void OnTick()
         {
             Function.Call(Hash.SET_RANDOM_TRAINS, false);
 
@@ -81,9 +78,9 @@ namespace RDRN_Core
           
         }
 
-        public override void OnTick()
+        internal void OnTick()
         {
-
+            
             if (Game.IsDisabledControlJustPressed(2, Control.FrontendPause))
             {
                 Function.Call(Hash.SET_FRONTEND_ACTIVE, false);

@@ -1,12 +1,8 @@
-﻿using RDRN_API;
-using RDRN_API.Native;
-using RDRN_Module;
-using RDRN_Module.Native;
-using System;
+﻿using RDRN_Core.Native;
 
 namespace RDRN_Core.Misc
 {
-    public class GameScript : Script
+    internal class GameScript : Script
     {
         private static int _index;
 

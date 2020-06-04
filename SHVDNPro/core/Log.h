@@ -2,18 +2,17 @@
 
 namespace RDRN_Module
 {
+	public enum class LogLevel {
+		Trace,
+		Debug,
+		Information,
+		Warning,
+		Error,
+		Critical
+	};
+
 	public ref class LogManager {
 	public:
-
-		enum class LogLevel {
-			Trace,
-			Debug,
-			Information,
-			Warning,
-			Error,
-			Critical
-		};
-
 		static LogLevel MinLevel = LogLevel::Information;
 
 		static void WriteLog(System::String^ format, ... array<System::Object^>^ args);

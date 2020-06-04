@@ -18,25 +18,25 @@ namespace RDRN_Core.Gui.Cef
         {
             Browser father = null;
 
-            LogManager.WriteLog("-> Entering JS Execute. Func: " + name + " arg len: " + arguments.Length);
+            LogManager.WriteLog(LogLevel.Trace, "-> Entering JS Execute. Func: " + name + " arg len: " + arguments.Length);
 
             father = CefUtil.GetBrowserFromCef(_browser);
 
             if (father == null)
             {
-                LogManager.WriteLog("cef", "NO FATHER FOUND FOR BROWSER " + _browser.Identifier);
+                LogManager.Exception("CEF NO FATHER FOUND FOR BROWSER " + _browser.Identifier);
                 returnValue = CefV8Value.CreateNull();
                 exception = "NO FATHER WAS FOUND.";
                 return false;
             }
-            LogManager.WriteLog("-> Father was found!");
+            LogManager.WriteLog(LogLevel.Trace, "-> Father was found!");
             try
             {
                 switch (name)
                 {
                     case "resourceCall":
                         {
-                            LogManager.WriteLog("-> Entering resourceCall...");
+                            LogManager.WriteLog(LogLevel.Trace, "-> Entering resourceCall...");
 
                             List<object> args = new List<object>();
 
@@ -45,11 +45,11 @@ namespace RDRN_Core.Gui.Cef
                                 args.Add(arguments[i].GetValue());
                             }
 
-                            LogManager.WriteLog("-> Executing callback...");
+                            LogManager.WriteLog(LogLevel.Trace, "-> Executing callback...");
 
                             object output = father.Callback.Call(arguments[0].GetStringValue(), args.ToArray());
 
-                            LogManager.WriteLog("-> Callback executed!");
+                            LogManager.WriteLog(LogLevel.Trace, "-> Callback executed!");
 
                             returnValue = V8Helper.CreateValue(output);
                             exception = null;
@@ -57,9 +57,9 @@ namespace RDRN_Core.Gui.Cef
                         }
                     case "resourceEval":
                         {
-                            LogManager.WriteLog("-> Entering resource eval");
+                            LogManager.WriteLog(LogLevel.Trace, "-> Entering resource eval");
                             object output = father.Callback.Eval(arguments[0].GetStringValue());
-                            LogManager.WriteLog("-> callback executed!");
+                            LogManager.WriteLog(LogLevel.Trace, "-> callback executed!");
 
                             returnValue = V8Helper.CreateValue(output);
                             exception = null;

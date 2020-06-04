@@ -36,7 +36,7 @@ namespace RDRN_Core.Gui.Cef
 
             CefRenderHandlers.Add(this);
 
-            LogManager.WriteLog("-> Instantiated Renderer");
+            LogManager.WriteLog(LogLevel.Trace, "-> Instantiated Renderer");
         }
 
         public void SetHidden(bool hidden)
@@ -228,7 +228,7 @@ namespace RDRN_Core.Gui.Cef
             }*/
 
 
-            Console.WriteLine("OnAcceleratedPaint");
+            //Console.WriteLine("OnAcceleratedPaint");
         }
 
         private SharpDX.Direct3D11.Texture2D OpenSharedResource(IntPtr handle)

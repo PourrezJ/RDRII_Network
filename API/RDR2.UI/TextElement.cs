@@ -3,7 +3,7 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	public class TextElement : IElement
 	{
@@ -44,7 +44,7 @@ namespace RDRN_API.UI
 		/// <param name="position">Set the <see cref="Position"/> on screen where to draw the <see cref="TextElement"/>.</param>
 		/// <param name="scale">Sets a <see cref="Scale"/> used to increase of decrease the size of the <see cref="TextElement"/>, for no scaling use 1.0f.</param>
 		/// <param name="color">Set the <see cref="Color"/> used to draw the <see cref="TextElement"/>.</param>
-		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_API.UI.Alignment.Left"/>,<see cref="RDRN_API.UI.Alignment.Center"/> or <see cref="RDRN_API.UI.Alignment.Right"/>.</param>
+		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_Core.UI.Alignment.Left"/>,<see cref="RDRN_Core.UI.Alignment.Center"/> or <see cref="RDRN_Core.UI.Alignment.Right"/>.</param>
 		public TextElement(string caption, PointF position, float scale, Color color, Alignment alignment) :
 			this(caption, position, scale, color, alignment, false, false, 0.0f)
 		{
@@ -56,7 +56,7 @@ namespace RDRN_API.UI
 		/// <param name="position">Set the <see cref="Position"/> on screen where to draw the <see cref="TextElement"/>.</param>
 		/// <param name="scale">Sets a <see cref="Scale"/> used to increase of decrease the size of the <see cref="TextElement"/>, for no scaling use 1.0f.</param>
 		/// <param name="color">Set the <see cref="Color"/> used to draw the <see cref="TextElement"/>.</param>
-		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_API.UI.Alignment.Left"/>,<see cref="RDRN_API.UI.Alignment.Center"/> or <see cref="RDRN_API.UI.Alignment.Right"/>.</param>
+		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_Core.UI.Alignment.Left"/>,<see cref="RDRN_Core.UI.Alignment.Center"/> or <see cref="RDRN_Core.UI.Alignment.Right"/>.</param>
 		/// <param name="shadow">Sets whether or not to draw the <see cref="TextElement"/> with a <see cref="Shadow"/> effect.</param>
 		/// <param name="outline">Sets whether or not to draw the <see cref="TextElement"/> with an <see cref="Outline"/> around the letters.</param>
 		public TextElement(string caption, PointF position, float scale, Color color, Alignment alignment, bool shadow, bool outline) :
@@ -70,7 +70,7 @@ namespace RDRN_API.UI
 		/// <param name="position">Set the <see cref="Position"/> on screen where to draw the <see cref="TextElement"/>.</param>
 		/// <param name="scale">Sets a <see cref="Scale"/> used to increase of decrease the size of the <see cref="TextElement"/>, for no scaling use 1.0f.</param>
 		/// <param name="color">Set the <see cref="Color"/> used to draw the <see cref="TextElement"/>.</param>
-		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_API.UI.Alignment.Left"/>,<see cref="RDRN_API.UI.Alignment.Center"/> or <see cref="RDRN_API.UI.Alignment.Right"/>.</param>
+		/// <param name="alignment">Sets the <see cref="Alignment"/> used when drawing the text, <see cref="RDRN_Core.UI.Alignment.Left"/>,<see cref="RDRN_Core.UI.Alignment.Center"/> or <see cref="RDRN_Core.UI.Alignment.Right"/>.</param>
 		/// <param name="shadow">Sets whether or not to draw the <see cref="TextElement"/> with a <see cref="Shadow"/> effect.</param>
 		/// <param name="outline">Sets whether or not to draw the <see cref="TextElement"/> with an <see cref="Outline"/> around the letters.</param>
 		/// <param name="wrapWidth">Sets how many horizontal pixel to draw before wrapping the <see cref="TextElement"/> on the next line down.</param>

@@ -19,17 +19,17 @@ namespace RDRN_Core.Gui.Cef
 
                 if (father == null || father._localMode)
                 {
-                    LogManager.WriteLog("-> [Local mode] Uri: " + request.Url);
+                    LogManager.WriteLog(LogLevel.Trace, "-> [Local mode] Uri: " + request.Url);
                     var uri = new Uri(request.Url);
                     var path = Main.RDRNetworkPath + "resources\\";
                     var requestedFile = path + uri.Host + uri.LocalPath.Replace("/", "\\");
 
-                    LogManager.WriteLog("-> Loading: " + requestedFile);
+                    LogManager.WriteLog(LogLevel.Trace, "-> Loading: " + requestedFile);
 
                     if (File.Exists(requestedFile))
                         return SecureCefResourceHandler.FromFilePath(requestedFile,
                             MimeType.GetMimeType(Path.GetExtension(requestedFile)));
-                    LogManager.WriteLog("-> Error: File does not exist!");
+                    LogManager.WriteLog(LogLevel.Error, "-> Error: File does not exist!");
                     browser.StopLoad();
                     return SecureCefResourceHandler.FromString("404", ".txt");
                 }

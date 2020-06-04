@@ -76,6 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameSettings.cs" />
+    <Compile Include="Math\Matrix.cs" />
+    <Compile Include="Math\Quaternion.cs" />
+    <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Math\Vector3.cs" />
     <Compile Include="Packets\ClientsideScript.cs" />
     <Compile Include="Packets\ConnectionRequest.cs" />
     <Compile Include="Packets\ScriptCollection.cs" />

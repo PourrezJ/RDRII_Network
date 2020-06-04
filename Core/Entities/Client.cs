@@ -1,7 +1,4 @@
-﻿using RDRN_API;
-using RDRN_API.Native;
-using RDRN_Module.Native;
-
+﻿
 namespace RDRN_Core.Entities
 {
     internal class Client
@@ -35,6 +32,7 @@ namespace RDRN_Core.Entities
 
         private static void ResetPlayer()
         {
+            /*
             var playerChar = Game.Player.Character;
 
             //playerChar.Position = _vinewoodSign;
@@ -65,7 +63,7 @@ namespace RDRN_Core.Entities
             // Function.Call(Hash.SET_RUN_SPRINT_MULTIPLIER_FOR_PLAYER, player, 1f);
             Function.Call(Hash.SET_SWIM_MULTIPLIER_FOR_PLAYER, player.Handle, 1f);
             // Function.Call(Hash.SET_FAKE_WANTED_LEVEL, 0);
-            Function.Call(Hash.DETACH_ENTITY, playerChar.Handle, true, true);
+            Function.Call(Hash.DETACH_ENTITY, playerChar.Handle, true, true);*/
         }
         /*
         private static void ResetWorld()

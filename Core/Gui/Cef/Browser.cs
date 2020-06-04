@@ -103,7 +103,7 @@ namespace RDRN_Core.Gui.Cef
             {
                 Father = father;
 
-                LogManager.WriteLog("--> Browser: Start");
+                LogManager.WriteLog(LogLevel.Trace, "--> Browser: Start");
                 var windowInfo = CefWindowInfo.Create();
                 windowInfo.SetAsWindowless(IntPtr.Zero, true);
                 windowInfo.SetAsPopup(IntPtr.Zero, null);
@@ -137,11 +137,11 @@ namespace RDRN_Core.Gui.Cef
                 Client.OnCreated += (sender, args) =>
                 {
                     browser = sender as CefBrowser;
-                    LogManager.WriteLog("-> Browser created!");
+                    LogManager.WriteLog(LogLevel.Trace, "-> Browser created!");
                     GoToPage("https://www.twitch.tv/directory");
-                    LogManager.WriteLog("-> Browser created! 2");
+                    LogManager.WriteLog(LogLevel.Trace, "-> Browser created! 2");
                 };
-                LogManager.WriteLog("--> Browser: Creating Browser");
+                LogManager.WriteLog(LogLevel.Trace, "--> Browser: Creating Browser");
                 CefBrowserHost.CreateBrowser(windowInfo, Client, browserSettings, url);
 
                 lock (CEFManager.Browsers)
@@ -155,16 +155,16 @@ namespace RDRN_Core.Gui.Cef
                 LogManager.Exception(e, "CreateBrowser Error");
             }
            
-            LogManager.WriteLog("--> Browser: End");
+            LogManager.WriteLog(LogLevel.Trace, "--> Browser: End");
         }
 
         internal void GoToPage(string page)
         {
             if (browser != null)
             {
-                LogManager.WriteLog("Trying to load page " + page + "...");
+                LogManager.WriteLog(LogLevel.Trace, "Trying to load page " + page + "...");
                 browser.GetMainFrame().LoadUrl(page);
-                LogManager.WriteLog("Page loaded ...");
+                LogManager.WriteLog(LogLevel.Trace, "Page loaded ...");
             }
         }
 
@@ -172,7 +172,7 @@ namespace RDRN_Core.Gui.Cef
         {
             if (browser != null && browser.CanGoBack)
             {
-                LogManager.WriteLog("Trying to go back a page...");
+                LogManager.WriteLog(LogLevel.Trace, "Trying to go back a page...");
                 browser.GoBack();
             }
         }

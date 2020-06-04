@@ -22,7 +22,7 @@ namespace RDRN_Core.Gui.Cef
             _loadHandler = new MainCefLoadHandler();
             _lifeSpanHandler = new MainLifeSpanHandler(this);
             _contextMenuHandler = new ContextMenuRemover();
-            LogManager.WriteLog("-> MainCefClient");
+            LogManager.WriteLog(LogLevel.Trace, "-> MainCefClient");
         }
 
         public void SetPosition(int x, int y)
@@ -53,7 +53,7 @@ namespace RDRN_Core.Gui.Cef
 
         protected override CefContextMenuHandler GetContextMenuHandler()
         {
-            LogManager.WriteLog("-> _contextMenuHandler");
+            LogManager.WriteLog(LogLevel.Trace, "-> _contextMenuHandler");
             return _contextMenuHandler;
         }
         
@@ -65,13 +65,13 @@ namespace RDRN_Core.Gui.Cef
 
         protected override CefLoadHandler GetLoadHandler()
         {
-            LogManager.WriteLog("-> _loadHandler");
+            LogManager.WriteLog(LogLevel.Trace, "-> _loadHandler");
             return _loadHandler;
         }
         
         protected override CefLifeSpanHandler GetLifeSpanHandler()
         {
-            LogManager.WriteLog("-> _lifeSpanHandler");
+            LogManager.WriteLog(LogLevel.Trace, "-> _lifeSpanHandler");
             return _lifeSpanHandler;
         }
     }

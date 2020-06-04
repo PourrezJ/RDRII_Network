@@ -51,6 +51,7 @@
     <Compile Include="Native\INativeValue.cs" />
     <Compile Include="Native\InputArgument.cs" />
     <Compile Include="Native\Native.cs" />
+    <Compile Include="Native\NativeHash.cs" />
     <Compile Include="Native\NativeHelper.cs" />
     <Compile Include="Native\NativeMemory.cs" />
     <Compile Include="Native\OutputArgument.cs" />
@@ -143,12 +144,6 @@
     <Compile Include="RDR2\WindowTitle.cs" />
     <Compile Include="RDR2\World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SHVDNPro\SHVDNPro.vcxproj">
-      <Project>{74b50c66-1ec4-4425-add9-4cae2caa8638}</Project>
-      <Name>SHVDNPro</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

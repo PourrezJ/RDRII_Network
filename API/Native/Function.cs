@@ -1,9 +1,6 @@
-﻿using RDRN_Module.Math;
-using RDRN_Module.Native;
-using System;
-using System.Runtime.InteropServices;
+﻿using System;
 
-namespace RDRN_API.Native
+namespace RDRN_Core.Native
 {
 	public static class Function
 	{

@@ -4,14 +4,14 @@
 //
 
 using RDRN_Module.Math;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using RDRN_Module.Native;
 using RDRN_Module;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	/// <summary>
 	/// Methods to handle UI actions that affect the whole screen.

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using RDRN_Module.Math;
 
-namespace RDRN_API.Native
+namespace RDRN_Core.Native
 {
 	[StructLayout(LayoutKind.Explicit, Size = 0x18)]
 	internal struct NativeVector3

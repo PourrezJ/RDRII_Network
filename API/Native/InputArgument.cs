@@ -1,8 +1,8 @@
-﻿using RDRN_API;
+﻿using RDRN_Core;
 using System;
 using System.Runtime.InteropServices;
 
-namespace RDRN_API.Native
+namespace RDRN_Core.Native
 {
 	public class InputArgument
 	{

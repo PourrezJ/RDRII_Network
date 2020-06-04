@@ -3,13 +3,13 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	public static class Game
 	{

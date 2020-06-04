@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RDRN_Core</RootNamespace>
     <AssemblyName>RDRN_Core</AssemblyName>
+    <LangVersion>8.0</LangVersion>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClearScript, Version=6.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -84,10 +86,100 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\RDR2.NaturalMotion\Euphoria.cs" />
+    <Compile Include="API\RDR2.NaturalMotion\EuphoriaBase.cs" />
+    <Compile Include="API\RDR2.NaturalMotion\EuphoriaHelpers.cs" />
+    <Compile Include="API\RDR2.UI\Alignment.cs" />
+    <Compile Include="API\RDR2.UI\ContainerElement.cs" />
+    <Compile Include="API\RDR2.UI\CursorSprite.cs" />
+    <Compile Include="API\RDR2.UI\CustomSprite.cs" />
+    <Compile Include="API\RDR2.UI\Font.cs" />
+    <Compile Include="API\RDR2.UI\Hud.cs" />
+    <Compile Include="API\RDR2.UI\HudComponent.cs" />
+    <Compile Include="API\RDR2.UI\IElement.cs" />
+    <Compile Include="API\RDR2.UI\ISpriteElement.cs" />
+    <Compile Include="API\RDR2.UI\LoadingPrompt.cs" />
+    <Compile Include="API\RDR2.UI\LoadingSpinnerType.cs" />
+    <Compile Include="API\RDR2.UI\Notification.cs" />
+    <Compile Include="API\RDR2.UI\NotificationIcon.cs" />
+    <Compile Include="API\RDR2.UI\Screen.cs" />
+    <Compile Include="API\RDR2.UI\ScreenEffects.cs" />
+    <Compile Include="API\RDR2.UI\Sprite.cs" />
+    <Compile Include="API\RDR2.UI\TextElement.cs" />
+    <Compile Include="API\RDR2\Audio.cs" />
+    <Compile Include="API\RDR2\AudioFlag.cs" />
+    <Compile Include="API\RDR2\Blip.cs" />
+    <Compile Include="API\RDR2\BlipColor.cs" />
+    <Compile Include="API\RDR2\Camera.cs" />
+    <Compile Include="API\RDR2\CameraShake.cs" />
+    <Compile Include="API\RDR2\Console.cs" />
+    <Compile Include="API\RDR2\Control.cs" />
+    <Compile Include="API\RDR2\Entities\Entity.cs" />
+    <Compile Include="API\RDR2\Entities\EntityType.cs" />
+    <Compile Include="API\RDR2\Entities\Model.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\AnimationFlags.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\Bone.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\DrivingStyle.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\FiringPattern.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\FormationType.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\Gender.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\Ped.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\PedGroup.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\PedHash.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\Relationship.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\RelationshipGroup.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\Tasks.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\TaskSequence.cs" />
+    <Compile Include="API\RDR2\Entities\Peds\VehicleFlags.cs" />
+    <Compile Include="API\RDR2\Entities\Prop.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\Vehicle.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleClass.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleColor.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleDoor.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleHash.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleLockStatus.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleMod.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleNeonLight.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleRoofState.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleSeat.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleToggleMod.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleWheelType.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleWindow.cs" />
+    <Compile Include="API\RDR2\Entities\Vehicles\VehicleWindowTint.cs" />
+    <Compile Include="API\RDR2\ExplosionType.cs" />
+    <Compile Include="API\RDR2\ForceType.cs" />
+    <Compile Include="API\RDR2\Game.cs" />
+    <Compile Include="API\RDR2\GameplayCamera.cs" />
+    <Compile Include="API\RDR2\GameVersion.cs" />
+    <Compile Include="API\RDR2\Handleable.cs" />
+    <Compile Include="API\RDR2\Language.cs" />
+    <Compile Include="API\RDR2\MarkerType.cs" />
+    <Compile Include="API\RDR2\Pickup.cs" />
+    <Compile Include="API\RDR2\PickupType.cs" />
+    <Compile Include="API\RDR2\Player.cs" />
+    <Compile Include="API\RDR2\PoolObject.cs" />
+    <Compile Include="API\RDR2\Prompt.cs" />
+    <Compile Include="API\RDR2\RaycastResult.cs" />
+    <Compile Include="API\RDR2\RequireScript.cs" />
+    <Compile Include="API\RDR2\Rope.cs" />
+    <Compile Include="API\RDR2\RopeType.cs" />
+    <Compile Include="API\RDR2\Scaleform.cs" />
+    <Compile Include="API\RDR2\ScaleformArgumentTXD.cs" />
+    <Compile Include="API\RDR2\Weapons\DlcWeaponData.cs" />
+    <Compile Include="API\RDR2\Weapons\Weapon.cs" />
+    <Compile Include="API\RDR2\Weapons\WeaponAsset.cs" />
+    <Compile Include="API\RDR2\Weapons\WeaponCollection.cs" />
+    <Compile Include="API\RDR2\Weapons\WeaponComponent.cs" />
+    <Compile Include="API\RDR2\Weapons\WeaponTint.cs" />
+    <Compile Include="API\RDR2\Weather.cs" />
+    <Compile Include="API\RDR2\WindowTitle.cs" />
+    <Compile Include="API\RDR2\World.cs" />
     <Compile Include="Cleanup.cs" />
+    <Compile Include="GameConsole.cs" />
     <Compile Include="ControlManager.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\LocalHandle.cs" />
+    <Compile Include="LogManager.cs" />
     <Compile Include="Misc\GameScript.cs" />
     <Compile Include="Gui\Cef\Browser.cs" />
     <Compile Include="Gui\Cef\BrowserJavascriptCallback.cs" />
@@ -116,16 +208,23 @@
     <Compile Include="Main.Network.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="NativeHook.cs" />
+    <Compile Include="Native\Function.cs" />
+    <Compile Include="Native\INativeValue.cs" />
+    <Compile Include="Native\InputArgument.cs" />
+    <Compile Include="Native\Native.cs" />
+    <Compile Include="Native\NativeHash.cs" />
+    <Compile Include="Native\NativeHelper.cs" />
+    <Compile Include="Native\NativeMemory.cs" />
+    <Compile Include="Native\OutputArgument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Script.cs" />
+    <Compile Include="ScriptDomain.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="Utils\BiDictionary.cs" />
     <Compile Include="Utils\HookWrapper.cs" />
     <Compile Include="Utils\Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\API\API.csproj">
-      <Project>{D68E6CB7-FC70-41C9-BD53-D79552B37F0E}</Project>
-      <Name>API</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CefGlue\CefGlue.csproj">
       <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
       <Name>CefGlue</Name>
@@ -134,14 +233,14 @@
       <Project>{49BA1C69-6104-41AC-A5D8-B54FA9F696E8}</Project>
       <Name>Lidgren.Network</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NetModule\NetModule.vcxproj">
+      <Project>{79eb2f91-12b2-4b12-a1e0-2a5b24fac163}</Project>
+      <Name>NetModule</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{BDAD89FA-CF92-44D6-8ED0-05AD350D053D}</Project>
       <Name>Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SHVDNPro\SHVDNPro.vcxproj">
-      <Project>{74b50c66-1ec4-4425-add9-4cae2caa8638}</Project>
-      <Name>SHVDNPro</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\Enums\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

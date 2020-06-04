@@ -11,7 +11,7 @@ namespace RDRN_Core.Gui.Cef
             //   for a single URL if there are frames (i.e. <FRAME>, <IFRAME>).
             //if (frame.IsMain)
             {
-                LogManager.WriteLog("-> Start: " + browser.GetMainFrame().Url);
+                LogManager.WriteLog(LogLevel.Trace, "-> Start: " + browser.GetMainFrame().Url);
             }
         }
 
@@ -19,7 +19,7 @@ namespace RDRN_Core.Gui.Cef
         {
             //if (frame.IsMain)
             {
-                LogManager.WriteLog($"-> End: {browser.GetMainFrame().Url}, {httpStatusCode}");
+                LogManager.WriteLog(LogLevel.Trace, $"-> End: {browser.GetMainFrame().Url}, {httpStatusCode}");
             }
         }
     }

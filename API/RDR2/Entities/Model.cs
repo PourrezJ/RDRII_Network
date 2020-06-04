@@ -4,13 +4,13 @@
 //
 
 using RDRN_Module.Math;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using System;
 using RDRN_Module.Native;
 using NativeHash = RDRN_Module.Native.Hash;
 using RDRN_Module;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	public struct Model : IEquatable<Model>, INativeValue
 	{

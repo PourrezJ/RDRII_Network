@@ -233,7 +233,7 @@ namespace RDRN_Core.Gui.DirectXHook
                 D2dDevice = new SharpDX.Direct2D1.Device(DxgiDevice); 
 
                 Started = true;
-                LogManager.WriteLog("Dx12 Swapchain init ok!");
+                LogManager.WriteLog(LogLevel.Trace, "Dx12 Swapchain init ok!");
             }
 
             Device11on12.AcquireWrappedResources(new SharpDX.Direct3D11.Resource[] { wrappedBackBuffers[frameIndex] }, 1);

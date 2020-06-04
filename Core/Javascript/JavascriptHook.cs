@@ -4,7 +4,7 @@ using NAudio.Wave;
 using RDRN_Core.Entities;
 using RDRN_Core.Javascript;
 using RDRN_Module;
-using RDRN_Module.Math;
+using Shared.Math;
 using Shared.Packets;
 using System;
 using System.Collections.Generic;
@@ -386,7 +386,7 @@ namespace RDRN_Core.Gui.Cef
                 var list = new List<string>();
                 for (var i = 0; i < input.Length; i += everyN)
                 {
-                    list.Add(input.Substring(i, Math.Min(everyN, input.Length - i)));
+                    list.Add(input.Substring(i, System.Math.Min(everyN, input.Length - i)));
                 }
                 return list.ToArray();
             };

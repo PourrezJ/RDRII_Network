@@ -3,10 +3,10 @@
 // License: https://github.com/crosire/scripthookvdotnet#license
 //
 
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	/// <summary>
 	/// Methods to manage the display of a loading spinner prompt.

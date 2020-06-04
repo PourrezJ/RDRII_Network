@@ -1,9 +1,9 @@
-﻿using RDRN_API;
+﻿using RDRN_Core;
 using RDRN_Module.Math;
 using System;
 using System.Runtime.InteropServices;
 
-namespace RDRN_API.Native
+namespace RDRN_Core.Native
 {
 	public class OutputArgument : InputArgument, IDisposable
 	{

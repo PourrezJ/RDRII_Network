@@ -25,7 +25,7 @@
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>true</CLRSupport>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <ExtensionsToDeleteOnClean>*.xdc;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
+    <ExtensionsToDeleteOnClean>*.netmodule;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformToolset>v142</PlatformToolset>
@@ -64,6 +64,8 @@
     <CsCompile>
       <Optimize>true</Optimize>
       <NoWarn>1591;%(NoWarn)</NoWarn>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+      <Utf8Output>true</Utf8Output>
     </CsCompile>
     <PostBuildEvent>
       <Command>copy "$(OutDir)RDRN_Module.dll" "C:\RDRNetwork\bin\RDRN_Module.dll"</Command>
@@ -78,7 +80,6 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="core\Function.cpp" />
     <ClCompile Include="core\Input.cpp" />
-    <ClCompile Include="core\Log.cpp" />
     <ClCompile Include="core\Main.cpp" />
     <ClCompile Include="core\Math\Matrix.cpp" />
     <ClCompile Include="core\Math\Quaternion.cpp" />
@@ -98,6 +99,10 @@
     <ClInclude Include="core\NativeHashes.h" />
     <ClInclude Include="core\Script.h" />
   </ItemGroup>
+  <!-- Compile C# source files -->
+  <Target Name="CsCompile" BeforeTargets="ClCompile" Inputs="@(CsCompile)" Outputs="$(IntDir)$(TargetName).netmodule">
+    <Csc Sources="@(CsCompile)" AllowUnsafeBlocks="%(CsCompile.AllowUnsafeBlocks)" DisabledWarnings="%(CsCompile.NoWarn)" DocumentationFile="$(IntDir)$(TargetName).xdc" LangVersion="%(CsCompile.LangVersion)" Optimize="%(CsCompile.Optimize)" OutputAssembly="$(IntDir)$(TargetName).netmodule" TargetType="Module" Utf8Output="%(CsCompile.Utf8Output)" WarningLevel="%(CsCompile.WarningLevel)" WarningsAsErrors="%(CsCompile.WarningsAsErrors)" WarningsNotAsErrors="%(CsCompile.WarningsNotAsErrors)" ToolExe="$(CscToolExe)" ToolPath="$(CscToolPath)" />
+  </Target>
   <!-- Additional source files -->
   <ItemGroup>
     <ClCompile Include="core\ScriptDomain.cpp" />
@@ -106,6 +111,9 @@
   <ItemGroup>
     <ClInclude Include="core\ScriptDomain.h" />
     <ClInclude Include="core\UnmanagedLog.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="core\test.cs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <!-- Verify SDK files exist before generating anything -->

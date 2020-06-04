@@ -62,7 +62,7 @@ namespace RDRN_Core.Gui.Cef
             if (Stream.Position >= Stream.Length - 1 && bytesRead == 0)
             {
                 Stream.Close();
-                LogManager.WriteLog("Closed file stream!");
+                LogManager.WriteLog(LogLevel.Trace, "Closed file stream!");
             }
 
             return bytesRead > 0;

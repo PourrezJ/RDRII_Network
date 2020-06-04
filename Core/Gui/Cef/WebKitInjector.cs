@@ -7,16 +7,16 @@ namespace RDRN_Core.Gui.Cef
     {
         protected override void OnContextCreated(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            LogManager.WriteLog("-> OnContextCreated!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnContextCreated!");
             if (frame.IsMain)
             {
-                LogManager.WriteLog("-> Setting main context!");
+                LogManager.WriteLog(LogLevel.Trace, "-> Setting main context!");
 
                 Browser father = CefUtil.GetBrowserFromCef(browser);
                 if (father != null)
                 {
                     father.MainContext = context;
-                    LogManager.WriteLog("-> Main context set!");
+                    LogManager.WriteLog(LogLevel.Trace, "-> Main context set!");
                 }
             }
 
@@ -43,43 +43,43 @@ namespace RDRN_Core.Gui.Cef
         */
         protected override void OnRenderThreadCreated(CefListValue extraInfo)
         {
-            LogManager.WriteLog("-> OnRenderThreadCreated!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnRenderThreadCreated!");
             base.OnRenderThreadCreated(extraInfo);
         }
 
         protected override void OnWebKitInitialized()
         {
-            LogManager.WriteLog("-> OnWebKitInitialized!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnWebKitInitialized!");
             base.OnWebKitInitialized();
         }
 
         protected override void OnBrowserDestroyed(CefBrowser browser)
         {
-            LogManager.WriteLog("-> OnBrowserDestroyed!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnBrowserDestroyed!");
             base.OnBrowserDestroyed(browser);
         }
 
         protected override CefLoadHandler GetLoadHandler()
         {
-            LogManager.WriteLog("-> GetLoadHandler!");
+            LogManager.WriteLog(LogLevel.Trace, "-> GetLoadHandler!");
             return base.GetLoadHandler();
         }
 
         protected override void OnContextReleased(CefBrowser browser, CefFrame frame, CefV8Context context)
         {
-            LogManager.WriteLog("-> OnContextReleased!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnContextReleased!");
             base.OnContextReleased(browser, frame, context);
         }
 
         protected override void OnUncaughtException(CefBrowser browser, CefFrame frame, CefV8Context context, CefV8Exception exception, CefV8StackTrace stackTrace)
         {
-            LogManager.WriteLog("-> OnUncaughtException!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnUncaughtException!");
             base.OnUncaughtException(browser, frame, context, exception, stackTrace);
         }
 
         protected override void OnFocusedNodeChanged(CefBrowser browser, CefFrame frame, CefDomNode node)
         {
-            LogManager.WriteLog("-> OnFocusedNodeChanged!");
+            LogManager.WriteLog(LogLevel.Trace, "-> OnFocusedNodeChanged!");
             base.OnFocusedNodeChanged(browser, frame, node);
         }
 

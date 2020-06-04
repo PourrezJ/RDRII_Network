@@ -1,8 +1,8 @@
 ﻿using System;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using RDRN_Module.Native;
 
-namespace RDRN_API.UI
+namespace RDRN_Core.UI
 {
 	public sealed class Prompt : PoolObject, IEquatable<Prompt>
 	{

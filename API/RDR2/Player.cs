@@ -4,12 +4,12 @@
 //
 
 using RDRN_Module.Math;
-using RDRN_API.Native;
+using RDRN_Core.Native;
 using System;
 using System.Drawing;
 using RDRN_Module.Native;
 
-namespace RDRN_API
+namespace RDRN_Core
 {
 	public sealed class Player : INativeValue
 	{

@@ -1,17 +1,14 @@
-﻿using RDRN_API;
-using RDRN_API.Native;
+﻿using RDRN_Core;
+using RDRN_Core.Native;
 using RDRN_Core.Gui.Cef;
 using RDRN_Module;
-using RDRN_Module.Native;
 using RDRN_Core.Gui.DirectXHook;
 using System;
 using System.Drawing;
-using RDRN_Module.Math;
-using System.Reflection;
 
 namespace RDRN_Core
 {
-    public partial class Main : Script
+    public partial class Main
     {
         internal static bool InStartMenu;
 
@@ -30,11 +27,43 @@ namespace RDRN_Core
 
         private static bool firstTick;
 
-        internal void StartMainMenu()
+        public static void OnPreInit(string path)
+        {
+            RDRNetworkPath = System.IO.Directory.GetParent(path).FullName;
+            LogManager.WriteLog(LogLevel.Information, "Core Initializing");
+
+            LogManager.WriteLog(LogLevel.Trace, "RDRNetwork Path: " + RDRNetworkPath);
+         
+            LogManager.WriteLog(LogLevel.Information, "DirectX hook Initializing");
+            DxHook = new DxHook();
+
+            LogManager.WriteLog(LogLevel.Information, "Cef Initializing");
+            CEFManager.InitializeCef();
+
+            LogManager.WriteLog(LogLevel.Information, "Control Manager Initializing");
+            new ControlManager();
+
+            LogManager.WriteLog(LogLevel.Information, "PrepareNetwork configuration");
+            PrepareNetwork();
+
+            LogManager.WriteLog(LogLevel.Information, "Core Initialized");
+        }
+
+        public static bool OnInit()
+        {
+
+
+
+            //base.OnInit();
+
+            return true;
+        }
+
+        internal static void StartMainMenu()
         {
             try
             {
-                LogManager.WriteLog("Enter on Start Main Menu");
+                LogManager.WriteLog(LogLevel.Information, "Enter on Start Main Menu");
                 InStartMenu = true;
                // Game.Player.Character.Position = new Vector3(0, 0, 70);
                 
@@ -47,15 +76,6 @@ namespace RDRN_Core
 
                 World.CurrentDayTime = new TimeSpan(12, 0, 0);
                 
-                Console.WriteLine("model request");
-                Model model = new Model(PedHash.CS_abigailroberts);
-
-                model.Request(250);
-
-                Console.WriteLine("Model is Loaded:" + model.IsLoaded);
-
-                Game.Player.ChangeModel(model);
-
                 //Console.WriteLine("Model changed: " + changed.ToString());
                 //var browser = new Browser(new Microsoft.ClearScript.V8.V8ScriptEngine(), "https://www.youtube.com/watch?v=ufQl2NCzf6E", Screen, false);
                 //CefController.ShowCursor = true;
@@ -72,16 +92,16 @@ namespace RDRN_Core
 
                 var result = (DateTime.Now - time).TotalMilliseconds;
 
-                Console.WriteLine("Native 100k result: " + result);
+                LogManager.WriteLog(LogLevel.Trace, "Native 100k result: " + result);
 
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                LogManager.Exception(ex);
             }
         }
 
-        public override void OnTick()
+        public static void OnTick()
         {
             if (!firstTick)
             {
@@ -97,30 +117,6 @@ namespace RDRN_Core
 
 
             }
-        }
-
-        public override void OnInit()
-        {
-            RDRNetworkPath = System.IO.Directory.GetParent(CurrentDir).FullName;
-
-            LogManager.WriteLog("Core Initializing");
-
-            LogManager.WriteLog("PrepareNetwork configuration");
-            PrepareNetwork();
-
-            LogManager.WriteLog("DirectX hook Initializing");
-            DxHook = new DxHook();
-
-            LogManager.WriteLog("Cef Initializing");
-            CEFManager.InitializeCef();
-
-            LogManager.WriteLog("Control Manager Initializing");
-            new ControlManager();
-
-            LogManager.WriteLog("Core Initialized");
-            //base.OnInit();
-
-            
         }
     }
 }
