@@ -6,72 +6,79 @@ namespace RDRN_Core.Native
 {
 	public static class Function
 	{
-		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeInit@@YAX_K@Z")]
+		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeInit@@YAX_K@Z")]
+		//static extern void NativeInit(ulong hash);
+
+		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativePush64@@YAX_K@Z")]
+		//static extern void NativePush64(ulong val);
+
+		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeCall@@YAPEA_KXZ")]
+		//static unsafe extern ulong* NativeCall();
+
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativeInit@Invoker@rh2@@CAX_K@Z")]
 		static extern void NativeInit(ulong hash);
 
-		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativePush64@@YAX_K@Z")]
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativePush@Invoker@rh2@@CAX_K@Z")]
 		static extern void NativePush64(ulong val);
 
-		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeCall@@YAPEA_KXZ")]
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?NativeCall@Invoker@rh2@@SAPEA_KXZ")]
 		static unsafe extern ulong* NativeCall();
+
 
 		private static object lockObj = new object();
 
-		private static unsafe ulong* InvokeInternal(Hash hash, params ulong[] args)
+		internal static unsafe ulong* InvokeInternal(Hash hash, params ulong[] args)
 		{
-			NativeInit((ulong)hash);
-			foreach (var arg in args)
-				NativePush64(arg);
-			return NativeCall();
+			lock (lockObj)
+			{
+				NativeInit((ulong)hash);
+				foreach (var arg in args)
+					NativePush64(arg);
+				return NativeCall();
+			}
 		}
 
 		internal static T Call<T>(Hash hash, params InputArgument[] arguments)
 		{
-			lock (lockObj)
+			ulong[] args = new ulong[arguments.Length];
+			for (int i = 0; i < arguments.Length; ++i)
 			{
-				ulong[] args = new ulong[arguments.Length];
-				for (int i = 0; i < arguments.Length; ++i)
+				args[i] = arguments[i].data;
+			}
+
+			unsafe
+			{
+
+				var res = InvokeInternal(hash, args);
+
+				// The result will be null when this method is called from a thread other than the main thread
+				if (res == null)
 				{
-					args[i] = arguments[i].data;
+					throw new InvalidOperationException("Native.Function.Call can only be called from the main thread.");
 				}
 
-				unsafe
+				if (typeof(T).IsEnum || typeof(T).IsPrimitive || typeof(T) == typeof(Vector3) || typeof(T) == typeof(Vector2))
 				{
-					
-					var res = InvokeInternal(hash, args);
-
-					// The result will be null when this method is called from a thread other than the main thread
-					if (res == null)
-					{
-						throw new InvalidOperationException("Native.Function.Call can only be called from the main thread.");
-					}
-
-					if (typeof(T).IsEnum || typeof(T).IsPrimitive || typeof(T) == typeof(Vector3) || typeof(T) == typeof(Vector2))
-					{
-						return ObjectFromNative<T>(res);
-					}
-					else
-					{
-						return (T)ObjectFromNative(typeof(T), res);
-					}
+					return ObjectFromNative<T>(res);
 				}
-			}			
+				else
+				{
+					return (T)ObjectFromNative(typeof(T), res);
+				}
+			}
 		}
 
 		internal static void Call(Hash hash, params InputArgument[] arguments)
 		{
-			lock (lockObj)
+			ulong[] args = new ulong[arguments.Length];
+			for (int i = 0; i < arguments.Length; ++i)
 			{
-				ulong[] args = new ulong[arguments.Length];
-				for (int i = 0; i < arguments.Length; ++i)
-				{
-					args[i] = arguments[i].data;
-				}
+				args[i] = arguments[i].data;
+			}
 
-				unsafe
-				{
-					InvokeInternal(hash, args);
-				}
+			unsafe
+			{
+				InvokeInternal(hash, args);
 			}
 		}
 

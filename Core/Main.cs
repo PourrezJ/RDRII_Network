@@ -5,6 +5,7 @@ using RDRN_Module;
 using RDRN_Core.Gui.DirectXHook;
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace RDRN_Core
 {
@@ -34,6 +35,14 @@ namespace RDRN_Core
 
             LogManager.WriteLog(LogLevel.Trace, "RDRNetwork Path: " + RDRNetworkPath);
          
+            LogManager.WriteLog(LogLevel.Information, "PrepareNetwork configuration");
+            PrepareNetwork();
+
+            LogManager.WriteLog(LogLevel.Information, "Core Initialized");
+        }
+
+        public static bool OnInit()
+        {
             LogManager.WriteLog(LogLevel.Information, "DirectX hook Initializing");
             DxHook = new DxHook();
 
@@ -43,18 +52,13 @@ namespace RDRN_Core
             LogManager.WriteLog(LogLevel.Information, "Control Manager Initializing");
             new ControlManager();
 
-            LogManager.WriteLog(LogLevel.Information, "PrepareNetwork configuration");
-            PrepareNetwork();
-
-            LogManager.WriteLog(LogLevel.Information, "Core Initialized");
-        }
-
-        public static bool OnInit()
-        {
-
-
-
-            //base.OnInit();
+            Task.Run(() =>
+            {
+                while(true)
+                {
+                    Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+                }
+            });
 
             return true;
         }
@@ -110,7 +114,7 @@ namespace RDRN_Core
 
                 StartMainMenu();
             }
-            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+            //Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
             if (InStartMenu)
             {
 

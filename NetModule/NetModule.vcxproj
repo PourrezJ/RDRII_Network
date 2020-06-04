@@ -129,16 +129,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Invoker.h" />
     <ClInclude Include="LogManager.h" />
-    <ClInclude Include="Resource.h" />
+    <ClInclude Include="memory-location.h" />
+    <ClInclude Include="patternscan.h" />
+    <ClInclude Include="scrThread.h" />
+    <ClInclude Include="types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="DllMain.cpp" />
+    <ClCompile Include="Invoker.cpp" />
     <ClCompile Include="LogManager.cpp" />
+    <ClCompile Include="Memory-location.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NetModule.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

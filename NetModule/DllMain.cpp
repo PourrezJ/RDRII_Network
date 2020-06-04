@@ -17,8 +17,6 @@ ref struct LoaderData
 
 void ManagedPreInit()
 {
-	RDRN_Module::LogManager::WriteLog("Starting PreInit");
-
 	String^ directory = System::IO::Path::GetDirectoryName(Assembly::GetExecutingAssembly()->Location);
 
 	try 
@@ -43,7 +41,6 @@ void ManagedPreInit()
 
 void ManagedInit()
 {
-	RDRN_Module::LogManager::WriteLog("Starting ManagedInit");
 	LoaderData::InitMethods();
 }
 
