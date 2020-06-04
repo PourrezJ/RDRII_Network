@@ -24,6 +24,9 @@ namespace RDRN_Core.Native
 		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?NativeCall@Invoker@rh2@@SAPEA_KXZ")]
 		static unsafe extern ulong* NativeCall();
 
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?GetCommandHandler@Invoker@rh2@@SAP6AXPEAX@Z_K@Z")]
+		internal static unsafe extern ulong* GetCommandHandler(Hash hash);
+
 
 		private static object lockObj = new object();
 

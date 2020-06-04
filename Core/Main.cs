@@ -67,6 +67,8 @@ namespace RDRN_Core
         {
             try
             {
+                new NativeHook();
+
                 LogManager.WriteLog(LogLevel.Information, "Enter on Start Main Menu");
                 InStartMenu = true;
                // Game.Player.Character.Position = new Vector3(0, 0, 70);

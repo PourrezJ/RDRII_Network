@@ -180,6 +180,7 @@
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\LocalHandle.cs" />
     <Compile Include="LogManager.cs" />
+    <Compile Include="MessagePump.cs" />
     <Compile Include="Misc\GameScript.cs" />
     <Compile Include="Gui\Cef\Browser.cs" />
     <Compile Include="Gui\Cef\BrowserJavascriptCallback.cs" />
