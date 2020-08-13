@@ -36,7 +36,7 @@ namespace RDRN_Core
             LogManager.WriteLog(LogLevel.Trace, "RDRNetwork Path: " + RDRNetworkPath);
          
             LogManager.WriteLog(LogLevel.Information, "PrepareNetwork configuration");
-            PrepareNetwork();
+            //PrepareNetwork();
 
             LogManager.WriteLog(LogLevel.Information, "Core Initialized");
         }
@@ -51,7 +51,7 @@ namespace RDRN_Core
 
             LogManager.WriteLog(LogLevel.Information, "Control Manager Initializing");
             new ControlManager();
-
+            
             Task.Run(() =>
             {
                 while(true)
@@ -59,7 +59,7 @@ namespace RDRN_Core
                     Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
                 }
             });
-
+            Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
             return true;
         }
 
@@ -67,7 +67,7 @@ namespace RDRN_Core
         {
             try
             {
-                new NativeHook();
+               // new NativeHook();
 
                 LogManager.WriteLog(LogLevel.Information, "Enter on Start Main Menu");
                 InStartMenu = true;
@@ -117,6 +117,7 @@ namespace RDRN_Core
                 StartMainMenu();
             }
             //Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+            Function.Call(Hash.WAIT, 0);
             if (InStartMenu)
             {
 

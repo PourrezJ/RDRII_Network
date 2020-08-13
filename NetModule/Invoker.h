@@ -2,6 +2,7 @@
 #pragma once
 #include "types.h"
 #include "scrThread.h"
+#include "patternscan.h"
 
 #include <utility>
 #include <shared_mutex>

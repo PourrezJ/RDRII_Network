@@ -11,7 +11,7 @@ namespace RDRN_Module
 		Critical
 	};
 
-	public ref class LogManager {
+	public ref class InternalLog {
 	internal:
 		static LogLevel MinLevel = LogLevel::Information;
 

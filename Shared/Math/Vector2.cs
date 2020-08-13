@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (C) 2007-2010 SlimDX Group
 //
 // Permission is hereby granted, free  of charge, to any person obtaining a copy of this software  and
@@ -212,6 +212,7 @@ namespace Shared.Math
 		/// <summary>
 		/// Returns a new normalized vector with random X and Y components.
 		/// </summary>
+		/*
 		public static Vector2 RandomXY()
 		{
 			Vector2 v;
@@ -220,7 +221,7 @@ namespace Shared.Math
 			v.Y = (float)(System.Math.Sin(radian));
 			v.Normalize();
 			return v;
-		}
+		}*/
 
 		/// <summary>
 		/// Adds two vectors.

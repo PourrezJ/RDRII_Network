@@ -22,18 +22,18 @@ void ManagedPreInit()
 	try 
 	{
 		LoaderData::Assembly = Assembly::LoadFrom(IO::Path::Combine(directory, "Scripts\\RDRN_Core.dll"));
-
-		System::Type^ main = LoaderData::Assembly->GetType("RDRN_Core.Main");
-
-		LoaderData::InitMethods = safe_cast<Func<bool>^>(main->GetMethod("OnInit", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Func<bool>::typeid));
-		LoaderData::Tick = safe_cast<Action^>(main->GetMethod("OnTick", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Action::typeid));
-
+		System::Type^ main = LoaderData::Assembly->GetType("RDRN_Core.Startup");
+		
+		LoaderData::InitMethods = safe_cast<Func<bool>^>(main->GetMethod("Init", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Func<bool>::typeid));
+		LoaderData::Tick = safe_cast<Action^>(main->GetMethod("Tick", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Action::typeid));
+		
 		main->GetMethod("OnPreInit", BindingFlags::Public | BindingFlags::Static)->Invoke(nullptr, gcnew array<Object^> { directory });
+
 	}
 	catch (System::Exception^ ex) {
-		RDRN_Module::LogManager::WriteLog("*** Failed to load RDRN_Core: {0}", ex->ToString());
+		RDRN_Module::InternalLog::WriteLog("*** Failed to load RDRN_Core: {0}", ex->ToString());
 		if (ex->InnerException != nullptr) {
-			RDRN_Module::LogManager::WriteLog("*** InnerException: {0}", ex->InnerException->ToString());
+			RDRN_Module::InternalLog::WriteLog("*** InnerException: {0}", ex->InnerException->ToString());
 		}
 		return;
 	}
@@ -124,8 +124,9 @@ BOOL APIENTRY DllMain(HMODULE hInstance, DWORD reason, LPVOID lpReserved)
 			freopen("CONOUT$", "w", stdout);
 			freopen("CONOUT$", "w", stderr);
 			SetConsoleTitleA("Red Dead Redemption II: Network");
+			printf("Starting RDRNetwork\n");
 		}
-
+		
 		DisableThreadLibraryCalls(hInstance);
 		scriptRegister(hInstance, &ScriptMain);
 		keyboardHandlerRegister(&ScriptKeyboardMessage);

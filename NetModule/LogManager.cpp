@@ -5,7 +5,7 @@ System::String^ GetPath()
 	return System::IO::Path::GetDirectoryName(System::Reflection::Assembly::GetExecutingAssembly()->Location);
 }
 
-void RDRN_Module::LogManager::WriteLog(System::String^ format, ... array<System::Object^>^ args)
+void RDRN_Module::InternalLog::WriteLog(System::String^ format, ... array<System::Object^>^ args)
 {
 	try {
 		auto writerPath = System::IO::Path::Combine(GetPath(), "..//logs//RDRNetwork.log");
@@ -18,9 +18,9 @@ void RDRN_Module::LogManager::WriteLog(System::String^ format, ... array<System:
 	catch (...) {}
 }
 
-void RDRN_Module::LogManager::WriteLog(LogLevel level, System::String^ format, ... array<System::Object^>^ args)
+void RDRN_Module::InternalLog::WriteLog(LogLevel level, System::String^ format, ... array<System::Object^>^ args)
 {
-	if (LogManager::MinLevel > level)
+	if (InternalLog::MinLevel > level)
 		return;
 
 	try {
@@ -34,7 +34,7 @@ void RDRN_Module::LogManager::WriteLog(LogLevel level, System::String^ format, .
 	catch (...) {}
 }
 
-void RDRN_Module::LogManager::Exception(System::Exception^ exception, ... array<System::Object^>^ args)
+void RDRN_Module::InternalLog::Exception(System::Exception^ exception, ... array<System::Object^>^ args)
 {
 	try {
 		auto writerPath = System::IO::Path::Combine(GetPath(), "..//logs//Exception.log");
@@ -47,7 +47,7 @@ void RDRN_Module::LogManager::Exception(System::Exception^ exception, ... array<
 	catch (...) {}
 }
 
-void RDRN_Module::LogManager::Exception(System::String^ format, ... array<System::Object^>^ args)
+void RDRN_Module::InternalLog::Exception(System::String^ format, ... array<System::Object^>^ args)
 {
 	try {
 		auto writerPath = System::IO::Path::Combine(GetPath(), "..//logs//Exception.log");

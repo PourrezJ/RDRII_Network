@@ -14,6 +14,10 @@ namespace RDRN_Core.Utils
         {
             Target = Marshal.GetDelegateForFunctionPointer<TDelegate>(target);
 
+            if (Target == null)
+            {
+                Console.WriteLine("Error Hook!");
+            }
             localHook = LocalHook.Create(target, proxy, callback);
 
             // Activate hooks on all threads except the current thread

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml.Serialization;
 
 namespace Shared
@@ -8,6 +9,9 @@ namespace Shared
         public bool CEFDevtool { get; set; }
 
         public string GamePath { get; set; }
+        public string DisplayName { get; set; }
+        public List<string> FavoriteServers { get; set; }
+        public List<string> RecentServers { get; set; }
 
         public PlayerSettings()
         {

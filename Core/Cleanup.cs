@@ -9,10 +9,10 @@ namespace RDRN_Core
 
         public CleanupGame()
         {
-
+            Tick += OnTick;
         }
 
-        internal void OnTick()
+        internal void OnTick(object sender, EventArgs e)
         {
             Function.Call(Hash.SET_RANDOM_TRAINS, false);
 
@@ -75,10 +75,10 @@ namespace RDRN_Core
     {
         public Controls()
         {
-          
+            Tick += OnTick;
         }
 
-        internal void OnTick()
+        internal void OnTick(object sender, EventArgs e)
         {
             
             if (Game.IsDisabledControlJustPressed(2, Control.FrontendPause))
@@ -131,9 +131,9 @@ namespace RDRN_Core
                 }
             }
 
-            Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.Enter, true);
-            Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.VehExit, true);
-            Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.HorseExit, true);
+            //Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.Enter, true);
+            //Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.VehExit, true);
+            //Function.Call(Hash.DISABLE_CONTROL_ACTION, 0, Control.HorseExit, true);
         }
     }
 }
