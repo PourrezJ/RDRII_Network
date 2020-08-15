@@ -124,14 +124,9 @@ namespace RDRN_Core
 
         private static GameSettings.Settings GameSettings;
 
-        private static string CustomAnimation;
-        private static int AnimationFlag;
-
         public static Camera MainMenuCamera;
 
         private static int _debugStep;
-        private static Dictionary<int, int> _debugSettings = new Dictionary<int, int>();
-        private static bool _minimapSet;
 
         internal static string _threadsafeSubtitle;
 
@@ -149,6 +144,8 @@ namespace RDRN_Core
         public static string Weather { get; set; }
         public static TimeSpan? Time { get; set; }
 
+        public static int AnimationFlag { get; private set; }
+        public static string CustomAnimation { get; private set; }
 
         private static bool _init = false;
 
@@ -213,7 +210,7 @@ namespace RDRN_Core
 
             Tick += OnTick;
 
-            _config = new NetPeerConfiguration("RDRNETWORK") { Port = 8888, ConnectionTimeout = 30f };
+            _config = new NetPeerConfiguration("RDRNETWORK") { Port = GetOpenUdpPort(), ConnectionTimeout = 30f };
             _config.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
 
             MainMenuCamera = World.CreateCamera(new Vector3(743.76f, 1070.7f, 350.24f), new Vector3(), GameplayCamera.FieldOfView);
@@ -238,7 +235,7 @@ namespace RDRN_Core
             LogManager.WriteLog("Checking game files integrity.");
         }
 
-        private static void Init()
+        private void Init()
         {
             if (_init) 
                 return;
@@ -258,6 +255,8 @@ namespace RDRN_Core
 
             Game.TimeScale = 1;
 
+            UI.Hud.IsRadarVisible = false;
+           
             RDRN_Core.UI.Screen.FadeIn(1000);
             //_mainWarning = new Warning("",""){ Visible = false};
 
@@ -275,7 +274,7 @@ namespace RDRN_Core
             return status != NetConnectionStatus.Disconnected && status != NetConnectionStatus.None;
         }
 
-        public static void OnTick(object sender, EventArgs e)
+        public void OnTick(object sender, EventArgs e)
         {
             Init();
 

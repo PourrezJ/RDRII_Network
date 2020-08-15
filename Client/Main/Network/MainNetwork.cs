@@ -24,33 +24,15 @@ namespace RDRN_Core
             if (IsOnServer())
             {
                 Client.Disconnect("Switching servers");
-                //Wait(1000);
+                Wait(1000);
             }
             Function.Call(Hash.DISPLAY_RADAR, false);
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            if (!_minimapSet)
-            {
-                /*
-                var scal = new Scaleform("minimap");
-                scal.CallFunction("MULTIPLAYER_IS_ACTIVE", true, false);
-
-                Function.Call(Hash._SET_RADAR_BIGMAP_ENABLED, true, false);
-                Function.Call(Hash._SET_RADAR_BIGMAP_ENABLED, false, false);
-                */
-                _minimapSet = true;
-            }
-
             Client.Shutdown("Shutdown");
-           // Wait(1000);
-            var cport = GetOpenUdpPort();
-            if (cport == 0)
-            {
-                Util.Util.SafeNotify("No available UDP port was found.");
-                return;
-            }
-            _config.Port = cport;
+            Wait(1000);
+
             Client = new NetClient(_config);
             Client.Start();
 

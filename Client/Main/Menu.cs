@@ -180,7 +180,7 @@ namespace RDRN_Core
                             Util.Util.SafeNotify("No available UDP port was found.");
                             return;
                         }
-                        _config.Port = port;
+                        //_config.Port = port;
                         Client = new NetClient(_config);
                         Client.Start();
                     }

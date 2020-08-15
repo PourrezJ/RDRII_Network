@@ -124,12 +124,21 @@ namespace RDRN_Core
 			if (Directory.Exists(path))
 			{
 
-				/*
+				
 				var filenameAssemblies = new List<string>();
 
 				try
 				{
 					filenameAssemblies.AddRange(Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories).Where(x => IsManagedAssembly(x)));
+
+					foreach (string filename in filenameAssemblies)
+					{
+						try
+						{
+							Assembly.Load(File.ReadAllBytes(filename));
+						}
+						catch { }
+					}
 				}
 				catch (Exception ex)
 				{
@@ -139,11 +148,6 @@ namespace RDRN_Core
 
 					return null;
 				}
-
-				foreach (string filename in filenameAssemblies)
-				{
-					scriptdomain.LoadAssembly(filename);
-				}*/
 
 				uint count = 0;
 
@@ -596,11 +600,11 @@ namespace RDRN_Core
 		
 		public IntPtr PinString(string str)
 		{
-			IntPtr handle = Native.NativeMemory.StringToCoTaskMemUTF8(str);
+			IntPtr handle = NativeMemory.StringToCoTaskMemUTF8(str);
 
 			if (handle == IntPtr.Zero)
 			{
-				return Native.NativeMemory.NullString;
+				return NativeMemory.NullString;
 			}
 			else
 			{

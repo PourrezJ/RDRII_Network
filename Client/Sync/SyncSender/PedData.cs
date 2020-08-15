@@ -62,8 +62,9 @@ namespace RDRN_Core.Streamer
                 obj.Flag |= (int)PedDataFlags.ParachuteOpen;*/
             if (player.IsInCover())
                 obj.Flag |= (int)PedDataFlags.IsInCover;
+            /*
             if (!Function.Call<bool>((Hash)0x6A03BF943D767C93, player))
-                obj.Flag |= (int)PedDataFlags.IsInLowerCover;
+                obj.Flag |= (int)PedDataFlags.IsInLowerCover;*/
             if (player.IsInCoverFacingLeft)
                 obj.Flag |= (int)PedDataFlags.IsInCoverFacingLeft;
             if (player.IsReloading)

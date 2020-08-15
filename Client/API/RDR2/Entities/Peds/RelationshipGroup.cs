@@ -53,21 +53,21 @@ namespace RDRN_Core
 
 		public void SetRelationshipBetweenGroups(RelationshipGroup targetGroup, Relationship relationship, bool bidirectionally = false)
 		{
-			Function.Call(NativeHash.SET_RELATIONSHIP_BETWEEN_GROUPS, relationship, Hash, targetGroup.NativeValue);
+			Function.Call(NativeHash.SET_RELATIONSHIP_BETWEEN_GROUPS, (int)relationship, Hash, targetGroup.NativeValue);
 
 			if (bidirectionally)
 			{
-				Function.Call(NativeHash.SET_RELATIONSHIP_BETWEEN_GROUPS, relationship, targetGroup.NativeValue, Hash);
+				Function.Call(NativeHash.SET_RELATIONSHIP_BETWEEN_GROUPS, (int)relationship, targetGroup.NativeValue, Hash);
 			}
 		}
 
 		public void ClearRelationshipBetweenGroups(RelationshipGroup targetGroup, Relationship relationship, bool bidirectionally = false)
 		{
-			Function.Call(NativeHash.CLEAR_RELATIONSHIP_BETWEEN_GROUPS, relationship, Hash, targetGroup.NativeValue);
+			Function.Call(NativeHash.CLEAR_RELATIONSHIP_BETWEEN_GROUPS, (int)relationship, Hash, targetGroup.NativeValue);
 
 			if (bidirectionally)
 			{
-				Function.Call(NativeHash.CLEAR_RELATIONSHIP_BETWEEN_GROUPS, relationship, targetGroup.NativeValue, Hash);
+				Function.Call(NativeHash.CLEAR_RELATIONSHIP_BETWEEN_GROUPS, (int)relationship, targetGroup.NativeValue, Hash);
 			}
 		}
 

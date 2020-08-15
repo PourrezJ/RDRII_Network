@@ -121,14 +121,15 @@ namespace RDRN_Core
 		}
 
 		public bool ChangeModel(Model model)
-		{
-			
-			if (!model.IsInCdImage ||!model.IsPed ||  !model.Request(1000))
+		{			
+			if (!model.IsInCdImage ||!model.IsPed || !model.Request(1000))
 			{
 				return false;
 			}
 
-			Function.Call(Hash.SET_PLAYER_MODEL, Handle, model.Hash);
+			System.Console.WriteLine(Handle);
+
+			//Function.Call(Hash.SET_PLAYER_MODEL, Handle, model.Hash);
 			model.MarkAsNoLongerNeeded();
 			return true;
 		}

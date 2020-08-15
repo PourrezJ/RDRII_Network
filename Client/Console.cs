@@ -726,7 +726,7 @@ namespace RDRN_Core
 		private float GetTextLength(string text, float scale, int font) //TODO Maybe implement somewhere else?
 		{
 			Function.Call(Hash.SET_TEXT_SCALE, 0.35f, 0.35f);
-			Function.PushLongString(text);
+			NativeFunc.PushLongString(text);
 			return (float)text.Length;
 		}
 	}

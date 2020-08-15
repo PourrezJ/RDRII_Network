@@ -829,7 +829,6 @@ namespace RDRN_Core
                                 LocalTeam = -1;
                                 LocalDimension = 0;
                                 ResetPlayer();
-                                CEFManager.InitializeCef();
                                 StringCache?.Dispose();
 
                                 StringCache = new StringCache();
