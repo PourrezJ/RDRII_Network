@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using ResuMPServer.Constant;
 using ResuMPServer.Managers;
 using Lidgren.Network;
-using RDRNetworkShared;
+using Shared;
 using System.Threading.Tasks;
 using System.Linq;
+using Shared.Math;
 
 namespace ResuMPServer
 {

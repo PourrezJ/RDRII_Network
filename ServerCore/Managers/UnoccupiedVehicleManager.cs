@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lidgren.Network;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer.Managers
 {

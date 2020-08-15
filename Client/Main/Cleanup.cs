@@ -35,13 +35,13 @@ namespace RDRN_Core
         {
             var playerChar = Game.Player.Character;
 
-            playerChar.Position = _vinewoodSign;
+            //playerChar.Position = _vinewoodSign;
             playerChar.FreezePosition = false;
 
             CustomAnimation = null;
             AnimationFlag = 0;
 
-            Util.Util.SetPlayerSkin(PedHash.Player_Zero);
+            Util.Util.SetPlayerSkin(PedHash.Player_Three);
 
             playerChar = Game.Player.Character;
             var player = Game.Player;

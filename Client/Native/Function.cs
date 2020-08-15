@@ -1,33 +1,35 @@
 ﻿using Shared.Math;
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 
 namespace RDRN_Core.Native
 {
 	public static class Function
 	{
-		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeInit@@YAX_K@Z")]
-		//static extern void NativeInit(ulong hash);
+		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeInit@@YAX_K@Z")]
+		static extern void NativeInit(ulong hash);
 
-		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativePush64@@YAX_K@Z")]
-		//static extern void NativePush64(ulong val);
+		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativePush64@@YAX_K@Z")]
+		static extern void NativePush64(ulong val);
 
-		//[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeCall@@YAPEA_KXZ")]
-		//static unsafe extern ulong* NativeCall();
+		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeCall@@YAPEA_KXZ")]
+		static unsafe extern ulong* NativeCall();
 
+		/*
 		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativeInit@Invoker@rh2@@CAX_K@Z")]
 		static extern void NativeInit(ulong hash);
 
 		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativePush@Invoker@rh2@@CAX_K@Z")]
 		static extern void NativePush64(ulong val);
 
-		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?NativeCall@Invoker@rh2@@SAPEA_KXZ")]
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativeCall@Invoker@rh2@@CAPEA_KXZ")]
 		static unsafe extern ulong* NativeCall();
 
 		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?GetCommandHandler@Invoker@rh2@@SAP6AXPEAX@Z_K@Z")]
 		internal static unsafe extern ulong* GetCommandHandler(Hash hash);
-
+		*/
 		private static object lockObj = new object();
 
 		class NativeTask : IScriptTask
@@ -41,16 +43,18 @@ namespace RDRN_Core.Native
 				Result = InvokeInternal((Hash)Hash, Arguments);
 			}
 		}
-
+		
 		internal static unsafe ulong* InvokeInternal(Hash hash, params ulong[] args)
 		{
-			lock (lockObj)
-			{
-				NativeInit((ulong)hash);
-				foreach (var arg in args)
-					NativePush64(arg);
-				return NativeCall();
-			}
+			NativeInit((ulong)hash);
+			foreach (var arg in args)
+				NativePush64(arg);
+			return NativeCall();
+		}
+
+		public static unsafe ulong* InvokeInternal(ulong hash, params object[] args)
+		{
+			return InvokeInternal(hash, ConvertPrimitiveArguments(args));
 		}
 
 		internal static T Call<T>(Hash hash, params InputArgument[] arguments)
@@ -136,8 +140,11 @@ namespace RDRN_Core.Native
 				//return (ulong)RDRN_Module.Native.Func.AddStringPool(valueString).ToInt64();
 				//return 0; //temp fix invoker
 			}
-
 			// Scripting types
+			if (value is Player player)
+			{
+				return (ulong)player.Handle;
+			}
 			if (value is Control control)
 			{
 				return (ulong)control;

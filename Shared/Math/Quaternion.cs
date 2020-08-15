@@ -1,15 +1,11 @@
-﻿using ProtoBuf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MessagePack;
 
 namespace Shared.Math
 {
-    [ProtoContract]
+    [MessagePackObject]
     public class Quaternion : Vector3
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public float W { get; set; }
 
         public Quaternion()

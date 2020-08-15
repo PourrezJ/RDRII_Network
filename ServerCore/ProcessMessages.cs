@@ -7,7 +7,8 @@ using System.Threading;
 using ResuMPServer.Constant;
 using ResuMPServer.Managers;
 using Lidgren.Network;
-using RDRNetworkShared;
+using Shared;
+using Shared.Math;
 
 namespace ResuMPServer
 {

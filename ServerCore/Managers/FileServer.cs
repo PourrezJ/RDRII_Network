@@ -8,7 +8,7 @@
 //using Nancy;
 //using Newtonsoft.Json;
 //using Owin;
-//using RDRNetworkShared;
+//using Shared;
 //using Microsoft.AspNetCore.Hosting;
 
 //namespace ResuMPServer.Managers

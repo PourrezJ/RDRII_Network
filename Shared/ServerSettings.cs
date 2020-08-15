@@ -95,7 +95,7 @@ namespace Shared
         {
             Port = 4499;
             MaxPlayers = 50;
-            Name = "Simple GTA Network Server";
+            Name = "Simple RDR2 Network Server";
             MinimumClientVersion = "0.0.0.0";
             Password = "";
             LogToFile = true;

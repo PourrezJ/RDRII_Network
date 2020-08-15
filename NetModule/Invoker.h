@@ -24,7 +24,6 @@ namespace rh2
 
     public:
 
-
         static void NativeInit(NativeHash hash)
         {
             _NativeInit(hash);
@@ -46,9 +45,9 @@ namespace rh2
         {
             return _NativeCall();
         }
-
+        
         template<typename R, typename... Args>
-        static R Invoke(NativeHash hash, const Args&... args)
+        static R InternalInvoke(NativeHash hash, const Args&... args)
         {
             //std::lock_guard<std::shared_mutex> lock(g_invokeMutex);
 
@@ -61,5 +60,4 @@ namespace rh2
 
         static NativeHandler GetCommandHandler(NativeHash command);
     };
-    static uintptr_t find_signature(const char* module, const char* pattern_, const char* mask);
 } 

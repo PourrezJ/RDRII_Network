@@ -51,7 +51,7 @@ namespace Lidgren.Network
         private bool m_dualStack;
 
 		internal bool m_acceptIncomingConnections;
-		internal int m_maximumConnections;
+		//internal int m_maximumConnections;
 		internal int m_defaultOutgoingMessageCapacity;
 		internal float m_pingInterval;
 		internal bool m_useMessageRecycling;
@@ -81,6 +81,9 @@ namespace Lidgren.Network
 		internal float m_expandMTUFrequency;
 		internal int m_expandMTUFailAttempts;
 
+		internal int m_maxPlayers;
+		internal int m_curPlayers;
+
 		/// <summary>
 		/// NetPeerConfiguration constructor
 		/// </summary>
@@ -106,7 +109,7 @@ namespace Lidgren.Network
 			m_receiveBufferSize = 131071;
 			m_sendBufferSize = 131071;
 			m_acceptIncomingConnections = false;
-			m_maximumConnections = 32;
+			//m_maximumConnections = 32;
 			m_defaultOutgoingMessageCapacity = 16;
 			m_pingInterval = 4.0f;
 			m_connectionTimeout = 25.0f;
@@ -207,12 +210,23 @@ namespace Lidgren.Network
 		/// </summary>
 		public int MaximumConnections
 		{
-			get { return m_maximumConnections; }
+			get { return m_maxPlayers; }
 			set
 			{
 				if (m_isLocked)
 					throw new NetException(c_isLockedMessage);
-				m_maximumConnections = value;
+				m_maxPlayers = value;
+			}
+		}
+
+		public int CurrentPlayers
+		{
+			get => m_curPlayers;
+			set
+			{
+				if (m_isLocked)
+					throw new NetException(c_isLockedMessage);
+				m_curPlayers = value;
 			}
 		}
 

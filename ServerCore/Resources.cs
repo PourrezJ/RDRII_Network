@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml.Serialization;
 using ResuMPServer.Managers;
 using Lidgren.Network;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer
 {

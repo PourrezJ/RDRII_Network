@@ -1,5 +1,6 @@
 ﻿using ResuMPServer.Constant;
-using RDRNetworkShared;
+using Shared;
+using Shared.Math;
 
 namespace ResuMPServer
 {

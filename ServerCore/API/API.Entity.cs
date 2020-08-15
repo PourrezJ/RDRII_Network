@@ -1,5 +1,6 @@
 ﻿using ResuMPServer.Constant;
-using RDRNetworkShared;
+using Shared;
+using Shared.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;

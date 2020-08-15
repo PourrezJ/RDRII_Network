@@ -1,6 +1,6 @@
 ﻿using Lidgren.Network;
 using ResuMPServer.Constant;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer
 {

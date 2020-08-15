@@ -1,18 +1,18 @@
 ﻿using System;
-using ProtoBuf;
+using MessagePack;
 using Newtonsoft.Json;
 
 namespace Shared.Math
 {
-    [ProtoContract]
-    [ProtoInclude(4, typeof(Quaternion))]
+    [MessagePackObject]
+    [Union(4, typeof(Quaternion))]
     public class Vector3
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public float X { get; set; }
-        [ProtoMember(2)]
+        [Key(1)]
         public float Y { get; set; }
-        [ProtoMember(3)]
+        [Key(2)]
         public float Z { get; set; }
 
         private static Random Instance = new Random();

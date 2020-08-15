@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lidgren.Network;
-using RDRNetworkShared;
+using Shared;
+using Shared.Math;
 
 namespace ResuMPServer
 {

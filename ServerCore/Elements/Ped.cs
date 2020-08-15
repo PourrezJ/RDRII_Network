@@ -1,4 +1,4 @@
-﻿using RDRNetworkShared;
+﻿using Shared;
 
 namespace ResuMPServer
 {

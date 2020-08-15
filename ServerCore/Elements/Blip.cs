@@ -1,4 +1,5 @@
-﻿using RDRNetworkShared;
+﻿using Shared;
+using Shared.Math;
 
 namespace ResuMPServer
 {

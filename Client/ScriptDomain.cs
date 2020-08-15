@@ -580,6 +580,8 @@ namespace RDRN_Core
 		}
 		public void ExecuteTask(IScriptTask task)
 		{
+			task.Run();
+			/*
 			if (Thread.CurrentThread.ManagedThreadId == _executingThreadId)
 			{
 				task.Run();
@@ -589,7 +591,7 @@ namespace RDRN_Core
 				_taskQueue.Enqueue(task);
 
 				SignalAndWait(ExecutingScript._waitEvent, ExecutingScript._continueEvent);
-			}
+			}*/
 		}
 		
 		public IntPtr PinString(string str)

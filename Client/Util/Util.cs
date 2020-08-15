@@ -198,6 +198,7 @@ namespace RDRN_Core.Util
         public static void LoadModel(Model model)
         {
             if (!model.IsValid) return;
+            
             LogManager.DebugLog("REQUESTING MODEL " + model.Hash);
             ModelRequest = true;
             DateTime start = DateTime.Now;
@@ -269,6 +270,7 @@ namespace RDRN_Core.Util
 
         public static void SetPlayerSkin(PedHash skin)
         {
+            
             var PlayerChar = Game.Player.Character;
             var health = PlayerChar.Health;
             var model = new Model(skin);
@@ -280,7 +282,7 @@ namespace RDRN_Core.Util
             {
                 while (!model.IsLoaded) Script.Yield();
 
-                Function.Call(Hash.SET_PLAYER_MODEL, Game.Player, model.Hash);
+                Game.Player.ChangeModel(model);
                 //Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, PlayerChar);
             }
             PlayerChar = Game.Player.Character;

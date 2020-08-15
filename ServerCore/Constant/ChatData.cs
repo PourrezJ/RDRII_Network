@@ -1,15 +1,15 @@
-﻿using ProtoBuf;
+﻿using MessagePack;
 
 namespace ResuMPServer.Constant
 {
-    [ProtoContract]
+    [MessagePackObject]
     internal class ChatData
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public long Id { get; set; }
-        [ProtoMember(2)]
+        [Key(1)]
         public string Sender { get; set; }
-        [ProtoMember(3)]
+        [Key(2)]
         public string Message { get; set; }
     }
 }

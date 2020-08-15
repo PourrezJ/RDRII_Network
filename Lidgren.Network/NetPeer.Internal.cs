@@ -707,8 +707,18 @@ namespace Lidgren.Network
 					// handle connect
 					// It's someone wanting to shake hands with us!
 
+					/*
 					int reservedSlots = m_handshakes.Count + m_connections.Count;
 					if (reservedSlots >= m_configuration.m_maximumConnections)
+					{
+						// server full
+						NetOutgoingMessage full = CreateMessage("Server full");
+						full.m_messageType = NetMessageType.Disconnect;
+						SendLibrary(full, senderEndPoint);
+						return;
+					}*/
+
+					if (m_configuration.m_curPlayers >= m_configuration.m_maxPlayers)
 					{
 						// server full
 						NetOutgoingMessage full = CreateMessage("Server full");

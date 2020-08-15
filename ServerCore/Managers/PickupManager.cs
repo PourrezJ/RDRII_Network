@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer.Managers
 {

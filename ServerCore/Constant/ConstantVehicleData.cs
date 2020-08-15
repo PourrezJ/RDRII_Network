@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer.Constant
 {

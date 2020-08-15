@@ -13,11 +13,12 @@ using ResuMPServer.Constant;
 using ResuMPServer.Managers;
 using Lidgren.Network;
 using Newtonsoft.Json;
-using ProtoBuf;
-using RDRNetworkShared;
+using Shared;
 using Microsoft.CSharp;
 using Microsoft.VisualBasic;
 using System.CodeDom.Compiler;
+using Shared.Math;
+using MessagePack;
 
 namespace ResuMPServer
 {
@@ -98,9 +99,9 @@ namespace ResuMPServer
             config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
             //config.EnableMessageType(NetIncomingMessageType.UnconnectedData);
             config.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
-            config.MaxPlayers = MaxPlayers;
+            //config.MaxPlayers = MaxPlayers;
             config.ConnectionTimeout = 60f; // 120f = 30 second timeout
-            //config.MaximumConnections = 50000;
+            config.MaximumConnections = 50000;
             //config.AutoFlushSendQueue = true;
             //config.SendBufferSize = 1024 * 512;
             //config.ReceiveBufferSize = 1024 * 512;
@@ -387,7 +388,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ResuMPServer;
-using RDRNetworkShared;
+using Shared;
 
 namespace GTANResource
 {{
@@ -855,9 +856,9 @@ namespace GTANResource
             {
                 try
                 {
-                    return Serializer.Deserialize<T>(stream);
+                    return MessagePackSerializer.Deserialize<T>(stream);
                 }
-                catch (ProtoException e)
+                catch (Exception e)
                 {
                     if(LogLevel > 0) Program.Output("WARN: Deserialization failed: " + e.Message);
                     return null;
@@ -869,7 +870,7 @@ namespace GTANResource
         {
             using (var stream = new MemoryStream())
             {
-                Serializer.Serialize(stream, data);
+                MessagePackSerializer.Serialize(stream, data);
                 return stream.ToArray();
             }
         }

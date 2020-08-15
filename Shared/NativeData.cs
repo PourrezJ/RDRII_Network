@@ -1,110 +1,110 @@
 ﻿using System.Collections.Generic;
-using ProtoBuf;
+using MessagePack;
 using Shared.Math;
 
 namespace Shared
 {
-    [ProtoContract]
+    [MessagePackObject]
     public class NativeResponse
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public NativeArgument Response { get; set; }
 
-        [ProtoMember(2)]
+        [Key(1)]
         public uint Id { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class NativeTickCall
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public NativeData Native { get; set; }
 
-        [ProtoMember(2)]
+        [Key(1)]
         public string Identifier { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class ScriptEventTrigger
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public string EventName { get; set; }
 
-        [ProtoMember(2)]
+        [Key(1)]
         public List<NativeArgument> Arguments { get; set; }
 
-        [ProtoMember(3)]
+        [Key(2)]
         public string Resource { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class NativeData
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public ulong Hash { get; set; }
 
-        [ProtoMember(2)]
+        [Key(1)]
         public List<NativeArgument> Arguments { get; set; }
 
-        [ProtoMember(3)]
+        [Key(2)]
         public NativeArgument ReturnType { get; set; }
 
-        [ProtoMember(4)]
+        [Key(3)]
         public uint Id { get; set; }
 
-        [ProtoMember(5)]
+        [Key(4)]
         public bool Internal { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class ObjectData
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public Vector3 Position { get; set; }
 
-        [ProtoMember(2)]
+        [Key(1)]
         public float Radius { get; set; }
 
-        [ProtoMember(3)]
+        [Key(2)]
         public int modelHash { get; set; }
     }
 
-    [ProtoContract]
-    [ProtoInclude(2, typeof(IntArgument))]
-    [ProtoInclude(3, typeof(UIntArgument))]
-    [ProtoInclude(4, typeof(StringArgument))]
-    [ProtoInclude(5, typeof(FloatArgument))]
-    [ProtoInclude(6, typeof(BooleanArgument))]
-    [ProtoInclude(7, typeof(LocalPlayerArgument))]
-    [ProtoInclude(8, typeof(EntityArgument))]
-    [ProtoInclude(9, typeof(LocalGamePlayerArgument))]
-    [ProtoInclude(10, typeof(Vector3Argument))]
-    [ProtoInclude(11, typeof(EntityPointerArgument))]
-    [ProtoInclude(12, typeof(ListArgument))]
+    [MessagePackObject]
+    [Union(2, typeof(IntArgument))]
+    [Union(3, typeof(UIntArgument))]
+    [Union(4, typeof(StringArgument))]
+    [Union(5, typeof(FloatArgument))]
+    [Union(6, typeof(BooleanArgument))]
+    [Union(7, typeof(LocalPlayerArgument))]
+    [Union(8, typeof(EntityArgument))]
+    [Union(9, typeof(LocalGamePlayerArgument))]
+    [Union(10, typeof(Vector3Argument))]
+    [Union(11, typeof(EntityPointerArgument))]
+    [Union(12, typeof(ListArgument))]
     public class NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public string Id { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class ListArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public List<NativeArgument> Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class LocalPlayerArgument : NativeArgument
     {
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class LocalGamePlayerArgument : NativeArgument
     {
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class OpponentPedHandleArgument : NativeArgument
     {
         public OpponentPedHandleArgument(long opponentHandle)
@@ -116,58 +116,58 @@ namespace Shared
         {
         }
 
-        [ProtoMember(1)]
+        [Key(0)]
         public long Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class IntArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public int Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class UIntArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public uint Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class StringArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public string Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class FloatArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public float Data { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class BooleanArgument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public bool Data { get; set; }
     }
 
 
-    [ProtoContract]
+    [MessagePackObject]
     public class Vector3Argument : NativeArgument
     {
-        [ProtoMember(1)]
+        [Key(0)]
         public float X { get; set; }
-        [ProtoMember(2)]
+        [Key(1)]
         public float Y { get; set; }
-        [ProtoMember(3)]
+        [Key(2)]
         public float Z { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class EntityArgument : NativeArgument
     {
         public EntityArgument()
@@ -179,11 +179,11 @@ namespace Shared
             NetHandle = netHandle;
         }
 
-        [ProtoMember(1)]
+        [Key(0)]
         public int NetHandle { get; set; }
     }
 
-    [ProtoContract]
+    [MessagePackObject]
     public class EntityPointerArgument : NativeArgument
     {
         public EntityPointerArgument(int netHandle)
@@ -195,7 +195,7 @@ namespace Shared
         {
         }
 
-        [ProtoMember(1)]
+        [Key(0)]
         public int NetHandle { get; set; }
     }
 }

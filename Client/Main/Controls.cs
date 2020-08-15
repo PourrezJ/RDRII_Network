@@ -2,11 +2,11 @@
 
 namespace RDRN_Core
 {
-    public class Controls : Script
+    public class Controls /*: Script*/
     {
         public Controls() 
         { 
-            Tick += OnTick; 
+            //Tick += OnTick; 
         }
 
         private static void OnTick(object sender, EventArgs e)
@@ -19,13 +19,12 @@ namespace RDRN_Core
             //Game.DisableControlThisFrame(0, Control.SpecialAbilityPC);
             Game.DisableControlThisFrame(0, Control.SpecialAbilitySecondary);
             Game.DisableControlThisFrame(0, Control.CharacterWheel);
-            Game.DisableControlThisFrame(0, Control.Phone);
             Game.DisableControlThisFrame(0, Control.Duck);
 
             if (Main.IsConnected())
             {
-                Game.DisableControlThisFrame(0, Control.FrontendPause);
-                Game.DisableControlThisFrame(0, Control.FrontendPauseAlternate);
+                //Game.DisableControlThisFrame(0, Control.FrontendPause);
+                //Game.DisableControlThisFrame(0, Control.FrontendPauseAlternate);
             }
 
             var playerChar = Game.Player.Character;
@@ -48,14 +47,6 @@ namespace RDRN_Core
                 //Game.DisableControlThisFrame(0, Control.Jump);
             }
 
-            //CRASH WORKAROUND: DISABLE PARACHUTE RUINER2
-            if (playerChar.IsInVehicle())
-            {
-                if (playerChar.CurrentVehicle.IsInAir && playerChar.CurrentVehicle.Model.Hash == 941494461)
-                {
-                    Game.DisableAllControlsThisFrame(0);
-                }
-            }
             /*
             if (Function.Call<int>(Hash.GET_PED_PARACHUTE_STATE, playerChar) == 2)
             {

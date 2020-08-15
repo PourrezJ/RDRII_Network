@@ -1,4 +1,5 @@
 ﻿using RDRN_Core;
+using RDRN_Core.Native;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,15 @@ namespace RDRN_Core
                 Domain.Start();
 
             LogManager.WriteLog(LogLevel.Information, "Core Initialized");
+            /*
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Function.Call(Hash.DRAW_RECT, 0.1f, 0.2f, 0.1f, 0.1f, 255, 0, 0, 255);
+                }
+            });*/
+            
             return true;
         }
 

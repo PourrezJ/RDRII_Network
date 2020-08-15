@@ -26,7 +26,6 @@ namespace RDRN_Core
                 Client.Disconnect("Switching servers");
                 //Wait(1000);
             }
-            ShowLoadingPrompt("Loading");
             Function.Call(Hash.DISPLAY_RADAR, false);
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
@@ -127,7 +126,6 @@ namespace RDRN_Core
 
         private void OnLocalDisconnect()
         {
-            StopLoadingPrompt();
             DEBUG_STEP = 42;
             if (NetEntityHandler.ServerWorld?.LoadedIpl != null)
             {/*

@@ -1,30 +1,23 @@
-﻿using RDRN_Core;
-using RDRN_Core.Native;
+﻿using RDRN_Core.Native;
 using RDRN_Core.Javascript;
 using RDRN_Core.Streamer;
 using RDRN_Core.Sync;
 using RDRN_Core.Util;
 using Shared;
-using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Control = RDRN_Core.Control;
 using Vector3 = Shared.Math.Vector3;
 using Shared.Math;
+using MessagePack;
 
 namespace RDRN_Core
 {
     public partial class Main
     {
-        private void TickSpinner()
-        {
-            OnTick();
-        }
-
         public static void AddMap(ServerMap map)
         {
             //File.WriteAllText(GTANInstallDir + "\\logs\\map.json", JsonConvert.SerializeObject(map));
@@ -347,26 +340,6 @@ namespace RDRN_Core
             }
         }
 
-        public static void LoadingPromptText(string text)
-        {
-            Function.Call((Hash)0xABA17D7CE615ADBF, "STRING"); //_SET_LOADING_PROMPT_TEXT_ENTRY
-            Function.Call((Hash)0x6C188BE134E074AA, text); //ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
-            Function.Call((Hash)0x10D373323E5B9C0D); //_REMOVE_LOADING_PROMPT
-            Function.Call((Hash)0xBD12F8228410D9B4, 4); //_SHOW_LOADING_PROMPT
-        }
-
-        public static void ShowLoadingPrompt(string text)
-        {
-            Function.Call((Hash)0xABA17D7CE615ADBF, "STRING"); //_SET_LOADING_PROMPT_TEXT_ENTRY
-            Function.Call((Hash)0x6C188BE134E074AA, text); //ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
-            Function.Call((Hash)0xBD12F8228410D9B4, 4); //_SHOW_LOADING_PROMPT
-        }
-
-        public static void StopLoadingPrompt()
-        {
-            Function.Call((Hash)0x10D373323E5B9C0D); //_REMOVE_LOADING_PROMPT
-        }
-
         #region Serialization
         public static object DeserializeBinary<T>(byte[] data)
         {
@@ -375,9 +348,9 @@ namespace RDRN_Core
             {
                 try
                 {
-                    output = Serializer.Deserialize<T>(stream);
+                    output = MessagePackSerializer.Deserialize<T>(stream);
                 }
-                catch (ProtoException)
+                catch 
                 {
                     return null;
                 }
@@ -389,7 +362,7 @@ namespace RDRN_Core
             using (var stream = new MemoryStream())
             {
                 stream.SetLength(0);
-                Serializer.Serialize(stream, data);
+                MessagePackSerializer.Serialize(stream, data);
                 return stream.ToArray();
             }
         }
@@ -611,6 +584,5 @@ namespace RDRN_Core
                     RDRN_Core.UI.Screen.ShowSubtitle(value.ToString());
             }
         }
-
     }
 }

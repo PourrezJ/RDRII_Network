@@ -445,7 +445,7 @@ namespace RDRN_Core.Javascript
         Dictionary<LocalHandle, string> Names = new Dictionary<LocalHandle, string>();
 
         private const float height = 1080f;
-        private static float ratio = (float)Main.screen.Width / Main.screen.Height;
+        private static float ratio = (float)Main.Screen.Width / Main.Screen.Height;
         private static float width = height * ratio;
 
         internal void processCoroutines()
@@ -2572,7 +2572,7 @@ namespace RDRN_Core.Javascript
         {
             //return RDR2.UI.Screen.Resolution;
             //return Screen.PrimaryScreen.WorkingArea.Size;
-            return Main.screen;
+            return Main.Screen;
         }
 
         public void sendNotification(string text)
@@ -3243,7 +3243,7 @@ namespace RDRN_Core.Javascript
                 Function.Call(Hash.REQUEST_STREAMED_TEXTURE_DICT, dict, true);
 
             const float hh = 1080f;
-            float ratio = (float)Main.screen.Width / Main.screen.Height;
+            float ratio = (float)Main.Screen.Width / Main.Screen.Height;
             var ww = hh * ratio;
 
 

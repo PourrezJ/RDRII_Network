@@ -1,4 +1,5 @@
-﻿using RDRNetworkShared;
+﻿using Shared;
+using Shared.Math;
 using System;
 using System.Collections.Generic;
 using System.Text;

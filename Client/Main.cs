@@ -1,19 +1,16 @@
-﻿using RDRN_Core;
-using RDRN_Core.Native;
+﻿using RDRN_Core.Native;
 using RDRN_Core.Misc;
 using RDRN_Core.Streamer;
 using RDRN_Core.Sync;
 using RDRN_Core.Util;
 using Shared;
 using Lidgren.Network;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Forms;
 using Vector3 = Shared.Math.Vector3;
 using RDRN_Core.Gui.Cef;
@@ -21,28 +18,6 @@ using RDRN_Core.Gui.DirectXHook;
 
 namespace RDRN_Core
 {
-    internal class MessagePump : Script
-    {
-        public MessagePump()
-        {
-            Tick += (sender, args) =>
-            {
-                if (Main.Client != null)
-                {
-                    var messages = new List<NetIncomingMessage>();
-                    var msgsRead = Main.Client.ReadMessages(messages);
-                    if (msgsRead > 0)
-                    {
-                        var count = messages.Count;
-                        for (var i = 0; i < count; i++)
-                        {
-                            CrossReference.EntryPoint.ProcessMessages(messages[i], true);
-                        }
-                    }
-                }
-            };
-        }
-    }
 
     internal static class CrossReference
     {
@@ -53,8 +28,6 @@ namespace RDRN_Core
     {
         #region garbage
         public static PlayerSettings PlayerSettings;
-
-        public static Size screen;
 
         public static readonly ScriptVersion LocalScriptVersion = ScriptVersion.VERSION_0_9;
         public static readonly string build = "exp";
@@ -182,8 +155,7 @@ namespace RDRN_Core
         public const NetDeliveryMethod SYNC_MESSAGE_TYPE = NetDeliveryMethod.UnreliableSequenced; // unreliable_sequenced
 
         #endregion
-
-
+        
         internal static Size Screen
         {
             get
@@ -196,12 +168,9 @@ namespace RDRN_Core
 
         internal static DxHook DxHook { get; private set; }
 
-        private static bool firstTick;
-
         public Main()
         {
             //res = UIMenu.GetScreenResolutionMantainRatio();
-            screen = RDRN_Core.UI.Screen.Resolution;
 
             LogManager.WriteLog("\r\n>> [" + DateTime.Now + "] RDR2 Network Initialization.");
 
@@ -231,7 +200,7 @@ namespace RDRN_Core
             for (var i = 0; i < 50; i++) {
                 _emptyVehicleMods.Add(i, 0);
             }
-            /*
+            
             KeyDown += OnKeyDown;
 
             KeyUp += (sender, args) =>
@@ -240,19 +209,13 @@ namespace RDRN_Core
                 {
                     _wasTyping = false;
                 }
-            };*/
+            };
 
-            _config = new NetPeerConfiguration("GTANETWORK") { Port = 8888, ConnectionTimeout = 30f };
+            Tick += OnTick;
+
+            _config = new NetPeerConfiguration("RDRNETWORK") { Port = 8888, ConnectionTimeout = 30f };
             _config.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
 
-            LogManager.WriteLog("Building menu.");
-            /*
-            _menuPool = new MenuPool();
-            BuildMainMenu();
-
-            Function.Call(Hash._ENABLE_MP_DLC_MAPS, true); // _ENABLE_MP_DLC_MAPS
-            Function.Call(Hash._LOAD_MP_DLC_MAPS); // _LOAD_MP_DLC_MAPS / _USE_FREEMODE_MAP_BEHAVIOR
-            */
             MainMenuCamera = World.CreateCamera(new Vector3(743.76f, 1070.7f, 350.24f), new Vector3(), GameplayCamera.FieldOfView);
             MainMenuCamera.PointAt(new Vector3(707.86f, 1228.09f, 333.66f));
 
@@ -265,30 +228,6 @@ namespace RDRN_Core
             SocialClubName = Game.Player.Name;
 
             LogManager.WriteLog("Getting welcome message.");
-           // GetWelcomeMessage();
-
-            //Function.Call(Hash.SHUTDOWN_LOADING_SCREEN);
-
-            //Audio.SetAudioFlag(AudioFlag.LoadMPData, true);
-            //Audio.SetAudioFlag(AudioFlag.DisableBarks, true);
-            //Audio.SetAudioFlag(AudioFlag.DisableFlightMusic, true);
-            //Audio.SetAudioFlag(AudioFlag.PoliceScannerDisabled, true);
-            //Audio.SetAudioFlag(AudioFlag.OnlyAllowScriptTriggerPoliceScanner, true);
-            //Function.Call((Hash)0x552369F549563AD5, false); //_FORCE_AMBIENT_SIREN
-
-            // disable fire dep dispatch service
-            //Function.Call((Hash)0xDC0F817884CDD856, 4, false); // ENABLE_DISPATCH_SERVICE
-
-            //GlobalVariable.Get(2576573).Write(1); //Enable MP cars?
-
-            //var fetchThread = new Thread((ThreadStart) delegate
-            //{
-            //    var list = Process.GetProcessesByName("GameOverlayUI");
-            //    if (!list.Any()) return;
-            //    for (var index = list.Length - 1; index >= 0; index--) list[index].Kill();
-            //});
-
-            //fetchThread.Start();
 
             LogManager.WriteLog("Initializing CEF.");
             CEFManager.InitializeCef();
@@ -321,6 +260,9 @@ namespace RDRN_Core
 
             RDRN_Core.UI.Screen.FadeIn(1000);
             //_mainWarning = new Warning("",""){ Visible = false};
+
+            CrossReference.EntryPoint.ConnectToServer("127.0.0.1", 4499);
+
         }
 
         public static bool IsConnected()
@@ -333,7 +275,7 @@ namespace RDRN_Core
             return status != NetConnectionStatus.Disconnected && status != NetConnectionStatus.None;
         }
 
-        public static void OnTick()
+        public static void OnTick(object sender, EventArgs e)
         {
             Init();
 
@@ -424,21 +366,6 @@ namespace RDRN_Core
                     }
                     break;
 
-                case Keys.P:
-                    if (IsOnServer() && /*!MainMenu.Visible &&*/ !CefController.ShowCursor)
-                    {
-                        /*
-                        _mainWarning = new Warning("Disabled feature", "Game settings menu has been disabled while connected.\nDisconnect from the server first.")
-                        {
-                            OnAccept = () => { _mainWarning.Visible = false; }
-                        };*/
-                    }
-                    break;
-
-                case Keys.F10:
-
-                    break;
-
                 case Keys.F7:
                     if (IsOnServer())
                     {
@@ -474,66 +401,7 @@ namespace RDRN_Core
                     break;
 
                 case Keys.G:
-                    /*
-                    if (IsOnServer() && !Game.Player.Character.IsInVehicle() && !Chat.IsFocused)
-                    {
-                        //var veh = new Vehicle(StreamerThread.StreamedInVehicles[0].LocalHandle);
-                        List<Vehicle> vehs;
-                        if (!(vehs = World.GetAllVehicles().OrderBy(v => v.Position.DistanceToSquared(Game.Player.Character.Position)).Take(1).ToList()).Any()) break;
 
-                        Vehicle veh;
-                        if (!(veh = vehs[0]).Exists()) break;
-                        if (!Game.Player.Character.IsInRangeOfEx(veh.Position, 6f)) break;
-
-                        var playerChar = Game.Player.Character;
-                        var relPos = veh.GetOffsetFromWorldCoords(playerChar.Position);
-                        var seat = VehicleSeat.Any;
-
-                        if (veh.PassengerCapacity > 1)
-                        {
-                            if (relPos.X < 0 && relPos.Y > 0) {seat = VehicleSeat.LeftRear;}
-                            else if (relPos.X >= 0 && relPos.Y > 0) {seat = VehicleSeat.RightFront;}
-                            else if (relPos.X < 0 && relPos.Y <= 0) {seat = VehicleSeat.LeftRear;}
-                            else if (relPos.X >= 0 && relPos.Y <= 0) {seat = VehicleSeat.RightRear;}
-                        }
-                        else { seat = VehicleSeat.Passenger; }
-
-                        //else if (veh.PassengerCapacity > 2 && veh.GetPedOnSeat(seat).Handle != 0)
-                        //{
-                        //    switch (seat)
-                        //    {
-                        //        case VehicleSeat.LeftRear:
-                        //            for (int i = 3; i < veh.PassengerCapacity; i += 2)
-                        //            {
-                        //                if (veh.GetPedOnSeat((VehicleSeat) i).Handle != 0) continue;
-                        //                seat = (VehicleSeat) i;
-                        //                break;
-                        //            }
-                        //            break;
-                        //        case VehicleSeat.RightRear:
-                        //            for (int i = 4; i < veh.PassengerCapacity; i += 2)
-                        //            {
-                        //                if (veh.GetPedOnSeat((VehicleSeat) i).Handle != 0) continue;
-                        //                seat = (VehicleSeat) i;
-                        //                break;
-                        //            }
-                        //            break;
-                        //    }
-                        //}
-
-                        if (WeaponDataProvider.DoesVehicleSeatHaveGunPosition((VehicleHash)veh.Model.Hash, 0, true) && playerChar.IsIdle && !Game.Player.IsAiming)
-                        {
-                            playerChar.SetIntoVehicle(veh, seat);
-                        }
-                        else
-                        {
-                            veh.GetPedOnSeat(seat).CanBeDraggedOutOfVehicle = true;
-                            playerChar.Task.EnterVehicle(veh, seat, -1, 2f);
-                            Function.Call(Hash.KNOCK_PED_OFF_VEHICLE, veh.GetPedOnSeat(seat).Handle);
-                            Function.Call(Hash.SET_PED_CAN_BE_KNOCKED_OFF_VEHICLE, veh.GetPedOnSeat(seat).Handle, true); // 7A6535691B477C48 8A251612
-                            _isGoingToCar = true;
-                        }
-                    }*/
                     break;
 
                 default:

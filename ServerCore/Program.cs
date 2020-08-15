@@ -9,7 +9,7 @@ using System.Threading;
 using Mono.Unix;
 using Mono.Unix.Native;
 using ResuMPServer.Constant;
-using RDRNetworkShared;
+using Shared;
 
 namespace ResuMPServer
 {
@@ -58,6 +58,7 @@ namespace ResuMPServer
                         throw new ArgumentOutOfRangeException(nameof(category), category, null);
                 }
                 Console.WriteLine("[" + DateTime.Now.TimeOfDay.ToString(@"hh\:mm\:ss") + "] " + str);
+                Console.ForegroundColor = ConsoleColor.White;
             }
 
             if (!_log) return;
@@ -127,7 +128,7 @@ namespace ResuMPServer
             if (_log) File.AppendAllText("server.log", "-> SERVER STARTED AT " + DateTime.Now);
 
             var serverVersion = ParseableVersion.FromAssembly(Assembly.GetExecutingAssembly());
-
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("=======================================================================");
             Console.WriteLine("= RDR:Network v{0}", serverVersion);
             Console.WriteLine("=======================================================================");
