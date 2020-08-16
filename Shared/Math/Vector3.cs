@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Shared.Math
 {
     [MessagePackObject]
-    [Union(4, typeof(Quaternion))]
+    //[Union(4, typeof(Quaternion))]
     public class Vector3
     {
         [Key(0)]
@@ -149,7 +149,7 @@ namespace Shared.Math
             Z = Z / len;
         }
 
-        [JsonIgnore]
+        [JsonIgnore, IgnoreMember]
         public Vector3 Normalized
         {
             get

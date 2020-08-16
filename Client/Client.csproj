@@ -290,7 +290,13 @@
     <Compile Include="Script.cs" />
     <Compile Include="ScriptDomain.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Streamer\Main.cs" />
+    <Compile Include="Streamer\DrawLabels.cs" />
+    <Compile Include="Streamer\DrawLocalMarkers.cs" />
+    <Compile Include="Streamer\DrawMarkers.cs" />
+    <Compile Include="Streamer\Streamer.cs" />
+    <Compile Include="Streamer\UpdateAttachements.cs" />
+    <Compile Include="Streamer\UpdateInterpolations.cs" />
+    <Compile Include="Streamer\UpdateMisc.cs" />
     <Compile Include="Sync\Interpolation.cs" />
     <Compile Include="Sync\Misc.cs" />
     <Compile Include="Sync\Nametag.cs" />

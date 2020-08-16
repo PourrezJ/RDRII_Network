@@ -15,7 +15,7 @@ namespace RDRN_Core.Gui.Cef
 
         internal static void InitializeCef()
         {
-            CefPath = Path.Combine(Main.RDRNetworkPath, "cef");
+            CefPath = Path.Combine(Startup.RDRN_Path, "cef");
 
             LogManager.WriteLog(LogLevel.Trace, "--> InitilizeCef: Start " + CefPath);
             CefRuntime.Load(CefPath);
@@ -95,7 +95,7 @@ namespace RDRN_Core.Gui.Cef
         internal static void SetMouseHidden(bool hidden)
         {
            if (Cursor == null)
-               Cursor = ImageElement.FromFile(Main.RDRNetworkPath + "\\images\\cef\\cursor.png", new PointF());
+               Cursor = ImageElement.FromFile(Startup.RDRN_Path + "\\images\\cef\\cursor.png", new PointF());
            Cursor.Hidden = hidden;
         }
 

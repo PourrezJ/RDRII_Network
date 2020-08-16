@@ -21,12 +21,7 @@ namespace Shared
         public string ScriptVersion { get; set; }
 
         [Key(5)]
-        public bool CEF { get; set; }
-
-        [Key(6)]
         public bool CEFDevtool { get; set; }
 
-        [Key(7)]
-        public bool MediaStream { get; set; }
     }
 }

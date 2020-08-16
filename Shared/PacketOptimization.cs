@@ -25,7 +25,7 @@ namespace Shared
                 byteArray.Add(0x00);
                 byteArray.Add(0x00);
             }
-
+            /*
             // Write the flag
             byteArray.AddRange(GetBytes(data.Flag.Value));
 
@@ -76,7 +76,7 @@ namespace Shared
 
                 // Add the seat we are trying to enter
                 byteArray.Add((byte)data.SeatTryingToEnter.Value);
-            }
+            }*/
             
             return byteArray.ToArray();
         }

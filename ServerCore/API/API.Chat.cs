@@ -1,4 +1,5 @@
 ﻿using Lidgren.Network;
+using MessagePack;
 using ResuMPServer.Constant;
 using Shared;
 
@@ -37,7 +38,7 @@ namespace ResuMPServer
                 Message = message,
             };
 
-            var data = GameServer.SerializeBinary(chatObj);
+            var data = MessagePackSerializer.Serialize(chatObj);
 
             NetOutgoingMessage msg = Program.ServerInstance.Server.CreateMessage();
             msg.Write((byte)PacketType.ChatData);

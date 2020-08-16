@@ -326,11 +326,6 @@ namespace RDRN_Core
             }
         }
 
-        private static void SaveSettings()
-        {
-            Util.Util.SaveSettings(RDRNetworkPath + "\\settings.xml");
-        }
-
         public void DeleteObject(Vector3 pos, float radius, int modelHash)
         {
             Prop returnedProp = Function.Call<Prop>(Hash.GET_CLOSEST_OBJECT_OF_TYPE, pos.X, pos.Y, pos.Z, radius, modelHash, 0);
@@ -578,10 +573,8 @@ namespace RDRN_Core
             set
             {
                 _debugStep = value;
-                LogManager.DebugLog("LAST STEP: " + value.ToString());
+                //LogManager.TraceLog("LAST STEP: " + value.ToString());
 
-                if (SlowDownClientForDebug)
-                    RDRN_Core.UI.Screen.ShowSubtitle(value.ToString());
             }
         }
     }

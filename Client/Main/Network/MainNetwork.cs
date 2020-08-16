@@ -21,7 +21,7 @@ namespace RDRN_Core
     {
         public void ConnectToServer(string ip, int port = 0, bool passProtected = false, string myPass = "")
         {
-            if (IsOnServer())
+            if (IsOnServer)
             {
                 Client.Disconnect("Switching servers");
                 Wait(1000);
@@ -47,7 +47,6 @@ namespace RDRN_Core
             obj.ScriptVersion = CurrentVersion.ToString();
             obj.CEFDevtool = EnableDevTool;
             //obj.GameVersion = (byte)Game.Version;
-            obj.MediaStream = EnableMediaStream;
 
             if (passProtected)
             {
@@ -101,10 +100,8 @@ namespace RDRN_Core
             _currentServerPort = port == 0 ? Port : port;
         }
 
-        public static bool IsOnServer()
-        {
-            return Client?.ConnectionStatus == NetConnectionStatus.Connected;
-        }
+        public static bool IsConnected => Client?.ConnectionStatus != NetConnectionStatus.Disconnected && Client?.ConnectionStatus != NetConnectionStatus.None;
+        public static bool IsOnServer => Client?.ConnectionStatus == NetConnectionStatus.Connected;
 
         private void OnLocalDisconnect()
         {
@@ -174,7 +171,6 @@ namespace RDRN_Core
                 CEFManager.Browsers.Clear();
             }
 
-            CEFManager.Dispose();
             ClearStats();
 
             RestoreMainMenu();
@@ -210,7 +206,7 @@ namespace RDRN_Core
 
         public static void TriggerServerEvent(string eventName, string resource, params object[] args)
         {
-            if (!IsOnServer()) return;
+            if (!IsOnServer) return;
             var packet = new ScriptEventTrigger();
             packet.EventName = eventName;
             packet.Resource = resource;
@@ -225,11 +221,8 @@ namespace RDRN_Core
             Client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
         }
 
-
         public int GetOpenUdpPort()
         {
-
-
             var startingAtPort = 49152;
             var maxNumberOfPortsToCheck = 65535;
             var range = Enumerable.Range(startingAtPort, maxNumberOfPortsToCheck);
@@ -313,30 +306,5 @@ namespace RDRN_Core
                 }
             }
         }
-
-        private static bool isIPLocal(string ipaddress)
-        {
-            try
-            {
-                var straryIpAddress = ipaddress.Split(new[] { "." }, StringSplitOptions.RemoveEmptyEntries);
-                var iaryIpAddress = new[]
-                {
-                    int.Parse(straryIpAddress[0], CultureInfo.InvariantCulture),
-                    int.Parse(straryIpAddress[1], CultureInfo.InvariantCulture),
-                    int.Parse(straryIpAddress[2], CultureInfo.InvariantCulture),
-                    int.Parse(straryIpAddress[3], CultureInfo.InvariantCulture)
-                };
-
-
-                return iaryIpAddress[0] == 10 || iaryIpAddress[0] == 127 || iaryIpAddress[0] == 192 && iaryIpAddress[1] == 168 || iaryIpAddress[0] == 172 && iaryIpAddress[1] >= 16 && iaryIpAddress[1] <= 31;
-
-                // IP Address is "probably" public. This doesn't catch some VPN ranges like OpenVPN and Hamachi.
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
     }
 }

@@ -9,6 +9,7 @@ using ResuMPServer.Managers;
 using Lidgren.Network;
 using Shared;
 using Shared.Math;
+using MessagePack;
 
 namespace ResuMPServer
 {
@@ -67,7 +68,7 @@ namespace ResuMPServer
 
                             if (obj.LAN && AnnounceToLAN || !obj.LAN)
                             {
-                                var bin = SerializeBinary(obj);
+                                var bin = MessagePackSerializer.Serialize(obj);
 
                                 response.Write((byte)PacketType.DiscoveryResponse);
                                 response.Write(bin.Length);
@@ -105,7 +106,7 @@ namespace ResuMPServer
                             ConnectionRequest connReq;
                             try
                             {
-                                connReq = DeserializeBinary<ConnectionRequest>(msg.ReadBytes(leng)) as ConnectionRequest;
+                                connReq = MessagePackSerializer.Deserialize<ConnectionRequest>(msg.ReadBytes(leng));
                             }
                             catch (EndOfStreamException)
                             {
@@ -184,7 +185,7 @@ namespace ResuMPServer
                             };
 
                             var channelHail = Server.CreateMessage();
-                            var respBin = SerializeBinary(respObj);
+                            var respBin = MessagePackSerializer.Serialize(respObj);
 
                             channelHail.Write(respBin.Length);
                             channelHail.Write(respBin);
@@ -329,7 +330,7 @@ namespace ResuMPServer
                                         var mapData = new StreamedData
                                         {
                                             Id = r.Next(int.MaxValue),
-                                            Data = SerializeBinary(mapObj),
+                                            Data = MessagePackSerializer.Serialize(mapObj),
                                             Type = FileType.Map
                                         };
 
@@ -430,7 +431,7 @@ namespace ResuMPServer
                                     try
                                     {
                                         var len = msg.ReadInt32();
-                                        var data = DeserializeBinary<ChatData>(msg.ReadBytes(len)) as ChatData;
+                                        var data = MessagePackSerializer.Deserialize<ChatData>(msg.ReadBytes(len));
                                         if (data != null)
                                         {
                                             var pass = true;
@@ -476,7 +477,7 @@ namespace ResuMPServer
                                                         Message = "You don't have access to this command!",
                                                     };
 
-                                                    var binData = SerializeBinary(chatObj);
+                                                    var binData = MessagePackSerializer.Serialize(chatObj);
 
                                                     var respMsg = Program.ServerInstance.Server.CreateMessage();
                                                     respMsg.Write((byte)PacketType.ChatData);
@@ -1213,7 +1214,7 @@ namespace ResuMPServer
                                 {
                                     if (!client.ConnectionConfirmed) continue;
                                     var len = msg.ReadInt32();
-                                    var data = DeserializeBinary<SyncEvent>(msg.ReadBytes(len)) as SyncEvent;
+                                    var data = MessagePackSerializer.Deserialize<SyncEvent>(msg.ReadBytes(len));
                                     if (data != null)
                                     {
                                         SendToAll(data, PacketType.SyncEvent, true, client, ConnectionChannel.SyncEvent);
@@ -1227,7 +1228,7 @@ namespace ResuMPServer
                                     if (!client.ConnectionConfirmed) continue;
                                     var len = msg.ReadInt32();
                                     var data =
-                                        DeserializeBinary<ScriptEventTrigger>(msg.ReadBytes(len)) as ScriptEventTrigger;
+                                        MessagePackSerializer.Deserialize<ScriptEventTrigger>(msg.ReadBytes(len));
                                     if (data != null)
                                     {
                                         lock (RunningResources)
@@ -1252,7 +1253,7 @@ namespace ResuMPServer
                                 {
                                     if (!client.ConnectionConfirmed) continue;
                                     var len = msg.ReadInt32();
-                                    var data = DeserializeBinary<NativeResponse>(msg.ReadBytes(len)) as NativeResponse;
+                                    var data = MessagePackSerializer.Deserialize<NativeResponse>(msg.ReadBytes(len));
 
                                     if (data == null || !_callbacks.ContainsKey(data.Id)) continue;
                                     object resp = null;
@@ -1354,7 +1355,7 @@ namespace ResuMPServer
                                     if (TrustClientProperties)
                                     {
                                         var len = msg.ReadInt32();
-                                        var data = DeserializeBinary<UpdateEntity>(msg.ReadBytes(len)) as UpdateEntity;
+                                        var data = MessagePackSerializer.Deserialize<UpdateEntity>(msg.ReadBytes(len));
                                         if (data?.Properties != null)
                                         {
                                             var item = NetEntityHandler.NetToProp<EntityProperties>(data.NetHandle);

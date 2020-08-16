@@ -3,7 +3,7 @@
 namespace Shared
 {
     [MessagePackObject]
-    public class BlipProperties : EntityProperties
+    public class BlipProperties : EntityPropertiesAbstract
     {
         public BlipProperties()
         {

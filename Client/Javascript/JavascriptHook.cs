@@ -3918,7 +3918,7 @@ namespace RDRN_Core.Javascript
         public void removeAllPlayerWeapons()
         {
             Game.Player.Character.Weapons.RemoveAll();
-            CrossReference.EntryPoint.WeaponInventoryManager.Clear();
+            Main.Instance.WeaponInventoryManager.Clear();
         }
 
         public bool doesPlayerHaveWeapon(int weapon)
@@ -3928,7 +3928,7 @@ namespace RDRN_Core.Javascript
 
         public void removePlayerWeapon(int weapon)
         {
-            CrossReference.EntryPoint.WeaponInventoryManager.Deny((Shared.WeaponHash) weapon);
+            Main.Instance.WeaponInventoryManager.Deny((Shared.WeaponHash) weapon);
         }
 
         public void setWeather(int weather)

@@ -57,7 +57,7 @@ namespace RDRN_Core.Streamer
         {
             while (true)
             {
-                if (!Main.IsOnServer() || !Main.HasFinishedDownloading) goto endTick;
+                if (!Main.IsOnServer || !Main.HasFinishedDownloading) goto endTick;
                 var position = _playerPosition;
 
                 IStreamedItem[] rawMap;

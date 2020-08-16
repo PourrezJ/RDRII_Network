@@ -19,7 +19,7 @@ namespace RDRN_Core.Streamer
 
             while (true)
             {
-                if (!Main.IsConnected())
+                if (!Main.IsConnected)
                 {
                     Thread.Sleep(100);
                     continue;
@@ -177,7 +177,7 @@ namespace RDRN_Core.Streamer
 
         private void OnTick(object sender, EventArgs e)
         {
-            if (!Main.IsOnServer()) return;
+            if (!Main.IsOnServer) return;
             var player = Game.Player.Character;
 
             if (player.IsInVehicle())

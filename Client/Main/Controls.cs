@@ -21,7 +21,7 @@ namespace RDRN_Core
             Game.DisableControlThisFrame(0, Control.CharacterWheel);
             Game.DisableControlThisFrame(0, Control.Duck);
 
-            if (Main.IsConnected())
+            if (Main.IsConnected)
             {
                 //Game.DisableControlThisFrame(0, Control.FrontendPause);
                 //Game.DisableControlThisFrame(0, Control.FrontendPauseAlternate);

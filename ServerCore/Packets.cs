@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Lidgren.Network;
+using MessagePack;
 using Shared;
 using Shared.Math;
 
@@ -379,7 +380,7 @@ namespace ResuMPServer
 
         public void SendToClient(Client c, object newData, PacketType packetType, bool important, ConnectionChannel channel)
         {
-            var data = SerializeBinary(newData);
+            var data = MessagePackSerializer.Serialize(newData);
             var msg = Server.CreateMessage();
             msg.Write((byte)packetType);
             msg.Write(data.Length);
@@ -389,7 +390,7 @@ namespace ResuMPServer
 
         public void SendToAll(object newData, PacketType packetType, bool important, ConnectionChannel channel)
         {
-            var data = SerializeBinary(newData);
+            var data = MessagePackSerializer.Serialize(newData);
             var msg = Server.CreateMessage();
             msg.Write((byte)packetType);
             msg.Write(data.Length);
@@ -400,7 +401,7 @@ namespace ResuMPServer
 
         public void SendToAll(object newData, PacketType packetType, bool important, Client exclude, ConnectionChannel channel)
         {
-            var data = SerializeBinary(newData);
+            var data = MessagePackSerializer.Serialize(newData);
             var msg = Server.CreateMessage();
             msg.Write((byte)packetType);
             msg.Write(data.Length);
@@ -417,7 +418,7 @@ namespace ResuMPServer
                 Radius = radius,
                 modelHash = modelHash
             };
-            var bin = SerializeBinary(obj);
+            var bin = MessagePackSerializer.Serialize(obj);
 
             var msg = Server.CreateMessage();
             msg.Write((byte)PacketType.DeleteObject);
@@ -434,7 +435,7 @@ namespace ResuMPServer
                 Hash = hash,
                 Arguments = ParseNativeArguments(arguments)
             };
-            var bin = SerializeBinary(obj);
+            var bin = MessagePackSerializer.Serialize(obj);
 
             var msg = Server.CreateMessage();
             msg.Write((byte)PacketType.NativeCall);
@@ -454,7 +455,7 @@ namespace ResuMPServer
                 Id = 0
             };
 
-            var bin = SerializeBinary(obj);
+            var bin = MessagePackSerializer.Serialize(obj);
 
             var msg = Server.CreateMessage();
 
@@ -475,7 +476,7 @@ namespace ResuMPServer
                 Arguments = ParseNativeArguments(arguments)
             };
 
-            var bin = SerializeBinary(obj);
+            var bin = MessagePackSerializer.Serialize(obj);
 
             var msg = Server.CreateMessage();
 

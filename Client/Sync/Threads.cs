@@ -15,7 +15,7 @@ namespace RDRN_Core.Sync
 
         private static void OnTick(object sender, EventArgs e)
         {
-            if (!Main.IsConnected() || !Main.IsOnServer()) return;
+            if (!Main.IsConnected || !Main.IsOnServer) return;
             
             sw = new Stopwatch();
 
@@ -33,7 +33,7 @@ namespace RDRN_Core.Sync
 
         private static void OnTick(object sender, EventArgs e)
         {
-            if (!Main.IsConnected() || !Main.IsOnServer()) return;
+            if (!Main.IsConnected || !Main.IsOnServer) return;
 
             /*
             SyncPed[] myBubble;

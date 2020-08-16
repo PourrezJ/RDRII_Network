@@ -66,7 +66,8 @@ namespace RDRN_Core.Streamer
         private int _lastCheck;
         internal void Tick()
         {
-            if (!Main.IsOnServer()) return;
+            if (!Main.IsOnServer) 
+                return;
 
             var player = Game.Player.Character;
             var car = player.CurrentVehicle;
@@ -81,7 +82,7 @@ namespace RDRN_Core.Streamer
                 {
                     if (PickupToWeapon.Translate(pickup.ModelHash) != 0)
                     {
-                        CrossReference.EntryPoint.WeaponInventoryManager.Allow((Shared.WeaponHash)PickupToWeapon.Translate(pickup.ModelHash));
+                        Main.Instance.WeaponInventoryManager.Allow((Shared.WeaponHash)PickupToWeapon.Translate(pickup.ModelHash));
                     }
 
                     JavascriptHook.InvokeCustomEvent(

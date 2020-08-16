@@ -19,7 +19,7 @@ namespace RDRN_Core.Streamer
         private static void OnTick(object sender, EventArgs e)
         {
             //CallCollection thisCol = new CallCollection();
-            if (Main.IsConnected() && Util.Util.TickCount - _lastTick > 1000) // Save ressource
+            if (Main.IsConnected && Util.Util.TickCount - _lastTick > 1000) // Save ressource
             {
                 _lastTick = Util.Util.TickCount;
                 if (StreamerThread.StreamedInVehicles == null || StreamerThread.StreamedInVehicles.Length == 0) return;

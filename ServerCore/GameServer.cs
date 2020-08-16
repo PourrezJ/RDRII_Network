@@ -849,7 +849,7 @@ namespace GTANResource
 
             return list;
         }
-
+        /*
         public object DeserializeBinary<T>(byte[] data)
         {
             using (var stream = new MemoryStream(data))
@@ -873,7 +873,7 @@ namespace GTANResource
                 MessagePackSerializer.Serialize(stream, data);
                 return stream.ToArray();
             }
-        }
+        }*/
 
         //public byte GetChannelIdForConnection(Client conn)
         //{

@@ -3,6 +3,8 @@
 
 using namespace System;
 using namespace System::Reflection;
+namespace WinForms = System::Windows::Forms;
+
 
 delegate void KeyboardMethodDelegate(System::Windows::Forms::Keys key, bool status, bool statusCtrl, bool statusShift, bool statusAlt);
 
@@ -12,7 +14,7 @@ ref struct LoaderData
 	static Assembly^ Assembly;
 	static Func<bool>^ InitMethods;
 	static Action^ Tick;
-
+	static KeyboardMethodDelegate^ Keyboard;
 };
 
 void ManagedPreInit()
@@ -26,6 +28,7 @@ void ManagedPreInit()
 		
 		LoaderData::InitMethods = safe_cast<Func<bool>^>(main->GetMethod("Init", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Func<bool>::typeid));
 		LoaderData::Tick = safe_cast<Action^>(main->GetMethod("Tick", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(Action::typeid));
+		LoaderData::Keyboard = safe_cast<KeyboardMethodDelegate^>(main->GetMethod("KeyboardMessage", BindingFlags::Public | BindingFlags::Static)->CreateDelegate(KeyboardMethodDelegate::typeid));
 		
 		main->GetMethod("OnPreInit", BindingFlags::Public | BindingFlags::Static)->Invoke(nullptr, gcnew array<Object^> { directory });
 
@@ -51,7 +54,7 @@ void ManagedTick()
 
 void ManagedKeyboardMessage(unsigned long key, bool status, bool statusCtrl, bool statusShift, bool statusAlt)
 {
-
+	LoaderData::Keyboard(safe_cast<WinForms::Keys>(key), status, statusCtrl, statusShift, statusAlt);
 }
 
 

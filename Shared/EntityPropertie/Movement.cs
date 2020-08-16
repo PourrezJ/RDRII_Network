@@ -18,6 +18,7 @@ namespace Shared
         [Key(3)]
         public Vector3 EndVector { get; set; }
 
+        [Key(4)]
         public long ServerStartTime { get; set; }
     }
 }

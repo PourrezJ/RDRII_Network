@@ -1,11 +1,7 @@
-﻿using RDRN_Core;
-using RDRN_Core.Native;
-using System;
-using System.Collections.Generic;
+﻿using RDRN_Core.Gui.Cef;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using WinForms = System.Windows.Forms;
 
 namespace RDRN_Core
 {
@@ -18,21 +14,26 @@ namespace RDRN_Core
         public static void OnPreInit(string path)
         {
             var path2 = new DirectoryInfo(path);
-            RDRN_Path = path2.FullName;
+            RDRN_Path = path2.Parent.FullName;
 
             LogManager.WriteLog(LogLevel.Information, "Core Initializing");
 
-            LogManager.WriteLog(LogLevel.Trace, "RDRNetwork Path: " + path);
+            LogManager.WriteLog(LogLevel.Trace, "RDRNetwork Path: " + RDRN_Path);
 
             LogManager.WriteLog(LogLevel.Information, "PrepareNetwork configuration");
             //PrepareNetwork();
 
-            
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                LogManager.WriteLog("Initializing CEF.");
+                CEFManager.InitializeCef();
+            });
         }
 
         public static bool Init()
         {
-            Domain = ScriptDomain.Load(RDRN_Path);
+            Domain = ScriptDomain.Load(Path.Combine(RDRN_Path, "bin\\Scripts"));
             
             if (Domain != null)
                 Domain.Start();
@@ -53,6 +54,11 @@ namespace RDRN_Core
         public static void Tick()
         {
             Domain?.DoTick();
+        }
+
+        public static void KeyboardMessage(WinForms.Keys key, bool status, bool statusCtrl, bool statusShift, bool statusAlt)
+        {
+            Domain?.DoKeyboardMessage(key, status, statusCtrl, statusShift, statusAlt);
         }
     }
 }

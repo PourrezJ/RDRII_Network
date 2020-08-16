@@ -21,6 +21,11 @@ namespace RDRN_Core
 
 		static LogLevel MinLevel = LogLevel.Trace;
 
+		internal static void TraceLog(string args)
+		{
+			LogManager.WriteLog(LogLevel.Trace, args);
+		}
+
 		internal static void DebugLog(string args)
 		{
 			LogManager.WriteLog(LogLevel.Debug, args);
@@ -40,7 +45,7 @@ namespace RDRN_Core
 				if (MinLevel > logLevel)
 					return;
 
-				var writerPath = Path.Combine(Startup.RDRN_Path, "..//logs//RDRN_Core.log");
+				var writerPath = Path.Combine(Startup.RDRN_Path, "logs//RDRN_Core.log");
 				var writer = new System.IO.StreamWriter(writerPath, true);
 
 				var text = $"[{DateTime.Now.ToString("HH:mm:ss.fff")}] {logLevel}: {args}";
@@ -54,7 +59,7 @@ namespace RDRN_Core
 		{
 			lock (lockObj)
 			{
-				var writerPath = Path.Combine(Startup.RDRN_Path, "..//logs//Exception.log");
+				var writerPath = Path.Combine(Startup.RDRN_Path, "logs//Exception.log");
 				var writer = new System.IO.StreamWriter(writerPath, true);
 
 				var text = ($"[{ DateTime.Now.ToString("HH:mm:ss.fff")}] || {args} {ex.ToString()}");
@@ -68,7 +73,7 @@ namespace RDRN_Core
 		{
 			lock(lockObj)
 			{
-				var writerPath = Path.Combine(Startup.RDRN_Path, "..//logs//Exception.log");
+				var writerPath = Path.Combine(Startup.RDRN_Path, "logs//Exception.log");
 				var writer = new System.IO.StreamWriter(writerPath, true);
 
 				var text = ($"[{DateTime.Now.ToString("HH:mm:ss.fff")}] : {args}");

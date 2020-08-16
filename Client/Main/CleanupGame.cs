@@ -13,7 +13,7 @@ namespace RDRN_Core
 
         private static void OnTick(object sender, EventArgs e)
         {
-            if (Main.IsConnected())
+            if (Main.IsConnected)
             {
                 //CallCollection thisCol = new CallCollection();
 

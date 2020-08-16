@@ -19,11 +19,6 @@ using RDRN_Core.Gui.DirectXHook;
 namespace RDRN_Core
 {
 
-    internal static class CrossReference
-    {
-        public static Main EntryPoint;
-    }
-
     public partial class Main : Script
     {
         #region garbage
@@ -81,12 +76,10 @@ namespace RDRN_Core
 
 
         private static bool EnableDevTool;
-        internal static bool EnableMediaStream;
         internal static bool SaveDebugToFile = false;
 
         public static bool ToggleNametagDraw = false;
         public static bool TogglePosUpdate = false;
-        public static bool SlowDownClientForDebug = false;
         internal static bool _playerGodMode;
 
 
@@ -147,6 +140,8 @@ namespace RDRN_Core
         public static int AnimationFlag { get; private set; }
         public static string CustomAnimation { get; private set; }
 
+        public static Main Instance { get; private set; }
+
         private static bool _init = false;
 
         public const NetDeliveryMethod SYNC_MESSAGE_TYPE = NetDeliveryMethod.UnreliableSequenced; // unreliable_sequenced
@@ -167,16 +162,15 @@ namespace RDRN_Core
 
         public Main()
         {
+            Instance = this;
             //res = UIMenu.GetScreenResolutionMantainRatio();
 
             LogManager.WriteLog("\r\n>> [" + DateTime.Now + "] RDR2 Network Initialization.");
 
             World.DestroyAllCameras();
 
-            CrossReference.EntryPoint = this;
-
             GameSettings = Misc.GameSettings.LoadGameSettings();
-            PlayerSettings = Util.Util.ReadSettings(RDRNetworkPath + "\\settings.xml");
+            PlayerSettings = Util.Util.ReadSettings(Startup.RDRN_Path + "\\settings.xml");
 
             EnableDevTool = PlayerSettings.CEFDevtool;
 
@@ -226,8 +220,7 @@ namespace RDRN_Core
 
             LogManager.WriteLog("Getting welcome message.");
 
-            LogManager.WriteLog("Initializing CEF.");
-            CEFManager.InitializeCef();
+
 
             LogManager.WriteLog("Rebuilding Server Browser.");
             RebuildServerBrowser();
@@ -260,18 +253,8 @@ namespace RDRN_Core
             RDRN_Core.UI.Screen.FadeIn(1000);
             //_mainWarning = new Warning("",""){ Visible = false};
 
-            CrossReference.EntryPoint.ConnectToServer("127.0.0.1", 4499);
+            Main.Instance.ConnectToServer("127.0.0.1", 4499);
 
-        }
-
-        public static bool IsConnected()
-        {
-            if (Client == null)
-                return false;
-
-            var status = Client.ConnectionStatus;
-
-            return status != NetConnectionStatus.Disconnected && status != NetConnectionStatus.None;
         }
 
         public void OnTick(object sender, EventArgs e)
@@ -280,7 +263,8 @@ namespace RDRN_Core
 
             PauseMenu();
 
-            if (!IsConnected()) return;
+            if (!IsConnected) 
+                return;
 
             if (DateTime.Now.Subtract(_lastCheck).TotalMilliseconds > 1000)
             {
@@ -341,7 +325,7 @@ namespace RDRN_Core
         {
             if (e.Alt && e.KeyCode == Keys.F4)
             {
-                if (Client != null && IsOnServer()) Client.Disconnect("Quit");
+                if (Client != null && IsOnServer) Client.Disconnect("Quit");
                 CEFManager.Dispose();
                 CEFManager.DisposeCef();
 
@@ -351,7 +335,7 @@ namespace RDRN_Core
             switch (e.KeyCode)
             {
                 case Keys.Escape:
-                    if (IsOnServer())
+                    if (IsOnServer)
                     {
                         if (_isGoingToCar)
                         {
@@ -365,8 +349,25 @@ namespace RDRN_Core
                     }
                     break;
 
+                case Keys.F5:
+
+                    if (IsConnected)
+                    {
+                        if (Client == null)
+                            return;
+                        Client.Disconnect("Quit");
+                        OnLocalDisconnect();
+                        LogManager.DebugLog("Force disconnect.");
+                    }
+                    else
+                    {
+                        ConnectToServer("127.0.0.1", 4499);
+                        LogManager.DebugLog("Force connect.");
+                    }
+
+                    break;
                 case Keys.F7:
-                    if (IsOnServer())
+                    if (IsOnServer)
                     {
                         ChatVisible = !ChatVisible;
                         UIVisible = !UIVisible;
@@ -376,7 +377,7 @@ namespace RDRN_Core
                     break;
 
                 case Keys.T:
-                    if (IsOnServer() && UIVisible && ChatVisible && ScriptChatVisible && CanOpenChatbox)
+                    if (IsOnServer && UIVisible && ChatVisible && ScriptChatVisible && CanOpenChatbox)
                     {
                         if (!_oldChat)
                         {

@@ -29,16 +29,16 @@ namespace Shared
     }
 
     [MessagePackObject]
-    [Union(13, typeof(VehicleProperties))]
-    [Union(14, typeof(BlipProperties))]
-    [Union(15, typeof(MarkerProperties))]
-    [Union(16, typeof(PickupProperties))]
-    [Union(17, typeof(PlayerProperties))]
-    [Union(18, typeof(TextLabelProperties))]
-    [Union(19, typeof(WorldProperties))]
-    [Union(20, typeof(PedProperties))]
-    [Union(21, typeof(ParticleProperties))]
-    public class EntityProperties
+    [Union(0, typeof(VehicleProperties))]
+    [Union(1, typeof(BlipProperties))]
+    [Union(2, typeof(MarkerProperties))]
+    [Union(3, typeof(PickupProperties))]
+    [Union(4, typeof(PlayerProperties))]
+    [Union(5, typeof(TextLabelProperties))]
+    [Union(6, typeof(WorldProperties))]
+    [Union(7, typeof(PedProperties))]
+    [Union(8, typeof(ParticleProperties))]
+    public abstract class EntityPropertiesAbstract
     {
         [Key(0)]
         public Vector3 Position { get; set; }
@@ -81,5 +81,11 @@ namespace Shared
 
         [Key(22)]
         public Vector3 Velocity { get; set; }
+    }
+
+    [MessagePackObject]
+    public class EntityProperties : EntityPropertiesAbstract
+    {
+
     }
 }

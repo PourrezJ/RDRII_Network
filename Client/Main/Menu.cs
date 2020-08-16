@@ -60,8 +60,6 @@ namespace RDRN_Core
 
         private static Vector3 _vinewoodSign = new Vector3(827.74f, 1295.68f, 364.34f);
 
-        public static string RDRNetworkPath => System.IO.Directory.GetParent(Startup.RDRN_Path).FullName;
-
         private void GetWelcomeMessage()
         {
             ThreadPool.QueueUserWorkItem((WaitCallback)delegate
@@ -74,9 +72,9 @@ namespace RDRN_Core
                         var rawJson = wc.DownloadString(masterServerAddress.Trim('/') + "/welcome.json");
                         var jsonObj = JsonConvert.DeserializeObject<WelcomeSchema>(rawJson);
                         if (jsonObj == null) throw new WebException();
-                        if (!File.Exists((string)(Main.RDRNetworkPath + "images\\" + jsonObj.Picture)))
+                        if (!File.Exists((string)(Startup.RDRN_Path + "images\\" + jsonObj.Picture)))
                         {
-                            wc.DownloadFile(masterServerAddress.Trim('/') + "/pictures/" + jsonObj.Picture, (string)(Main.RDRNetworkPath + "\\images\\" + jsonObj.Picture));
+                            wc.DownloadFile(masterServerAddress.Trim('/') + "/pictures/" + jsonObj.Picture, (string)(Startup.RDRN_Path + "\\images\\" + jsonObj.Picture));
                         }
                         /*
                         _welcomePage.Text = jsonObj.Message;
@@ -100,13 +98,13 @@ namespace RDRN_Core
             if (split.Length < 2 || string.IsNullOrWhiteSpace(split[0]) || string.IsNullOrWhiteSpace(split[1]) || !int.TryParse(split[1], out int port)) return;
             PlayerSettings.FavoriteServers.Add(server);
             PlayerSettings.FavoriteServers = PlayerSettings.FavoriteServers.Distinct().ToList();
-            Util.Util.SaveSettings(RDRNetworkPath + "\\settings.xml");
+            Util.Util.SaveSettings(Startup.RDRN_Path + "\\settings.xml");
         }
 
         private static void RemoveFromFavorites(string server)
         {
             PlayerSettings.FavoriteServers.Remove(server);
-            Util.Util.SaveSettings(RDRNetworkPath + "\\settings.xml");
+            Util.Util.SaveSettings(Startup.RDRN_Path + "\\settings.xml");
         }
 
         private void AddServerToRecent(string server, string password = "")
@@ -118,7 +116,7 @@ namespace RDRN_Core
 
             PlayerSettings.RecentServers.Add(server);
             if (PlayerSettings.RecentServers.Count > 10) PlayerSettings.RecentServers.RemoveAt(0);
-            Util.Util.SaveSettings(RDRNetworkPath + "\\settings.xml");
+            Util.Util.SaveSettings(Startup.RDRN_Path + "\\settings.xml");
 /*
             var item = new UIMenuItem(server) {Description = server, Text = server };
             item.Activated += (sender, selectedItem) =>

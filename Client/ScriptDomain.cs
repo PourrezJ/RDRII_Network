@@ -87,8 +87,6 @@ namespace RDRN_Core
 
 		public static ScriptDomain Load(string path)
 		{
-			path = Path.Combine(path, "Scripts");
-
 			// Create AppDomain
 			var setup = new AppDomainSetup();
 			setup.ApplicationBase = path;

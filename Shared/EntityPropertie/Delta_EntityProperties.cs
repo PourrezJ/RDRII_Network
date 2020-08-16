@@ -5,6 +5,7 @@ using Shared.Math;
 namespace Shared
 {
     [MessagePackObject]
+    /*
     [Union(14, typeof(Delta_VehicleProperties))]
     [Union(15, typeof(Delta_BlipProperties))]
     [Union(16, typeof(Delta_MarkerProperties))]
@@ -13,7 +14,7 @@ namespace Shared
     [Union(19, typeof(Delta_TextLabelProperties))]
     [Union(20, typeof(Delta_WorldProperties))]
     [Union(21, typeof(Delta_PedProperties))]
-    [Union(22, typeof(Delta_ParticleProperties))]
+    [Union(22, typeof(Delta_ParticleProperties))]*/
     public class Delta_EntityProperties
     {
         [Key(0)]

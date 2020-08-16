@@ -18,7 +18,7 @@ namespace RDRN_Core
                         var count = messages.Count;
                         for (var i = 0; i < count; i++)
                         {
-                            CrossReference.EntryPoint.ProcessMessages(messages[i], true);
+                            Main.Instance.ProcessMessages(messages[i], true);
                         }
                     }
                 }
