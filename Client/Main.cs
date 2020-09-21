@@ -263,6 +263,11 @@ namespace RDRN_Core
 
             PauseMenu();
 
+            Game.TimeScale = 1;
+
+            Function.Call(Hash.SHUTDOWN_LOADING_SCREEN);
+
+
             if (!IsConnected) 
                 return;
 

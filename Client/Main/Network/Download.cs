@@ -92,8 +92,13 @@ namespace RDRN_Core
             Client.SendMessage(confirmObj, NetDeliveryMethod.ReliableOrdered, (int)ConnectionChannel.SyncEvent);
 
             HasFinishedDownloading = true;
-            Function.Call((Hash)0x10D373323E5B9C0D); //_REMOVE_LOADING_PROMPT
+            //Function.Call((Hash)0x10D373323E5B9C0D); //_REMOVE_LOADING_PROMPT
             Function.Call(Hash.DISPLAY_RADAR, true);
+
+
+            LogManager.WriteLog("Changement de skin");
+
+            Util.Util.SetPlayerSkin(PedHash.mp_male);
         }
     }
 }

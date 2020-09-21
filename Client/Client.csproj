@@ -45,7 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>C:\RDRNetwork\bin\Scripts\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
@@ -88,6 +88,9 @@
     </Reference>
     <Reference Include="EasyHook, Version=2.7.7097.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyHook.2.7.7097\lib\net40\EasyHook.dll</HintPath>
+    </Reference>
+    <Reference Include="Memory, Version=1.2.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Memory.dll.1.2.19\lib\net472\Memory.dll</HintPath>
     </Reference>
     <Reference Include="MessagePack, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b4a0369545f0a1be, processorArchitecture=MSIL">
       <HintPath>..\packages\MessagePack.2.1.165\lib\netstandard2.0\MessagePack.dll</HintPath>
@@ -264,7 +267,7 @@
     <Compile Include="Gui\Cef\WebKitInjector.cs" />
     <Compile Include="Gui\DxHook.cs" />
     <Compile Include="Gui\ImageElement.cs" />
-    <Compile Include="HookWrapper.cs" />
+    <Compile Include="Util\HookWrapper.cs" />
     <Compile Include="Javascript\Attach.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="Main\Cleanup.cs" />
@@ -303,6 +306,7 @@
     <Compile Include="Sync\Entity\OnFoot.cs" />
     <Compile Include="Sync\Entity\Vehicle.cs" />
     <Compile Include="Sync\SyncSender\PedData.cs" />
+    <Compile Include="Sync\SyncSender\SyncCollector.cs" />
     <Compile Include="Sync\SyncSender\VehicleData.cs" />
     <Compile Include="Util\Cache.cs" />
     <Compile Include="Networking\DeltaCompressor.cs" />

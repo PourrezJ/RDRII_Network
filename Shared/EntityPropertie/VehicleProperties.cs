@@ -12,46 +12,46 @@ namespace Shared
             EntityType = (byte)Shared.EntityType.Vehicle;
         }
 
-        [Key(0)]
+        [Key(23)]
         public int PrimaryColor { get; set; }
 
-        [Key(1)]
+        [Key(24)]
         public int SecondaryColor { get; set; }
 
-        [Key(2)]
+        [Key(25)]
         public float Health { get; set; }
 
-        [Key(3)]
+        [Key(26)]
         public bool IsDead { get; set; }
 
-        [Key(4)]
+        [Key(27)]
         public Dictionary<byte, int> Mods { get; set; }
 
-        [Key(5)]
+        [Key(28)]
         public bool Siren { get; set; }
 
-        [Key(6)]
+        [Key(29)]
         public byte Doors { get; set; }
 
-        [Key(7)]
+        [Key(30)]
         public int Trailer { get; set; }
 
-        [Key(8)]
+        [Key(31)]
         public byte Tires { get; set; }
 
-        [Key(9)]
+        [Key(32)]
         public int Livery { get; set; }
 
-        [Key(10)]
+        [Key(33)]
         public string NumberPlate { get; set; }
 
-        [Key(11)]
+        [Key(34)]
         public short VehicleComponents { get; set; }
 
-        [Key(12)]
+        [Key(35)]
         public int TraileredBy { get; set; }
 
-        [Key(13)]
+        [Key(36)]
         public VehicleDamageModel DamageModel { get; set; }
     }
 }

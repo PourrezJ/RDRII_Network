@@ -10,7 +10,7 @@ namespace Shared
             EntityType = (byte)Shared.EntityType.Player;
         }
 
-        [Key(0)]
+        [Key(23)]
         public string LoopingAnimation { get; set; }
     }
 }

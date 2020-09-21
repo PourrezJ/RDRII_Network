@@ -8,7 +8,7 @@ namespace Shared
     {
         public ServerMap()
         {
-            Objects = new Dictionary<int, EntityProperties>();
+            Objects = new Dictionary<int, EntityPropertiesAbstract>();
             Vehicles = new Dictionary<int, VehicleProperties>();
             Blips = new Dictionary<int, BlipProperties>();
             Markers = new Dictionary<int, MarkerProperties>();
@@ -20,7 +20,7 @@ namespace Shared
         }
 
         [Key(0)]
-        public Dictionary<int, EntityProperties> Objects { get; set; }
+        public Dictionary<int, EntityPropertiesAbstract> Objects { get; set; }
 
         [Key(1)]
         public Dictionary<int, VehicleProperties> Vehicles { get; set; }

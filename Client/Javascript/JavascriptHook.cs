@@ -3149,7 +3149,7 @@ namespace RDRN_Core.Javascript
 
         public void setMarkerScale(LocalHandle marker, Vector3 scale)
         {
-            var delta = new Delta_MarkerProperties {Scale = scale};
+            var delta = new MarkerProperties {Scale = scale};
 
             Main.NetEntityHandler.UpdateMarker(marker.Value, delta, true);
         }
@@ -3161,7 +3161,7 @@ namespace RDRN_Core.Javascript
 
         public void setMarkerDirection(LocalHandle marker, Vector3 dir)
         {
-            var delta = new Delta_MarkerProperties {Direction = dir};
+            var delta = new MarkerProperties {Direction = dir};
 
             Main.NetEntityHandler.UpdateMarker(marker.Value, delta, true);
         }
@@ -3608,180 +3608,7 @@ namespace RDRN_Core.Javascript
         {
             onKeyUp?.Invoke(sender, e);
         }
-        /*
-#region Menus
 
-        public UIMenu createMenu(string title, double x, double y, int anchor)
-        {
-            return createMenu(null, title, x, y, anchor, false);
-        }
-
-        public UIMenu createMenu(string title, string subtitle, double x, double y, int anchor, bool enableBanner = true, bool disableControls = false, bool scaleWithSafezone = false)
-        {
-            var offset = convertAnchorPos((float)x, (float)y - 107, (Anchor)anchor, 431f, 107f + 38 + 38f * 10);
-            if (string.IsNullOrEmpty(subtitle))
-            {
-                subtitle = "Available Options:";
-            }
-
-            if (string.IsNullOrEmpty(title))
-            {
-                title = "Menu";
-            }
-
-            var newM = new UIMenu(title, subtitle, new Point((int)offset.X, (int)offset.Y))
-            {
-                ScaleWithSafezone = scaleWithSafezone,
-                ControlDisablingEnabled = disableControls,
-                
-            };
-
-            if (enableBanner)
-            {
-                newM.SetBannerType(new UIResRectangle());
-            }
-
-            return newM;
-        }
-
-        public UIMenuItem createMenuItem(string label, string description)
-        {
-            return new UIMenuItem(label, description);
-        }
-
-        public UIMenuColoredItem createColoredItem(string label, string description, string hexColor, string hexHighlightColor)
-        {
-            return new UIMenuColoredItem(label, description, ColorTranslator.FromHtml(hexColor), ColorTranslator.FromHtml(hexHighlightColor));
-        }
-
-        public UIMenuCheckboxItem createCheckboxItem(string label, string description, bool isChecked)
-        {
-            return new UIMenuCheckboxItem(label, isChecked, description);
-        }
-
-        public UIMenuListItem createListItem(string label, string description, List<string> items, int index)
-        {
-            return new UIMenuListItem(label, items.Select(s => (dynamic)s).ToList(), index, description);
-        }
-
-        public MenuPool getMenuPool()
-        {
-            return new MenuPool();
-        }
-
-        public void drawMenu(UIMenu menu)
-        {
-            if (!Main.UIVisible || Main.MainMenu.Visible) return;
-            
-            if (!Main.Chat.IsFocused)
-            {
-                menu.ProcessControl();
-                menu.ProcessMouse();
-            }
-
-            menu.Draw();
-
-            if (!menu.Visible) return;
-            Game.DisableControlThisFrame(Control.NextCamera);
-            Game.DisableControlThisFrame(Control.NextWeapon);
-            Game.DisableControlThisFrame(Control.VehicleNextRadio);
-            Game.DisableControlThisFrame(Control.LookLeftRight);
-            Game.DisableControlThisFrame(Control.LookUpDown);
-        }
-
-        public void setMenuBannerSprite(UIMenu menu, string spritedict, string spritename)
-        {
-            menu.SetBannerType(new Sprite(spritedict, spritename, new Point(), new Size()));
-        }
-
-        public void setMenuBannerTexture(UIMenu menu, string path)
-        {
-            var realpath = getResourceFilePath(path);
-            menu.SetBannerType(realpath);
-        }
-
-        public void setMenuBannerRectangle(UIMenu menu, int alpha, int red, int green, int blue)
-        {
-            menu.SetBannerType(new UIResRectangle(new Point(), new Size(), Color.FromArgb(alpha, red, green, blue)));
-        }
-
-        public void setMenuTitle(UIMenu menu, string title)
-        {
-            menu.Title.Caption = title;
-        }
-
-        public void setMenuSubtitle(UIMenu menu, string text)
-        {
-            menu.Subtitle.Caption = text;
-        }
-
-        public string getUserInput(string defaultText, int maxlen = 0)
-        {
-            return Game.GetUserInput(defaultText);
-        }
-
-        internal PointF convertAnchorPos(float x, float y, Anchor anchor, float xOffset, float yOffset)
-        {
-            var res = UIMenu.GetScreenResolutionMantainRatio();
-            //var res = getScreenResolution();
-            switch (anchor)
-            {
-                //case Anchor.TopLeft:
-                //    return new PointF(x + 10, y + 13);
-                //case Anchor.MiddleLeft:
-                //    return new PointF(x + 10, res.Height / 2 + y - 27);
-                //case Anchor.BottomLeft:
-                //    return new PointF(x + 10, res.Height - (y + 413));
-                //case Anchor.TopCenter:
-                //    return new PointF(res.Width / 2 + x - 221, y + 13);
-                //case Anchor.MiddleCenter:
-                //    return new PointF(res.Width / 2 + x - 221, res.Height / 2 + y - 27);
-                //case Anchor.BottomCenter:
-                //    return new PointF(res.Width / 2 + x - 221, res.Height - (y + 413));
-                //case Anchor.TopRight:
-                //    return new PointF(res.Width - x - 441, y + 13);
-                //case Anchor.MiddleRight:
-                //    return new PointF(res.Width - x - 441, res.Height / 2 + y - 27);
-                //case Anchor.BottomRight:
-                //    return new PointF(res.Width - x - 441, res.Height - (y + 413));
-                case Anchor.TopLeft:
-                    return new PointF(x, y);
-                case Anchor.TopCenter:
-                    return new PointF(res.Width / 2 + x, 0 + y);
-                case Anchor.TopRight:
-                    return new PointF(res.Width - x - xOffset, y);
-                case Anchor.MiddleLeft:
-                    return new PointF(x, res.Height / 2 + y - yOffset / 2);
-                case Anchor.MiddleCenter:
-                    return new PointF(res.Width / 2 + x, res.Height / 2 + y - yOffset / 2);
-                case Anchor.MiddleRight:
-                    return new PointF(res.Width - x - xOffset, res.Height / 2 + y - yOffset / 2);
-                case Anchor.BottomLeft:
-                    return new PointF(x, res.Height - y - yOffset);
-                case Anchor.BottomCenter:
-                    return new PointF(res.Width / 2 + x, res.Height - y - yOffset);
-                case Anchor.BottomRight:
-                    return new PointF(res.Width - x, res.Height - y - yOffset);
-                default:
-                    return PointF.Empty;
-            }
-        }
-
-        internal enum Anchor
-        {
-            TopLeft = 0,
-            TopCenter = 1,
-            TopRight = 2,
-            MiddleLeft = 3,
-            MiddleCenter = 4,
-            MiddleRight = 6,
-            BottomLeft = 7,
-            BottomCenter = 8,
-            BottomRight = 9,
-        }
-
-        #endregion
-        */
         public bool isControlJustPressed(int control)
         {
             return Game.IsControlJustPressed(0,(RDRN_Core.Control) control);

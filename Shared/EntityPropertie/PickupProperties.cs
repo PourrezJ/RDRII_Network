@@ -10,16 +10,16 @@ namespace Shared
             EntityType = (byte)Shared.EntityType.Pickup;
         }
 
-        [Key(0)]
+        [Key(24)]
         public int Amount { get; set; }
 
-        [Key(1)]
+        [Key(25)]
         public bool PickedUp { get; set; }
 
-        [Key(2)]
+        [Key(26)]
         public uint RespawnTime { get; set; }
 
-        [Key(3)]
+        [Key(27)]
         public int CustomModel { get; set; }
     }
 }

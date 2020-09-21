@@ -221,7 +221,7 @@ namespace RDRN_Core.Gui.DirectXHook
                 
                 //Init font
                 var directWriteFactory = new SharpDX.DirectWrite.Factory();
-                textFormat = new SharpDX.DirectWrite.TextFormat(directWriteFactory, "Arial", SharpDX.DirectWrite.FontWeight.Bold, SharpDX.DirectWrite.FontStyle.Normal, 1) { TextAlignment = SharpDX.DirectWrite.TextAlignment.Leading, ParagraphAlignment = SharpDX.DirectWrite.ParagraphAlignment.Near };
+                textFormat = new SharpDX.DirectWrite.TextFormat(directWriteFactory, "Arial", 12f) /*{ TextAlignment = SharpDX.DirectWrite.TextAlignment.Leading, ParagraphAlignment = SharpDX.DirectWrite.ParagraphAlignment.Near }*/;
                 textBrush = new SharpDX.Direct2D1.SolidColorBrush(d2DRenderTarget[0], Color.White);
                 directWriteFactory.Dispose();
 
@@ -248,7 +248,7 @@ namespace RDRN_Core.Gui.DirectXHook
                 }
             }
 
-            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(20, 20, 20, 20), textBrush);
+            CurrentRenderTarget2D1.DrawText("RDRNetwork", textFormat, new SharpDX.Mathematics.Interop.RawRectangleF(20, 20, 100, 100), textBrush);
             try
             {
                 CurrentRenderTarget2D1.EndDraw();

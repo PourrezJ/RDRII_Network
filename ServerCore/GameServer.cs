@@ -628,12 +628,12 @@ namespace GTANResource
                 {
                     var doorId = (int) args[1];
                     var newFloat = (bool) args[2];
-                    if (NetEntityHandler.ToDict().ContainsKey((int) args[0]))
+                    if (NetEntityHandler.ServerEntities.ContainsKey((int) args[0]))
                     {
                         if (newFloat)
-                            ((VehicleProperties) NetEntityHandler.ToDict()[(int) args[0]]).Doors |= (byte)(1 << doorId);
+                            ((VehicleProperties) NetEntityHandler.ServerEntities[(int) args[0]]).Doors |= (byte)(1 << doorId);
                         else
-                            ((VehicleProperties)NetEntityHandler.ToDict()[(int)args[0]]).Doors &= (byte)(~(1 << doorId));
+                            ((VehicleProperties)NetEntityHandler.ServerEntities[(int)args[0]]).Doors &= (byte)(~(1 << doorId));
                     }
                 }
                     break;
@@ -642,26 +642,22 @@ namespace GTANResource
                     var newState = (bool) args[0];
                     if (!newState)
                     {
-                        if (NetEntityHandler.ToDict().ContainsKey((int) args[1]))
+                        if (NetEntityHandler.ServerEntities.ContainsKey((int) args[1]))
                         {
                             if (
-                                NetEntityHandler.ToDict()
-                                    .ContainsKey((NetEntityHandler.NetToProp<VehicleProperties>((int) args[1])).Trailer))
-                                ((VehicleProperties)
-                                    NetEntityHandler.ToDict()[
-                                        NetEntityHandler.NetToProp<VehicleProperties>((int) args[1]).Trailer])
-                                    .TraileredBy = 0;
+                                NetEntityHandler.ServerEntities.ContainsKey((NetEntityHandler.NetToProp<VehicleProperties>((int) args[1])).Trailer))
+                                ((VehicleProperties)NetEntityHandler.ServerEntities[NetEntityHandler.NetToProp<VehicleProperties>((int) args[1]).Trailer]).TraileredBy = 0;
 
-                            ((VehicleProperties) NetEntityHandler.ToDict()[(int) args[1]]).Trailer = 0;
+                            ((VehicleProperties) NetEntityHandler.ServerEntities[(int) args[1]]).Trailer = 0;
                         }
                     }
                     else
                     {
-                        if (NetEntityHandler.ToDict().ContainsKey((int)args[1]))
-                            ((VehicleProperties)NetEntityHandler.ToDict()[(int)args[1]]).Trailer = (int)args[2];
+                        if (NetEntityHandler.ServerEntities.ContainsKey((int)args[1]))
+                            ((VehicleProperties)NetEntityHandler.ServerEntities[(int)args[1]]).Trailer = (int)args[2];
 
-                        if (NetEntityHandler.ToDict().ContainsKey((int)args[2]))
-                            ((VehicleProperties)NetEntityHandler.ToDict()[(int)args[2]]).TraileredBy = (int)args[1];
+                        if (NetEntityHandler.ServerEntities.ContainsKey((int)args[2]))
+                            ((VehicleProperties)NetEntityHandler.ServerEntities[(int)args[2]]).TraileredBy = (int)args[1];
                     }
 
                     lock (RunningResources)
@@ -677,15 +673,15 @@ namespace GTANResource
                     var veh = (int)args[0];
                     var tireId = (int)args[1];
                     var isBursted = (bool)args[2];
-                    if (NetEntityHandler.ToDict().ContainsKey(veh))
+                    if (NetEntityHandler.ServerEntities.ContainsKey(veh))
                     {
-                        var oldValue = (((VehicleProperties) NetEntityHandler.ToDict()[(int) args[0]]).Tires &
+                        var oldValue = (((VehicleProperties) NetEntityHandler.ServerEntities[(int) args[0]]).Tires &
                                         (byte) (1 << tireId)) != 0;
 
                         if (isBursted)
-                            ((VehicleProperties)NetEntityHandler.ToDict()[(int)args[0]]).Tires |= (byte)(1 << tireId);
+                            ((VehicleProperties)NetEntityHandler.ServerEntities[(int)args[0]]).Tires |= (byte)(1 << tireId);
                         else
-                            ((VehicleProperties)NetEntityHandler.ToDict()[(int)args[0]]).Tires &= (byte)(~(1 << tireId));
+                            ((VehicleProperties)NetEntityHandler.ServerEntities[(int)args[0]]).Tires &= (byte)(~(1 << tireId));
 
                         if (oldValue ^ isBursted)
                         {
@@ -703,16 +699,16 @@ namespace GTANResource
                 {
                     var pickupId = (int) args[0];
 
-                    if (NetEntityHandler.ToDict().ContainsKey(pickupId))
+                    if (NetEntityHandler.ServerEntities.ContainsKey(pickupId))
                     {
-                        if (!((PickupProperties) NetEntityHandler.ToDict()[pickupId]).PickedUp)
+                        if (!((PickupProperties) NetEntityHandler.ServerEntities[pickupId]).PickedUp)
                         {
-                            ((PickupProperties) NetEntityHandler.ToDict()[pickupId]).PickedUp = true;
+                            ((PickupProperties) NetEntityHandler.ServerEntities[pickupId]).PickedUp = true;
                             lock (RunningResources)
                             {
                                 RunningResources.ForEach(res => res.Engines.ForEach(en => en.InvokePlayerPickup(sender, new NetHandle(pickupId))));
                             }
-                            if (((PickupProperties)NetEntityHandler.ToDict()[pickupId]).RespawnTime > 0)
+                            if (((PickupProperties)NetEntityHandler.ServerEntities[pickupId]).RespawnTime > 0)
                                 PickupManager.Add(pickupId);
                             /*
                             if (
@@ -746,18 +742,6 @@ namespace GTANResource
                                 }));
                 }
                 break;
-
-                case SyncEventType.RadioChange:
-                    {
-                        var veh = (int)args[0];
-                        var stationID = (int)args[1];
-
-                        if (NetEntityHandler.ToDict().ContainsKey(veh))
-                        {
-                            //((VehicleProperties)NetEntityHandler.ToDict()[(int)args[0]]).RadioID = stationID;
-                        }
-                        break;
-                    }
             }
         }
 
@@ -1038,7 +1022,7 @@ namespace GTANResource
             };
             prop.PositionMovement = mov;
 
-            var delta = new Delta_EntityProperties {PositionMovement = mov};
+            var delta = new EntityProperties {PositionMovement = mov};
             UpdateEntityInfo(entity, EntityType.Prop, delta);
         }
 
@@ -1058,7 +1042,7 @@ namespace GTANResource
             };
             prop.RotationMovement = mov;
 
-            var delta = new Delta_EntityProperties {RotationMovement = mov};
+            var delta = new EntityProperties {RotationMovement = mov};
             UpdateEntityInfo(entity, EntityType.Prop, delta);
         }
 
@@ -1076,7 +1060,7 @@ namespace GTANResource
 
             prop.SyncedProperties.Set(key, nativeArg);
 
-            var delta = new Delta_EntityProperties
+            var delta = new EntityProperties
             {
                 SyncedProperties = new Dictionary<string, NativeArgument> {{key, nativeArg}}
             };
@@ -1103,7 +1087,7 @@ namespace GTANResource
 
             prop.SyncedProperties.Remove(key);
 
-            var delta = new Delta_EntityProperties
+            var delta = new EntityProperties
             {
                 SyncedProperties = new Dictionary<string, NativeArgument> {{key, new LocalGamePlayerArgument()}}
             };

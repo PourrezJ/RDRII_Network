@@ -17,40 +17,40 @@ namespace Shared
             WeaponComponents = new Dictionary<int, List<int>>();
         }
 
-        [Key(0)]
+        [Key(23)]
         public Dictionary<byte, byte> Props { get; set; }
 
-        [Key(1)]
+        [Key(24)]
         public Dictionary<byte, byte> Textures { get; set; }
 
-        [Key(2)]
+        [Key(25)]
         public int BlipSprite { get; set; }
 
-        [Key(3)]
+        [Key(26)]
         public int Team { get; set; }
 
-        [Key(4)]
+        [Key(27)]
         public int BlipColor { get; set; }
 
-        [Key(5)]
+        [Key(28)]
         public byte BlipAlpha { get; set; }
 
-        [Key(6)]
+        [Key(29)]
         public Dictionary<byte, Tuple<byte, byte>> Accessories { get; set; }
 
-        [Key(7)]
+        [Key(30)]
         public string Name { get; set; }
 
-        [Key(8)]
+        [Key(31)]
         public Dictionary<int, byte> WeaponTints { get; set; }
 
-        [Key(9)]
+        [Key(32)]
         public Dictionary<int, List<int>> WeaponComponents { get; set; } 
 
-        [Key(10)]
+        [Key(33)]
         public string NametagText { get; set; }
 
-        [Key(11)]
+        [Key(34)]
         public int NametagSettings { get; set; }   
     }
 }

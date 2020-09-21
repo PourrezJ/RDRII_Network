@@ -89,7 +89,7 @@ namespace RDRN_Core
         /// <param name="pattern">The pattern.</param>
         /// <param name="mask">The pattern mask.</param>
         /// <returns>The address of a region matching the pattern or <c>null</c> if none was found.</returns>
-        static unsafe byte* FindPattern(string pattern, string mask)
+        internal static unsafe byte* FindPattern(string pattern, string mask)
 		{
 			ProcessModule module = Process.GetCurrentProcess().MainModule;
 

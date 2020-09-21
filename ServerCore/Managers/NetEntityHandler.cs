@@ -9,25 +9,20 @@ namespace ResuMPServer
     internal class NetEntityHandler
     {
         private int EntityCounter = 1;
-        private Dictionary<int, EntityProperties> ServerEntities;
+        internal Dictionary<int, EntityPropertiesAbstract> ServerEntities { get; private set; }
 
         public bool ReuseIds = false;
-
+        
         public NetEntityHandler()
         {
-            ServerEntities = new Dictionary<int, EntityProperties>();
+            ServerEntities = new Dictionary<int, EntityPropertiesAbstract>();
         }
 
-        public Dictionary<int, EntityProperties> ToDict()
-        {
-                return ServerEntities;
-        }
-
-        public Dictionary<int, EntityProperties> ToCopy()
+        public Dictionary<int, EntityPropertiesAbstract> ToCopy()
         {
             lock (ServerEntities)
             {
-                return new Dictionary<int, EntityProperties>(ServerEntities);
+                return new Dictionary<int, EntityPropertiesAbstract>(ServerEntities);
             }
         }
 
@@ -487,7 +482,7 @@ namespace ResuMPServer
         internal static bool Exists(this NetHandle ent)
         {
             if (ent.IsNull) return false;
-            return Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(ent.Value);
+            return Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(ent.Value);
         }
     }
 }

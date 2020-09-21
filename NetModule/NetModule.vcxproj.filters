@@ -32,6 +32,9 @@
     <ClInclude Include="helpers.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="detour-hook.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -53,6 +56,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="patternscan.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="detour-hook.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

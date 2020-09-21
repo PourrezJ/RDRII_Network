@@ -65,7 +65,7 @@ namespace ResuMPServer
             set => _vehicleSeat = value;
         }
 
-        internal PlayerProperties Properties => Program.ServerInstance.NetEntityHandler.ToDict()[Id.Value] as PlayerProperties;
+        internal PlayerProperties Properties => Program.ServerInstance.NetEntityHandler.ServerEntities[Id.Value] as PlayerProperties;
 
         public Client(API father, NetHandle handle, NetConnection nc) : base(father, handle)
         {
@@ -322,7 +322,7 @@ namespace ResuMPServer
             Program.ServerInstance.SendServerEventToPlayer(this, ServerEventType.WeaponPermissionChange, false);
             API.Shared.SendNativeToPlayer(this, 0xF25DF915FA38C5F3, new LocalPlayerArgument(), true);
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.WeaponTints = Properties.WeaponTints;
             delta.WeaponComponents = Properties.WeaponComponents;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta, this);
@@ -333,7 +333,7 @@ namespace ResuMPServer
         {
             Properties.NametagText = text;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.NametagText = text;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
         }
@@ -342,7 +342,7 @@ namespace ResuMPServer
         {
             Properties.NametagText = " ";
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.NametagText = " ";
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
         }
@@ -354,7 +354,7 @@ namespace ResuMPServer
             else
                 Properties.NametagSettings = PacketOptimization.SetBit(Properties.NametagSettings, 1);
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.NametagSettings = Properties.NametagSettings;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
         }
@@ -371,7 +371,7 @@ namespace ResuMPServer
             var col = Extensions.FromArgb(0, r, g, b) << 8;
             Properties.NametagSettings |= col;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.NametagSettings = Properties.NametagSettings;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
         }
@@ -399,7 +399,7 @@ namespace ResuMPServer
 
             Properties.NametagSettings &= 255;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.NametagSettings = Properties.NametagSettings;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
         }
@@ -409,7 +409,7 @@ namespace ResuMPServer
             Program.ServerInstance.SetPlayerOnSpectate(this, true);
             Properties.Flag |= (byte)EntityFlag.PlayerSpectating;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.Flag = Properties.Flag;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta, this);
         }
@@ -419,7 +419,7 @@ namespace ResuMPServer
             Program.ServerInstance.SetPlayerOnSpectatePlayer(this, target);
             Properties.Flag |= (byte)EntityFlag.PlayerSpectating;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.Flag = Properties.Flag;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta, this);
         }
@@ -429,7 +429,7 @@ namespace ResuMPServer
             Program.ServerInstance.SetPlayerOnSpectate(this, false);
             Properties.Flag = (byte)PacketOptimization.ResetBit(this.Properties.Flag, EntityFlag.PlayerSpectating);
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.Flag = Properties.Flag;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta, this);
         }
@@ -444,7 +444,7 @@ namespace ResuMPServer
             Program.ServerInstance.NetEntityHandler.NetToProp<PlayerProperties>(Id.Value).Name =
                 newName;
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.Name = newName;
             GameServer.UpdateEntityInfo(Id.Value, EntityType.Player, delta);
 

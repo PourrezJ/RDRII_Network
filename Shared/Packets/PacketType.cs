@@ -73,9 +73,8 @@ namespace Shared
         BooleanLights = 2,
         TrailerDeTach = 3,
         TireBurst = 4,
-        RadioChange = 5,
-        PickupPickedUp = 6,
-        StickyBombDetonation = 7,
+        PickupPickedUp = 5,
+        StickyBombDetonation = 6,
     }
 
     public enum ServerEventType

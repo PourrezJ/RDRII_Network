@@ -94,8 +94,9 @@ namespace RDRN_Core.Gui.Cef
 
         internal static void SetMouseHidden(bool hidden)
         {
+            var path = Path.Combine(Startup.RDRN_Path + "\\images\\cef\\cursor.png");
            if (Cursor == null)
-               Cursor = ImageElement.FromFile(Startup.RDRN_Path + "\\images\\cef\\cursor.png", new PointF());
+               Cursor = ImageElement.FromFile(path, new PointF());
            Cursor.Hidden = hidden;
         }
 

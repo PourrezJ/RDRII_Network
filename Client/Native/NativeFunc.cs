@@ -15,6 +15,7 @@ namespace RDRN_Core
 	public static unsafe class NativeFunc
 	{
 		#region ScriptHookRDR Imports
+		
 		/// <summary>
 		/// Initializes the stack for a new script function call.
 		/// </summary>
@@ -35,6 +36,16 @@ namespace RDRN_Core
 		/// <returns>A pointer to the return value of the call.</returns>
 		[DllImport("ScriptHookRDR2.dll", ExactSpelling = true, EntryPoint = "?nativeCall@@YAPEA_KXZ")]
 		static unsafe extern ulong* NativeCall();
+		
+		/*
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?NativeInit@Invoker@rh2@@SAX_K@Z")]
+		static extern void NativeInit(ulong hash);
+
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?_NativePush@Invoker@rh2@@CAX_K@Z")]
+		static extern void NativePush64(ulong val);
+
+		[DllImport("RDRN_Module.dll", ExactSpelling = true, EntryPoint = "?NativeCall@Invoker@rh2@@SAPEA_KXZ")]
+		static unsafe extern ulong* NativeCall();*/
 		#endregion
 
 		/// <summary>
@@ -230,6 +241,7 @@ namespace RDRN_Core
 			return Invoke(hash, ConvertPrimitiveArguments(args));
 		}
 
+		private static object thelock = new object();
 		/// <summary>
 		/// Executes a script function immediately. This may only be called from the main script domain thread.
 		/// </summary>
@@ -238,10 +250,21 @@ namespace RDRN_Core
 		/// <returns>A pointer to the return value of the call.</returns>
 		public static ulong* InvokeInternal(ulong hash, params ulong[] args)
 		{
-			NativeInit(hash);
-			foreach (var arg in args)
-				NativePush64(arg);
-			return NativeCall();
+			lock (thelock)
+			{
+				try
+				{
+					NativeInit(hash);
+					foreach (var arg in args)
+						NativePush64(arg);
+					return NativeCall();
+				}
+				catch(Exception ex)
+				{
+					LogManager.Exception(ex);
+				}
+				return null;
+			}
 		}
 		public static ulong* InvokeInternal(ulong hash, params object[] args)
 		{

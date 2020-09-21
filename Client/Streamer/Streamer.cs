@@ -175,7 +175,7 @@ namespace RDRN_Core.Streamer
             return rem;
         }
 
-        public RemoteProp CreateObject(int netHandle, EntityProperties prop)
+        public RemoteProp CreateObject(int netHandle, EntityPropertiesAbstract prop)
         {
             RemoteProp rem = new RemoteProp()
             {
@@ -649,116 +649,38 @@ namespace RDRN_Core.Streamer
             ((SyncPed)rem).DirtyWeapons = true;
         }
 
-        public void UpdatePlayer(int netHandle, Delta_PlayerProperties prop)
-        {
-            LogManager.DebugLog("UPDATING PLAYER " + netHandle + " PROP NULL? " + (prop == null));
-
-            if (IsLocalPlayer(NetToStreamedItem(netHandle)))
-            {
-                UpdateRemotePlayer(netHandle, prop);
-                return;
-            }
-
-            if (prop == null) return;
-            var veh = GetPlayer(netHandle);
-            if (prop.Props != null) veh.Props = prop.Props;
-            if (prop.Textures != null) veh.Textures = prop.Textures;
-            if (prop.BlipSprite != null) veh.BlipSprite = prop.BlipSprite.Value;
-            if (prop.Team != null) veh.Team = prop.Team.Value;
-            if (prop.BlipColor != null) veh.BlipColor = prop.BlipColor.Value;
-            if (prop.BlipAlpha != null) veh.BlipAlpha = prop.BlipAlpha.Value;
-            if (prop.Accessories != null) veh.Accessories = prop.Accessories;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
-            if (prop.WeaponTints != null)
-            {
-                veh.WeaponTints = prop.WeaponTints;
-                veh.DirtyWeapons = true;
-            }
-            if (prop.WeaponComponents != null)
-            {
-                veh.WeaponComponents = prop.WeaponComponents;
-                veh.DirtyWeapons = true;
-            }
-            if (prop.Name != null)
-            {
-                veh.Name = prop.Name;
-                LogManager.DebugLog("New name: " + prop.Name);
-            }
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-
-            if (prop.NametagText != null) veh.NametagText = prop.NametagText;
-            if (prop.NametagSettings != null) veh.NametagSettings = prop.NametagSettings.Value;
-
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
-
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
-            if (prop.AttachedTo != null)
-            {
-                veh.AttachedTo = prop.AttachedTo;
-                var attachedTo = NetToStreamedItem(prop.AttachedTo.NetHandle);
-                if (attachedTo != null)
-                {
-                    AttachEntityToEntity(veh as IStreamedItem, attachedTo, prop.AttachedTo);
-                }
-            }
-            if (prop.SyncedProperties != null)
-            {
-                if (veh.SyncedProperties == null) veh.SyncedProperties = new Dictionary<string, NativeArgument>();
-                foreach (var pair in prop.SyncedProperties)
-                {
-                    if (pair.Value is LocalGamePlayerArgument)
-                        veh.SyncedProperties.Remove(pair.Key);
-                    else
-                        veh.SyncedProperties.Set(pair.Key, pair.Value);
-                }
-            }
-
-            if (prop.PositionMovement != null) veh.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
-        }
-
-        private void UpdateRemotePlayer(int netHandle, Delta_PlayerProperties prop)
+        private void UpdateRemotePlayer(int netHandle, PlayerProperties prop)
         {
             RemotePlayer veh = NetToStreamedItem(netHandle) as RemotePlayer;
-            if (prop == null || veh == null) return;
-            if (prop.Props != null) veh.Props = prop.Props;
-            if (prop.Textures != null) veh.Textures = prop.Textures;
-            if (prop.BlipSprite != null) veh.BlipSprite = prop.BlipSprite.Value;
-            if (prop.Team != null) veh.Team = prop.Team.Value;
-            if (prop.BlipColor != null) veh.BlipColor = prop.BlipColor.Value;
-            if (prop.BlipAlpha != null) veh.BlipAlpha = prop.BlipAlpha.Value;
-            if (prop.Accessories != null) veh.Accessories = prop.Accessories;
+            if (prop == null || veh == null) 
+                return;
+
+            veh.Props = prop.Props;
+            veh.Textures = prop.Textures;
+            veh.BlipSprite = prop.BlipSprite;
+            veh.Team = prop.Team;
+            veh.BlipColor = prop.BlipColor;
+            veh.BlipAlpha = prop.BlipAlpha;
+            veh.Accessories = prop.Accessories;
             if (prop.Name != null)
             {
                 veh.Name = prop.Name;
                 LogManager.DebugLog("New name: " + prop.Name);
             }
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.WeaponTints != null) veh.WeaponTints = prop.WeaponTints;
-            if (prop.WeaponComponents != null) veh.WeaponComponents = prop.WeaponComponents;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
-            if (prop.NametagText != null) veh.NametagText = prop.NametagText;
-            if (prop.NametagSettings != null) veh.NametagSettings = prop.NametagSettings.Value;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.WeaponTints = prop.WeaponTints;
+            veh.WeaponComponents = prop.WeaponComponents;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.IsInvincible = prop.IsInvincible;
+            veh.NametagText = prop.NametagText;
+            veh.NametagSettings = prop.NametagSettings;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
 
             if (prop.Attachables != null) veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
@@ -786,31 +708,26 @@ namespace RDRN_Core.Streamer
             if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateWorld(Delta_EntityProperties prop)
+        public void UpdateWorld(EntityPropertiesAbstract prop)
         {
-            if (prop == null || ServerWorld == null) return;
+            if (prop == null || ServerWorld == null) 
+                return;
 
-            if (prop.Position != null) ServerWorld.Position = prop.Position;
-            if (prop.Rotation != null) ServerWorld.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) ServerWorld.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) ServerWorld.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) ServerWorld.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) ServerWorld.Flag = prop.Flag.Value;
+            ServerWorld.Position = prop.Position;
+            ServerWorld.Rotation = prop.Rotation;
+            ServerWorld.ModelHash = prop.ModelHash;
+            ServerWorld.EntityType = prop.EntityType;
+            ServerWorld.Alpha = prop.Alpha;
+            ServerWorld.Flag = prop.Flag;
+            ServerWorld.Dimension = prop.Dimension;
+            ServerWorld.Attachables = prop.Attachables;
+            ServerWorld.AttachedTo = prop.AttachedTo;
 
-            if (prop.Dimension != null)
-            {
-                ServerWorld.Dimension = prop.Dimension.Value;
-            }
-
-            if (prop.Attachables != null) ServerWorld.Attachables = prop.Attachables;
-            if (prop.AttachedTo != null)
-            {
-                ServerWorld.AttachedTo = prop.AttachedTo;
-
-            }
             if (prop.SyncedProperties != null)
             {
-                if (ServerWorld.SyncedProperties == null) ServerWorld.SyncedProperties = new Dictionary<string, NativeArgument>();
+                if (ServerWorld.SyncedProperties == null) 
+                    ServerWorld.SyncedProperties = new Dictionary<string, NativeArgument>();
+
                 foreach (var pair in prop.SyncedProperties)
                 {
                     if (pair.Value is LocalGamePlayerArgument)
@@ -827,15 +744,16 @@ namespace RDRN_Core.Streamer
             }
         }
 
-        public void UpdateVehicle(int netHandle, Delta_VehicleProperties prop)
+        public void UpdateVehicle(int netHandle, VehicleProperties prop)
         {
             RemoteVehicle veh = null;
             if (prop == null || (veh = (NetToStreamedItem(netHandle) as RemoteVehicle)) == null) return;
 
-            if (prop.PrimaryColor != null) veh.PrimaryColor = prop.PrimaryColor.Value;
-            if (prop.SecondaryColor != null) veh.SecondaryColor = prop.SecondaryColor.Value;
-            if (prop.Health != null) veh.Health = prop.Health.Value;
-            if (prop.IsDead != null) veh.IsDead = prop.IsDead.Value;
+            veh.PrimaryColor = prop.PrimaryColor;
+            veh.SecondaryColor = prop.SecondaryColor;
+            veh.Health = prop.Health;
+            veh.IsDead = prop.IsDead;
+
             if (prop.Mods != null)
             {
                 var oldMods = veh.Mods;
@@ -868,38 +786,33 @@ namespace RDRN_Core.Streamer
                         }
                 }
             }
-            if (prop.Siren != null) veh.Siren = prop.Siren.Value;
-            if (prop.Doors != null) veh.Doors = prop.Doors.Value;
-            if (prop.Trailer != null) veh.Trailer = prop.Trailer.Value;
-            if (prop.TraileredBy != null) veh.TraileredBy = prop.TraileredBy.Value;
-            if (prop.Tires != null) veh.Tires = prop.Tires.Value;
-            if (prop.Livery != null) veh.Livery = prop.Livery.Value;
-            if (prop.NumberPlate != null)
-            {
-                veh.NumberPlate = prop.NumberPlate;
+            veh.Siren = prop.Siren;
+            veh.Doors = prop.Doors;
+            veh.Trailer = prop.Trailer;
+            veh.TraileredBy = prop.TraileredBy;
+            veh.Tires = prop.Tires;
+            veh.Livery = prop.Livery;
 
-                if (veh.StreamedIn && Regex.IsMatch(prop.NumberPlate, "^[a-zA-Z0-9]{0,9}$"))
-                {
-                    //new Vehicle(veh.LocalHandle).Mods.LicensePlate = prop.NumberPlate;
-                }
-            }
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.VehicleComponents != null) veh.VehicleComponents = prop.VehicleComponents.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
-            if (prop.DamageModel != null) veh.DamageModel = prop.DamageModel;
+            veh.NumberPlate = prop.NumberPlate;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
+            //new Vehicle(veh.LocalHandle).Mods.LicensePlate = prop.NumberPlate;
 
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
+
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.VehicleComponents = prop.VehicleComponents;
+            veh.IsInvincible = prop.IsInvincible;
+            veh.DamageModel = prop.DamageModel;
+
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
+
+            veh.Attachables = prop.Attachables;
+
             if (prop.AttachedTo != null)
             {
                 veh.AttachedTo = prop.AttachedTo;
@@ -921,46 +834,45 @@ namespace RDRN_Core.Streamer
                 }
             }
 
-            if (prop.PositionMovement != null) veh.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
+            veh.PositionMovement = prop.PositionMovement;
+            veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateTextLabel(int netHandle, Delta_TextLabelProperties prop)
+        public void UpdateTextLabel(int netHandle, TextLabelProperties prop)
         {
             RemoteTextLabel veh = null;
-            if (prop == null || (veh = (NetToStreamedItem(netHandle) as RemoteTextLabel)) == null) return;
+            if (prop == null || (veh = (NetToStreamedItem(netHandle) as RemoteTextLabel)) == null) 
+                return;
 
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.Text != null) veh.Text = prop.Text;
-            if (prop.Size != null) veh.Size = prop.Size.Value;
-            if (prop.EntitySeethrough != null) veh.EntitySeethrough = prop.EntitySeethrough.Value;
-            if (prop.Range != null) veh.Range = prop.Range.Value;
-            if (prop.Red != null) veh.Red = prop.Red.Value;
-            if (prop.Green != null) veh.Green = prop.Green.Value;
-            if (prop.Blue != null) veh.Blue = prop.Blue.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.Text = prop.Text;
+            veh.Size = prop.Size;
+            veh.EntitySeethrough = prop.EntitySeethrough;
+            veh.Range = prop.Range;
+            veh.Red = prop.Red;
+            veh.Green = prop.Green;
+            veh.Blue = prop.Blue;
+            veh.IsInvincible = prop.IsInvincible;
 
-            if (prop.Dimension != null)
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
+
+            veh.Attachables = prop.Attachables;
+            veh.AttachedTo = prop.AttachedTo;
+            if (veh.AttachedTo != null)
             {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
-
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
-            if (prop.AttachedTo != null)
-            {
-                veh.AttachedTo = prop.AttachedTo;
                 var attachedTo = NetToStreamedItem(prop.AttachedTo.NetHandle);
                 if (attachedTo != null)
                 {
                     AttachEntityToEntity(veh as IStreamedItem, attachedTo, prop.AttachedTo);
                 }
             }
+
             if (prop.SyncedProperties != null)
             {
                 if (veh.SyncedProperties == null) veh.SyncedProperties = new Dictionary<string, NativeArgument>();
@@ -973,31 +885,28 @@ namespace RDRN_Core.Streamer
                 }
             }
 
-            if (prop.PositionMovement != null) veh.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
+            veh.PositionMovement = prop.PositionMovement;
+            veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdatePed(int netHandle, Delta_PedProperties prop)
+        public void UpdatePed(int netHandle, PedProperties prop)
         {
             RemotePed veh = null;
             if (prop == null || (veh = (NetToStreamedItem(netHandle) as RemotePed)) == null) return;
 
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.LoopingAnimation != null) veh.LoopingAnimation = prop.LoopingAnimation;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.LoopingAnimation = prop.LoopingAnimation;
+            veh.IsInvincible = prop.IsInvincible;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
 
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
+            veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
             {
                 veh.AttachedTo = prop.AttachedTo;
@@ -1023,30 +932,28 @@ namespace RDRN_Core.Streamer
             if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateProp(int netHandle, Delta_EntityProperties prop)
+        public void UpdateProp(int netHandle, EntityPropertiesAbstract prop)
         {
             IStreamedItem item;
             if (prop == null || (item = NetToStreamedItem(netHandle)) == null) return;
             var veh = item as EntityProperties;
             if (veh == null) return;
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.IsInvincible = prop.IsInvincible;
 
-                var localPl = item as RemotePlayer;
-                if (localPl != null && localPl.LocalHandle == -2) Main.LocalDimension = prop.Dimension.Value;
-                //else if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
-            }
+            veh.Dimension = prop.Dimension;
 
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
+            var localPl = item as RemotePlayer;
+            if (localPl != null && localPl.LocalHandle == -2) Main.LocalDimension = prop.Dimension;
+            //else if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
+
+            veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
             {
                 veh.AttachedTo = prop.AttachedTo;
@@ -1083,35 +990,32 @@ namespace RDRN_Core.Streamer
             if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateBlip(int netHandle, Delta_BlipProperties prop)
+        public void UpdateBlip(int netHandle, BlipProperties prop)
         {
             IStreamedItem item = null;
             if (prop == null || (item = NetToStreamedItem(netHandle)) == null) return;
             var blip = item as RemoteBlip;
-            if (prop.Sprite != null) blip.Sprite = prop.Sprite.Value;
-            if (prop.Scale != null) blip.Scale = prop.Scale.Value;
-            if (prop.Color != null) blip.Color = prop.Color.Value;
-            if (prop.IsShortRange != null) blip.IsShortRange = prop.IsShortRange.Value;
-            if (prop.AttachedNetEntity != null) blip.AttachedNetEntity = prop.AttachedNetEntity.Value;
-            if (prop.Position != null) blip.Position = prop.Position;
-            if (prop.Rotation != null) blip.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) blip.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) blip.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) blip.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) blip.Flag = prop.Flag.Value;
-            if (prop.RangedBlip != null) blip.RangedBlip = prop.RangedBlip.Value;
-            if (prop.IsInvincible != null) blip.IsInvincible = prop.IsInvincible.Value;
-            if (prop.Name != null) blip.Name = prop.Name;
-            if (prop.RouteVisible != null) blip.RouteVisible = prop.RouteVisible.Value;
-            if (prop.RouteColor != null) blip.RouteColor = prop.RouteColor.Value;
+            blip.Sprite = prop.Sprite;
+            blip.Scale = prop.Scale;
+            blip.Color = prop.Color;
+            blip.IsShortRange = prop.IsShortRange;
+            blip.AttachedNetEntity = prop.AttachedNetEntity;
+            blip.Position = prop.Position;
+            blip.Rotation = prop.Rotation;
+            blip.ModelHash = prop.ModelHash;
+            blip.EntityType = prop.EntityType;
+            blip.Alpha = prop.Alpha;
+            blip.Flag = prop.Flag;
+            blip.RangedBlip = prop.RangedBlip;
+            blip.IsInvincible = prop.IsInvincible;
+            blip.Name = prop.Name;
+            blip.RouteVisible = prop.RouteVisible;
+            blip.RouteColor = prop.RouteColor;
 
-            if (prop.Dimension != null)
-            {
-                blip.Dimension = prop.Dimension.Value;
-                //if (blip.Dimension != Main.LocalDimension && item.StreamedIn && blip.Dimension != 0) StreamOut(item);
-            }
+            blip.Dimension = prop.Dimension;
+            //if (blip.Dimension != Main.LocalDimension && item.StreamedIn && blip.Dimension != 0) StreamOut(item);
 
-            if (prop.Attachables != null) blip.Attachables = prop.Attachables;
+            blip.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
             {
                 blip.AttachedTo = prop.AttachedTo;
@@ -1133,35 +1037,32 @@ namespace RDRN_Core.Streamer
                 }
             }
 
-            if (prop.PositionMovement != null) blip.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) blip.RotationMovement = prop.RotationMovement;
+            blip.PositionMovement = prop.PositionMovement;
+            blip.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateMarker(int netHandle, Delta_MarkerProperties prop, bool localOnly = false)
+        public void UpdateMarker(int netHandle, MarkerProperties prop, bool localOnly = false)
         {
             IStreamedItem item = null;
             if (prop == null || (item = NetToStreamedItem(netHandle, local: localOnly)) == null) return;
             var veh = item as RemoteMarker;
-            if (prop.Direction != null) veh.Direction = prop.Direction;
-            if (prop.MarkerType != null) veh.MarkerType = prop.MarkerType.Value;
-            if (prop.Red != null) veh.Red = prop.Red.Value;
-            if (prop.Green != null) veh.Green = prop.Green.Value;
-            if (prop.Blue != null) veh.Blue = prop.Blue.Value;
-            if (prop.Scale != null) veh.Scale = prop.Scale;
-            if (prop.BobUpAndDown != null) veh.BobUpAndDown = prop.BobUpAndDown.Value;
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
+            veh.Direction = prop.Direction;
+            veh.MarkerType = prop.MarkerType;
+            veh.Red = prop.Red;
+            veh.Green = prop.Green;
+            veh.Blue = prop.Blue;
+            veh.Scale = prop.Scale;
+            veh.BobUpAndDown = prop.BobUpAndDown;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.IsInvincible = prop.IsInvincible;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
-            }
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
 
             if (prop.Attachables != null) veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
@@ -1189,31 +1090,28 @@ namespace RDRN_Core.Streamer
             if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdateParticle(int netHandle, Delta_ParticleProperties prop)
+        public void UpdateParticle(int netHandle, ParticleProperties prop)
         {
             RemoteParticle veh = null;
             if (prop == null || (veh = (NetToStreamedItem(netHandle) as RemoteParticle)) == null) return;
 
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
-            if (prop.Name != null) veh.Name = prop.Name;
-            if (prop.Library != null) veh.Library = prop.Library;
-            if (prop.BoneAttached != null) veh.BoneAttached = prop.BoneAttached.Value;
-            if (prop.Scale != null) veh.Scale = prop.Scale.Value;
-            if (prop.EntityAttached != null) veh.EntityAttached = prop.EntityAttached.Value;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.IsInvincible = prop.IsInvincible;
+            veh.Name = prop.Name;
+            veh.Library = prop.Library;
+            veh.BoneAttached = prop.BoneAttached;
+            veh.Scale = prop.Scale;
+            veh.EntityAttached = prop.EntityAttached;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
-            }
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && veh.StreamedIn && veh.Dimension != 0) StreamOut(veh);
 
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
+            veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
             {
                 veh.AttachedTo = prop.AttachedTo;
@@ -1235,33 +1133,30 @@ namespace RDRN_Core.Streamer
                 }
             }
 
-            if (prop.PositionMovement != null) veh.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
+             veh.PositionMovement = prop.PositionMovement;
+             veh.RotationMovement = prop.RotationMovement;
         }
 
-        public void UpdatePickup(int netHandle, Delta_PickupProperties prop)
+        public void UpdatePickup(int netHandle, PickupProperties prop)
         {
             IStreamedItem item = null;
             if (prop == null || (item = NetToStreamedItem(netHandle)) == null) return;
             var veh = item as RemotePickup;
-            if (prop.Amount != null) veh.Amount = prop.Amount.Value;
-            if (prop.PickedUp != null) veh.PickedUp = prop.PickedUp.Value;
-            if (prop.Position != null) veh.Position = prop.Position;
-            if (prop.Rotation != null) veh.Rotation = prop.Rotation;
-            if (prop.ModelHash != null) veh.ModelHash = prop.ModelHash.Value;
-            if (prop.EntityType != null) veh.EntityType = prop.EntityType.Value;
-            if (prop.Alpha != null) veh.Alpha = prop.Alpha.Value;
-            if (prop.Flag != null) veh.Flag = prop.Flag.Value;
-            if (prop.IsInvincible != null) veh.IsInvincible = prop.IsInvincible.Value;
-            if (prop.CustomModel != null) veh.CustomModel = prop.CustomModel.Value;
+            veh.Amount = prop.Amount;
+            veh.PickedUp = prop.PickedUp;
+            veh.Position = prop.Position;
+            veh.Rotation = prop.Rotation;
+            veh.ModelHash = prop.ModelHash;
+            veh.EntityType = prop.EntityType;
+            veh.Alpha = prop.Alpha;
+            veh.Flag = prop.Flag;
+            veh.IsInvincible = prop.IsInvincible;
+            veh.CustomModel = prop.CustomModel;
 
-            if (prop.Dimension != null)
-            {
-                veh.Dimension = prop.Dimension.Value;
-                //if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
-            }
+            veh.Dimension = prop.Dimension;
+            //if (veh.Dimension != Main.LocalDimension && item.StreamedIn && veh.Dimension != 0) StreamOut(item);
 
-            if (prop.Attachables != null) veh.Attachables = prop.Attachables;
+            veh.Attachables = prop.Attachables;
             if (prop.AttachedTo != null)
             {
                 veh.AttachedTo = prop.AttachedTo;
@@ -1283,13 +1178,13 @@ namespace RDRN_Core.Streamer
                 }
             }
 
-            if (prop.PositionMovement != null) veh.PositionMovement = prop.PositionMovement;
-            if (prop.RotationMovement != null) veh.RotationMovement = prop.RotationMovement;
+            veh.PositionMovement = prop.PositionMovement;
+            veh.RotationMovement = prop.RotationMovement;
         }
 
         public void UpdateAttachments()
         {
-            var attaches = new List<EntityProperties>(ClientMap.Values.Where(item => item.StreamedIn && item.AttachedTo != null).Cast<EntityProperties>());
+            var attaches = new List<EntityPropertiesAbstract>(ClientMap.Values.Where(item => item.StreamedIn && item.AttachedTo != null).Cast<EntityPropertiesAbstract>());
 
             for (var index = attaches.Count - 1; index >= 0; index--)
             {

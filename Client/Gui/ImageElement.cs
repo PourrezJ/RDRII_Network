@@ -45,7 +45,14 @@ namespace RDRN_Core.Gui
             // Loads from file using System.Drawing.Image
             using (var bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(file))
             {
-                imageElement.SetBitmap(bitmap, position, width, height);
+                try
+                {
+                    imageElement.SetBitmap(bitmap, position, width, height);
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
             return imageElement;
         }

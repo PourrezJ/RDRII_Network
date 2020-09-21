@@ -42,7 +42,7 @@ namespace ResuMPServer
             Players.Add(data);
             Program.ServerInstance.Clients.Add(data);
 
-            var delta = new Delta_PlayerProperties();
+            var delta = new PlayerProperties();
             delta.Name = data.NameInternal;
             GameServer.UpdateEntityInfo(data.Id.Value, EntityType.Player, delta, data);
 

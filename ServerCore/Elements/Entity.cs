@@ -102,7 +102,7 @@ namespace ResuMPServer
             get
             {
                 if (!DoesEntityExist()) return (EntityType)0;
-                return (EntityType)Program.ServerInstance.NetEntityHandler.ToDict()[Value].EntityType;
+                return (EntityType)Program.ServerInstance.NetEntityHandler.ServerEntities[Value].EntityType;
             }
         }
 
@@ -144,7 +144,7 @@ namespace ResuMPServer
 
         public int Model
         {
-            get => Program.ServerInstance.NetEntityHandler.ToDict()[Value].ModelHash;
+            get => Program.ServerInstance.NetEntityHandler.ServerEntities[Value].ModelHash;
         }
         
         #endregion
@@ -297,7 +297,7 @@ namespace ResuMPServer
 
         public bool DoesEntityExist()
         {
-            return Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(this.Value);
+            return Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(this.Value);
         }
 
 

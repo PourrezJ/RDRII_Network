@@ -43,9 +43,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).MarkerType = type;
+                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).MarkerType = type;
 
-                var delta = new Delta_MarkerProperties();
+                var delta = new MarkerProperties();
                 delta.MarkerType = type;
                 GameServer.UpdateEntityInfo(Value, EntityType.Marker, delta);
             }
@@ -55,7 +55,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).MarkerType;
+                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).MarkerType;
             }
 
             return 0;
@@ -65,9 +65,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Scale = scale;
+                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Scale = scale;
 
-                var delta = new Delta_MarkerProperties();
+                var delta = new MarkerProperties();
                 delta.Scale = scale;
                 GameServer.UpdateEntityInfo(Value, EntityType.Marker, delta);
             }
@@ -77,7 +77,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Scale;
+                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Scale;
             }
 
             return null;
@@ -87,9 +87,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Direction = dir;
+                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Direction = dir;
 
-                var delta = new Delta_MarkerProperties();
+                var delta = new MarkerProperties();
                 delta.Direction = dir;
                 GameServer.UpdateEntityInfo(Value, EntityType.Marker, delta);
             }
@@ -100,7 +100,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Direction;
+                return ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Direction;
             }
 
             return null;
@@ -110,12 +110,14 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Alpha = (byte)alpha;
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Red = (byte)red;
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Green = (byte)green;
-                ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Blue = (byte)blue;
+                var entity = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]);
 
-                var delta = new Delta_MarkerProperties();
+                entity.Alpha = (byte)alpha;
+                entity.Red = (byte)red;
+                entity.Green = (byte)green;
+                entity.Blue = (byte)blue;
+
+                var delta = new MarkerProperties();
                 delta.Alpha = (byte)alpha;
                 delta.Red = (byte)red;
                 delta.Green = (byte)green;
@@ -130,10 +132,8 @@ namespace ResuMPServer
 
             if (DoesEntityExist())
             {
-                output.alpha = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Alpha;
-                output.red = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Red;
-                output.green = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Green;
-                output.blue = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Blue;
+                var entity = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]);
+                output = new Color(entity.Alpha, entity.Red, entity.Green, entity.Blue);
             }
 
             return output;

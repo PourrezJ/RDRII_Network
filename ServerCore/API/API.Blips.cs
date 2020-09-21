@@ -1,8 +1,5 @@
 ﻿using Shared;
 using Shared.Math;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ResuMPServer
 {
@@ -12,8 +9,8 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Color = color;
-                var delta = new Delta_BlipProperties();
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Color = color;
+                var delta = new BlipProperties();
                 delta.Color = color;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -25,7 +22,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Color;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Color;
             }
             return 0;
         }
@@ -36,8 +33,8 @@ namespace ResuMPServer
             {
                 if (name == null) name = "";
 
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Name = name;
-                var delta = new Delta_BlipProperties();
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Name = name;
+                var delta = new BlipProperties();
                 delta.Name = name;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -47,7 +44,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Name;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Name;
             }
             return null;
         }
@@ -56,8 +53,8 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Alpha = (byte)alpha;
-                var delta = new Delta_BlipProperties();
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Alpha = (byte)alpha;
+                var delta = new BlipProperties();
                 delta.Alpha = (byte)alpha;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -69,7 +66,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Alpha;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Alpha;
             }
             return 0;
         }
@@ -78,9 +75,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).IsShortRange = range;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).IsShortRange = range;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.IsShortRange = range;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -91,7 +88,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).IsShortRange;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).IsShortRange;
             }
             return false;
         }
@@ -100,9 +97,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Position = newPos;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Position = newPos;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.Position = newPos;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -113,7 +110,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Position;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Position;
             }
 
             return null;
@@ -123,9 +120,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Sprite = sprite;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Sprite = sprite;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.Sprite = sprite;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -136,7 +133,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Sprite;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Sprite;
             }
 
             return 0;
@@ -146,9 +143,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Scale = scale;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Scale = scale;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.Scale = scale;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -159,7 +156,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).Scale;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).Scale;
             }
 
             return 0;
@@ -169,9 +166,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).RouteVisible = visible;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).RouteVisible = visible;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.RouteVisible = visible;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -182,7 +179,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).RouteVisible;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).RouteVisible;
             }
 
             return false;
@@ -192,9 +189,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).RouteColor = color;
+                ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).RouteColor = color;
 
-                var delta = new Delta_BlipProperties();
+                var delta = new BlipProperties();
                 delta.RouteColor = color;
                 GameServer.UpdateEntityInfo(blip.Value, EntityType.Blip, delta);
             }
@@ -205,7 +202,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(blip))
             {
-                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ToDict()[blip.Value]).RouteColor;
+                return ((BlipProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[blip.Value]).RouteColor;
             }
 
             return 0;

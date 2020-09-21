@@ -164,7 +164,7 @@ namespace ResuMPServer
                             client.RemoteScriptVersion = ParseableVersion.Parse(connReq.ScriptVersion);
                             client.GameVersion = connReq.GameVersion;
                             client.ConnectionConfirmed = false;
-                            ((PlayerProperties)NetEntityHandler.ToDict()[client.Id.Value]).Name = client.NameInternal;
+                            ((PlayerProperties)NetEntityHandler.ServerEntities[client.Id.Value]).Name = client.NameInternal;
 
                            /* if (!AllowCEFDevTool && connReq.CEFDevtool)
                             {
@@ -274,7 +274,7 @@ namespace ResuMPServer
                                     var state = msg.ReadBoolean();
                                     if (!state)
                                     {
-                                        var delta = new Delta_PlayerProperties { Name = client.NameInternal };
+                                        var delta = new PlayerProperties { Name = client.NameInternal };
                                         UpdateEntityInfo(client.Id.Value, EntityType.Player, delta, client);
 
                                         var mapObj = new ServerMap
@@ -584,7 +584,7 @@ namespace ResuMPServer
                                             client.RotationInternal = fullPacket.Quaternion;
                                             client.VelocityInternal = fullPacket.Velocity;
                                                // Console.WriteLine(client.position);
-                                            var handlerDict = NetEntityHandler.ToDict();
+                                            var handlerDict = NetEntityHandler.ServerEntities;
                                             int vehValue = client.CurrentVehicle.Value;
 
                                             if (!client.CurrentVehicle.IsNull &&
@@ -653,16 +653,11 @@ namespace ResuMPServer
                                                             RunningResources.ForEach(fs => fs.Engines.ForEach(en =>
                                                             {
                                                                 en.InvokeVehicleSirenToggle(client, ((VehicleProperties)
-                                                                        NetEntityHandler.ToDict()[
-                                                                            client.CurrentVehicle.Value])
-                                                                    .Siren);
+                                                                        NetEntityHandler.ServerEntities[client.CurrentVehicle.Value]).Siren);
                                                             }));
                                                     }
 
-                                                    ((VehicleProperties)
-                                                            props)
-                                                        .Siren = (fullPacket.Flag &
-                                                                  (byte)VehicleDataFlags.SirenActive) > 0;
+                                                    ((VehicleProperties)props).Siren = (fullPacket.Flag & (byte)VehicleDataFlags.SirenActive) > 0;
                                                 }
                                             }
 
@@ -682,32 +677,25 @@ namespace ResuMPServer
                                             }
                                         }
                                         else if (!client.CurrentVehicle.IsNull &&
-                                                 NetEntityHandler.ToDict().ContainsKey(client.CurrentVehicle.Value))
+                                                 NetEntityHandler.ServerEntities.ContainsKey(client.CurrentVehicle.Value))
                                          {
-                                            var props = NetEntityHandler.ToDict()[client.CurrentVehicle.Value];
+                                            var props = NetEntityHandler.ServerEntities[client.CurrentVehicle.Value];
 
-                                            var carPos =
-                                                props.Position;
-                                            var carRot =
-                                                props.Rotation;
-                                            var carVel =
-                                                props.Velocity;
+                                            var carPos = props.Position;
+                                            var carRot = props.Rotation;
+                                            var carVel = props.Velocity;
 
                                             client.PositionInternal = carPos;
                                             client.RotationInternal = carRot;
                                             client.VelocityInternal = carVel;
 
-                                            if (NetEntityHandler.ToDict()
-                                                .ContainsKey(fullPacket.NetHandle.Value))
+                                            if (NetEntityHandler.ServerEntities.ContainsKey(fullPacket.NetHandle.Value))
                                             {
-                                                var playerProps = NetEntityHandler.ToDict()[fullPacket.NetHandle.Value];
+                                                var playerProps = NetEntityHandler.ServerEntities[fullPacket.NetHandle.Value];
 
-                                                playerProps.Position =
-                                                    carPos;
-                                                playerProps.Rotation =
-                                                    carRot;
-                                                playerProps.Velocity =
-                                                    carVel;
+                                                playerProps.Position = carPos;
+                                                playerProps.Rotation = carRot;
+                                                playerProps.Velocity = carVel;
                                             }
                                         }
                                         client.IsInVehicle = true;
@@ -763,9 +751,9 @@ namespace ResuMPServer
                                         client.CurrentVehicle = car;
 
 
-                                        if (NetEntityHandler.ToDict().ContainsKey(fullPacket.NetHandle.Value))
+                                        if (NetEntityHandler.ServerEntities.ContainsKey(fullPacket.NetHandle.Value))
                                         {
-                                            NetEntityHandler.ToDict()[fullPacket.NetHandle.Value].ModelHash =
+                                            NetEntityHandler.ServerEntities[fullPacket.NetHandle.Value].ModelHash =
                                                 fullPacket.PedModelHash.Value;
                                         }
 
@@ -773,11 +761,11 @@ namespace ResuMPServer
                                         {
                                             var trailer =
                                                 ((VehicleProperties)
-                                                    NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                    NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                 .Trailer;
-                                            if (NetEntityHandler.ToDict().ContainsKey(trailer))
+                                            if (NetEntityHandler.ServerEntities.ContainsKey(trailer))
                                             {
-                                                NetEntityHandler.ToDict()[trailer].Position = fullPacket.Trailer;
+                                                NetEntityHandler.ServerEntities[trailer].Position = fullPacket.Trailer;
                                             }
                                         }
 
@@ -785,25 +773,25 @@ namespace ResuMPServer
                                         if (fullPacket.DamageModel != null)
                                         {
                                             if (((VehicleProperties)
-                                                    NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                    NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                 .DamageModel ==
                                                 null)
                                             {
                                                 ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                        NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                     .DamageModel = new VehicleDamageModel();
                                             }
 
                                             var oldDoors = ((VehicleProperties)
-                                                    NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                    NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                 .DamageModel.BrokenDoors;
 
                                             var oldWindows = ((VehicleProperties)
-                                                    NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                    NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                 .DamageModel.BrokenWindows;
 
                                             ((VehicleProperties)
-                                                    NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                    NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                 .DamageModel = fullPacket.DamageModel;
 
                                             if ((oldDoors ^ fullPacket.DamageModel.BrokenDoors) != 0)
@@ -812,8 +800,9 @@ namespace ResuMPServer
                                                 {
                                                     for (int k = 0; k < 8; k++)
                                                     {
-                                                        if (((oldDoors ^ fullPacket.DamageModel.BrokenDoors) &
-                                                             1 << k) == 0) continue;
+                                                        if (((oldDoors ^ fullPacket.DamageModel.BrokenDoors) & 1 << k) == 0) 
+                                                                continue;
+
                                                         var localCopy = fullPacket.VehicleHandle.Value;
                                                         RunningResources.ForEach(
                                                             fs => fs.Engines.ForEach(en =>
@@ -945,12 +934,10 @@ namespace ResuMPServer
                                         client.CurrentVehicle = new NetHandle(0);
                                         client.VehicleHandleInternal = 0;
 
-                                        if (NetEntityHandler.ToDict().ContainsKey(fullPacket.NetHandle.Value))
+                                        if (NetEntityHandler.ServerEntities.ContainsKey(fullPacket.NetHandle.Value))
                                         {
-                                            NetEntityHandler.ToDict()[fullPacket.NetHandle.Value].Position =
-                                                fullPacket.Position;
-                                            NetEntityHandler.ToDict()[fullPacket.NetHandle.Value].Rotation =
-                                                fullPacket.Quaternion;
+                                            NetEntityHandler.ServerEntities[fullPacket.NetHandle.Value].Position = fullPacket.Position;
+                                            NetEntityHandler.ServerEntities[fullPacket.NetHandle.Value].Rotation = fullPacket.Quaternion;
                                         }
 
                                         ResendPacket(fullPacket, client, true);
@@ -976,7 +963,7 @@ namespace ResuMPServer
                                         fullPacket.NetHandle = client.Id.Value;
                                         fullPacket.Latency = client.Latency;
 
-                                        if (NetEntityHandler.ToDict().ContainsKey(fullPacket.NetHandle.Value))
+                                        if (NetEntityHandler.ServerEntities.ContainsKey(fullPacket.NetHandle.Value))
                                         {
                                             if (client.ModelHash == 0) client.ModelHash = fullPacket.PedModelHash.Value;
 
@@ -984,8 +971,8 @@ namespace ResuMPServer
                                             if (oldValue != fullPacket.PedModelHash.Value)
                                             {
                                                 client.ModelHash = fullPacket.PedModelHash.Value;
-                                                NetEntityHandler.ToDict()[fullPacket.NetHandle.Value].ModelHash =
-                                                    fullPacket.PedModelHash.Value;
+                                                NetEntityHandler.ServerEntities[fullPacket.NetHandle.Value].ModelHash = fullPacket.PedModelHash.Value;
+
                                                 lock (RunningResources)
                                                     RunningResources.ForEach(fs => fs.Engines.ForEach(en =>
                                                     {
@@ -1014,8 +1001,7 @@ namespace ResuMPServer
                                         int netHandle;
                                         Vector3 aimPoint;
 
-                                        var shooting =
-                                            PacketOptimization.ReadBulletSync(bin, out netHandle, out aimPoint);
+                                        var shooting = PacketOptimization.ReadBulletSync(bin, out netHandle, out aimPoint);
 
                                         netHandle = client.Id.Value;
 
@@ -1039,8 +1025,7 @@ namespace ResuMPServer
                                         int netHandle;
                                         int netHandleTarget;
 
-                                        var shooting =
-                                            PacketOptimization.ReadBulletSync(bin, out netHandle, out netHandleTarget);
+                                        var shooting = PacketOptimization.ReadBulletSync(bin, out netHandle, out netHandleTarget);
 
                                         netHandle = client.Id.Value;
 
@@ -1067,42 +1052,26 @@ namespace ResuMPServer
 
                                             var fullPacket = PacketOptimization.ReadUnoccupiedVehicleSync(cVehBin);
 
-                                            if (NetEntityHandler.ToDict()
-                                                .ContainsKey(fullPacket.VehicleHandle.Value))
+                                            if (NetEntityHandler.ServerEntities.ContainsKey(fullPacket.VehicleHandle.Value))
                                             {
-                                                NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value].Position
-                                                    = fullPacket.Position;
-                                                NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value].Rotation
-                                                    = fullPacket.Quaternion;
-                                                NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value].Velocity
-                                                    = fullPacket.Velocity;
+                                                NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value].Position = fullPacket.Position;
+                                                NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value].Rotation = fullPacket.Quaternion;
+                                                NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value].Velocity = fullPacket.Velocity;
 
-                                                ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                    .Tires = fullPacket.PlayerHealth.Value;
+                                                ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]) .Tires = fullPacket.PlayerHealth.Value;
 
-                                                if (((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                    .DamageModel == null)
-                                                    ((VehicleProperties)
-                                                            NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                        .DamageModel = new VehicleDamageModel();
+                                                if (((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).DamageModel == null)
+                                                    ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).DamageModel = new VehicleDamageModel();
 
                                                 var oldDoors = ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                        NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                     .DamageModel.BrokenWindows;
                                                 var oldWindows = ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
+                                                        NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value])
                                                     .DamageModel.BrokenDoors;
 
-                                                ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                    .DamageModel.BrokenWindows =
-                                                    fullPacket.DamageModel.BrokenWindows;
-                                                ((VehicleProperties)
-                                                        NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                    .DamageModel.BrokenDoors =
-                                                    fullPacket.DamageModel.BrokenDoors;
+                                                ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).DamageModel.BrokenWindows = fullPacket.DamageModel.BrokenWindows;
+                                                ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).DamageModel.BrokenDoors = fullPacket.DamageModel.BrokenDoors;
 
                                                 if ((oldDoors ^ fullPacket.DamageModel.BrokenDoors) != 0)
                                                 {
@@ -1152,13 +1121,11 @@ namespace ResuMPServer
                                                     var newDead = (fullPacket.Flag &
                                                                    (byte)VehicleDataFlags.VehicleDead) > 0;
                                                     var oldDead = ((VehicleProperties)
-                                                            NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value
+                                                            NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value
                                                             ])
                                                         .IsDead;
 
-                                                    ((VehicleProperties)
-                                                            NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value])
-                                                        .IsDead = newDead;
+                                                    ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).IsDead = newDead;
 
                                                     if (!oldDead && newDead)
                                                     {
@@ -1175,15 +1142,9 @@ namespace ResuMPServer
 
                                                 if (fullPacket.VehicleHealth.HasValue)
                                                 {
-                                                    var oldValue = ((VehicleProperties)
-                                                            NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value
-                                                            ])
-                                                        .Health;
+                                                    var oldValue = ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).Health;
 
-                                                    ((VehicleProperties)
-                                                            NetEntityHandler.ToDict()[fullPacket.VehicleHandle.Value
-                                                            ])
-                                                        .Health = fullPacket.VehicleHealth.Value;
+                                                    ((VehicleProperties)NetEntityHandler.ServerEntities[fullPacket.VehicleHandle.Value]).Health = fullPacket.VehicleHealth.Value;
 
                                                     if (fullPacket.VehicleHealth.Value != oldValue)
                                                     {
@@ -1365,19 +1326,19 @@ namespace ResuMPServer
                                                 if (data.Properties.SyncedProperties != null)
                                                 {
                                                     if (item.SyncedProperties == null)
-                                                        item.SyncedProperties =
-                                                            new Dictionary<string, NativeArgument>();
+                                                        item.SyncedProperties = new Dictionary<string, NativeArgument>();
+
                                                     foreach (var pair in data.Properties.SyncedProperties)
                                                     {
-                                                        if (pair.Value is LocalGamePlayerArgument)
-                                                            item.SyncedProperties.Remove(pair.Key);
+                                                        if (pair.Value is LocalGamePlayerArgument) 
+                                                                item.SyncedProperties.Remove(pair.Key);
                                                         else
                                                         {
-                                                            object oldValue =
-                                                                DecodeArgumentListPure(
-                                                                    item.SyncedProperties.Get(pair.Key));
+                                                            object oldValue = DecodeArgumentListPure(item.SyncedProperties.Get(pair.Key));
+
                                                             item.SyncedProperties.Set(pair.Key, pair.Value);
                                                             var ent = new NetHandle(data.NetHandle);
+
                                                             lock (RunningResources)
                                                             {
                                                                 RunningResources.ForEach(

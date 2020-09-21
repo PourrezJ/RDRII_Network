@@ -127,9 +127,8 @@ namespace RDRN_Core
 				return false;
 			}
 
-			System.Console.WriteLine(Handle);
-
-			//Function.Call(Hash.SET_PLAYER_MODEL, Handle, model.Hash);
+			Function.Call(Hash.SET_PLAYER_MODEL, Handle, model.Hash, false);
+			Function.Call((Hash)0x283978A15512B2FE, Handle, true);
 			model.MarkAsNoLongerNeeded();
 			return true;
 		}

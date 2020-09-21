@@ -13,71 +13,78 @@ namespace Shared
         {
             List<byte> byteArray = new List<byte>();
 
-            // Write player's nethandle.
-            if (data.NetHandle.HasValue)
+            try
             {
-                byteArray.AddRange(GetBytes(data.NetHandle.Value));
+                // Write player's nethandle.
+                if (data.NetHandle.HasValue)
+                {
+                    byteArray.AddRange(GetBytes(data.NetHandle.Value));
+                }
+                else
+                {
+                    byteArray.Add(0x00);
+                    byteArray.Add(0x00);
+                    byteArray.Add(0x00);
+                    byteArray.Add(0x00);
+                }
+
+                // Write the flag
+                byteArray.AddRange(GetBytes(data.Flag.Value));
+
+                // Write player's position, rotation, and velocity
+                byteArray.AddRange(GetBytes(data.Position.X));
+                byteArray.AddRange(GetBytes(data.Position.Y));
+                byteArray.AddRange(GetBytes(data.Position.Z));
+
+                // Only send roll & pitch if we're parachuting.
+                if (CheckBit(data.Flag.Value, PedDataFlags.ParachuteOpen))
+                {
+                    byteArray.AddRange(GetBytes(data.Quaternion.X));
+                    byteArray.AddRange(GetBytes(data.Quaternion.Y));
+                }
+
+                byteArray.AddRange(GetBytes(data.Quaternion.Z));
+
+                byteArray.AddRange(GetBytes(data.Velocity.X));
+                byteArray.AddRange(GetBytes(data.Velocity.Y));
+                byteArray.AddRange(GetBytes(data.Velocity.Z));
+
+                // Write player health, armor and walking speed
+                byteArray.Add(data.PlayerHealth.Value);
+                //byteArray.Add(data.PedArmor.Value);
+                byteArray.Add(data.Speed.Value);
+
+
+                // Write current weapon hash.
+                byteArray.AddRange(GetBytes(data.WeaponHash.Value));
+                byteArray.AddRange(GetBytes(data.WeaponAmmo.Value));
+
+                // Are we shooting?
+                if (CheckBit(data.Flag.Value, PedDataFlags.Aiming) ||
+                    CheckBit(data.Flag.Value, PedDataFlags.Shooting) ||
+                    CheckBit(data.Flag.Value, PedDataFlags.HasAimData))
+                {
+                    // Aim coordinates
+                    byteArray.AddRange(GetBytes(data.AimCoords.X));
+                    byteArray.AddRange(GetBytes(data.AimCoords.Y));
+                    byteArray.AddRange(GetBytes(data.AimCoords.Z));
+                }
+
+                // Are we entering a car?
+                if (CheckBit(data.Flag.Value, PedDataFlags.EnteringVehicle))
+                {
+                    // Add the car we are trying to enter
+                    byteArray.AddRange(GetBytes(data.VehicleTryingToEnter.Value));
+
+                    // Add the seat we are trying to enter
+                    byteArray.Add((byte)data.SeatTryingToEnter.Value);
+                }
             }
-            else
+            catch(Exception ex)
             {
-                byteArray.Add(0x00);
-                byteArray.Add(0x00);
-                byteArray.Add(0x00);
-                byteArray.Add(0x00);
+                Console.WriteLine(ex.ToString());
             }
-            /*
-            // Write the flag
-            byteArray.AddRange(GetBytes(data.Flag.Value));
-
-            // Write player's position, rotation, and velocity
-            byteArray.AddRange(GetBytes(data.Position.X));
-            byteArray.AddRange(GetBytes(data.Position.Y));
-            byteArray.AddRange(GetBytes(data.Position.Z));
-
-            // Only send roll & pitch if we're parachuting.
-            if (CheckBit(data.Flag.Value, PedDataFlags.ParachuteOpen))
-            {
-                byteArray.AddRange(GetBytes(data.Quaternion.X));
-                byteArray.AddRange(GetBytes(data.Quaternion.Y));
-            }
-
-            byteArray.AddRange(GetBytes(data.Quaternion.Z));
-
-            byteArray.AddRange(GetBytes(data.Velocity.X));
-            byteArray.AddRange(GetBytes(data.Velocity.Y));
-            byteArray.AddRange(GetBytes(data.Velocity.Z));
-            
-            // Write player health, armor and walking speed
-            byteArray.Add(data.PlayerHealth.Value);
-            byteArray.Add(data.PedArmor.Value);
-            byteArray.Add(data.Speed.Value);
-
-
-            // Write current weapon hash.
-            byteArray.AddRange(GetBytes(data.WeaponHash.Value));
-            byteArray.AddRange(GetBytes(data.WeaponAmmo.Value));
-
-            // Are we shooting?
-            if (CheckBit(data.Flag.Value, PedDataFlags.Aiming) ||
-                CheckBit(data.Flag.Value, PedDataFlags.Shooting) ||
-                CheckBit(data.Flag.Value, PedDataFlags.HasAimData))
-            {
-                // Aim coordinates
-                byteArray.AddRange(GetBytes(data.AimCoords.X));
-                byteArray.AddRange(GetBytes(data.AimCoords.Y));
-                byteArray.AddRange(GetBytes(data.AimCoords.Z));
-            }
-
-            // Are we entering a car?
-            if (CheckBit(data.Flag.Value, PedDataFlags.EnteringVehicle))
-            {
-                // Add the car we are trying to enter
-                byteArray.AddRange(GetBytes(data.VehicleTryingToEnter.Value));
-
-                // Add the seat we are trying to enter
-                byteArray.Add((byte)data.SeatTryingToEnter.Value);
-            }*/
-            
+             
             return byteArray.ToArray();
         }
 
@@ -433,6 +440,7 @@ namespace Shared
             data.WeaponAmmo = r.ReadInt32();
 
             // Is the player shooting?
+            /*
             if (CheckBit(data.Flag.Value, PedDataFlags.Aiming) ||
                 CheckBit(data.Flag.Value, PedDataFlags.Shooting) ||
                 CheckBit(data.Flag.Value, PedDataFlags.HasAimData))
@@ -446,14 +454,14 @@ namespace Shared
 
                 data.AimCoords = aimPoint;
             }
-
+            
             if (CheckBit(data.Flag.Value, PedDataFlags.EnteringVehicle))
             {
                 data.VehicleTryingToEnter = r.ReadInt32();
 
                 data.SeatTryingToEnter = (sbyte)r.ReadByte();
             }
-
+            */
 
             return data;
         }

@@ -17,9 +17,9 @@ namespace ResuMPServer
 
             if (DoesEntityExist(netHandle))
             {
-                Program.ServerInstance.NetEntityHandler.ToDict()[netHandle.Value].Position = newPosition;
+                Program.ServerInstance.NetEntityHandler.ServerEntities[netHandle.Value].Position = newPosition;
 
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
 
                 delta.Position = newPosition;
                 GameServer.UpdateEntityInfo(netHandle.Value, EntityType.Prop, delta);
@@ -48,7 +48,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(entity) && DoesEntityExist(entityTarget) && entity != entityTarget)
             {
-                if (Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].AttachedTo != null)
+                if (Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].AttachedTo != null)
                 {
                     DetachEntity(entity, true);
                 }
@@ -71,11 +71,11 @@ namespace ResuMPServer
                 Program.ServerInstance.NetEntityHandler.NetToProp<EntityProperties>(entity.Value).AttachedTo = info;
                 Program.ServerInstance.NetEntityHandler.NetToProp<EntityProperties>(entityTarget.Value).Attachables.Add(entity.Value);
 
-                var ent1 = new Delta_EntityProperties();
+                var ent1 = new EntityProperties();
                 ent1.AttachedTo = info;
                 GameServer.UpdateEntityInfo(entity.Value, EntityType.Prop, ent1);
 
-                var ent2 = new Delta_EntityProperties();
+                var ent2 = new EntityProperties();
                 ent2.Attachables = Program.ServerInstance.NetEntityHandler.NetToProp<EntityProperties>(entityTarget.Value).Attachables;
                 GameServer.UpdateEntityInfo(entityTarget.Value, EntityType.Prop, ent2);
             }
@@ -148,9 +148,9 @@ namespace ResuMPServer
 
             if (DoesEntityExist(netHandle))
             {
-                Program.ServerInstance.NetEntityHandler.ToDict()[netHandle.Value].Rotation = newRotation;
+                Program.ServerInstance.NetEntityHandler.ServerEntities[netHandle.Value].Rotation = newRotation;
 
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
                 delta.Rotation = newRotation;
                 GameServer.UpdateEntityInfo(netHandle.Value, EntityType.Prop, delta);
             }
@@ -158,24 +158,24 @@ namespace ResuMPServer
 
         public Vector3 GetEntityPosition(NetHandle entity)
         {
-            EntityProperties props = null;
-            if (!Program.ServerInstance.NetEntityHandler.ToDict().TryGetValue(entity.Value, out props))
+            EntityPropertiesAbstract props = null;
+            if (!Program.ServerInstance.NetEntityHandler.ServerEntities.TryGetValue(entity.Value, out props))
                 return new Vector3();
             return props.Position ?? new Vector3();
         }
 
         public Vector3 GetEntityRotation(NetHandle entity)
         {
-            EntityProperties props = null;
-            if (!Program.ServerInstance.NetEntityHandler.ToDict().TryGetValue(entity.Value, out props))
+            EntityPropertiesAbstract props = null;
+            if (!Program.ServerInstance.NetEntityHandler.ServerEntities.TryGetValue(entity.Value, out props))
                 return new Vector3();
             return props.Rotation ?? new Vector3(0, 0, 0);
         }
 
         public Vector3 GetEntityVelocity(NetHandle entity)
         {
-            EntityProperties props = null;
-            if (!Program.ServerInstance.NetEntityHandler.ToDict().TryGetValue(entity.Value, out props))
+            EntityPropertiesAbstract props = null;
+            if (!Program.ServerInstance.NetEntityHandler.ServerEntities.TryGetValue(entity.Value, out props))
                 return new Vector3();
             return props.Velocity ?? new Vector3();
         }
@@ -209,7 +209,7 @@ namespace ResuMPServer
 
         public bool DoesEntityExist(NetHandle entity)
         {
-            return Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value);
+            return Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value);
         }
 
         public bool DoesEntityExistForPlayer(Client player, NetHandle entity)
@@ -240,15 +240,15 @@ namespace ResuMPServer
 
         public void SetEntityTransparency(NetHandle entity, int newAlpha)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Alpha = (byte)newAlpha;
+                Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Alpha = (byte)newAlpha;
                 if (newAlpha < 255)
                     Program.ServerInstance.SendNativeCallToAllPlayers(0x44A0870B7E92D7C0, new EntityArgument(entity.Value), newAlpha, false);
                 else
                     Program.ServerInstance.SendNativeCallToAllPlayers(0x9B1E824FFBB7027A, new EntityArgument(entity.Value));
 
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
 
                 delta.Alpha = (byte)newAlpha;
                 GameServer.UpdateEntityInfo(entity.Value, EntityType.Prop, delta);
@@ -258,9 +258,9 @@ namespace ResuMPServer
 
         public byte GetEntityTransparency(NetHandle entity)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                return Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Alpha;
+                return Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Alpha;
             }
 
             return 0;
@@ -268,15 +268,15 @@ namespace ResuMPServer
 
         public void SetEntityDimension(NetHandle entity, int dimension)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Dimension = dimension;
+                Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Dimension = dimension;
 
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
                 delta.Dimension = dimension;
                 GameServer.UpdateEntityInfo(entity.Value, EntityType.Prop, delta);
 
-                KeyValuePair<int, EntityProperties> pair;
+                KeyValuePair<int, EntityPropertiesAbstract> pair;
                 if (
                     (pair =
                         Program.ServerInstance.NetEntityHandler.ToCopy()
@@ -284,9 +284,9 @@ namespace ResuMPServer
                                 p => p.Value is BlipProperties && ((BlipProperties)p.Value).AttachedNetEntity ==
                         entity.Value)).Key != 0)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[pair.Key].Dimension = dimension;
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[pair.Key].Dimension = dimension;
 
-                    var deltaBlip = new Delta_EntityProperties();
+                    var deltaBlip = new EntityProperties();
                     deltaBlip.Dimension = dimension;
                     GameServer.UpdateEntityInfo(pair.Key, EntityType.Prop, deltaBlip);
                 }
@@ -298,15 +298,15 @@ namespace ResuMPServer
                                p => p.Value is ParticleProperties && ((ParticleProperties)p.Value).EntityAttached ==
                        entity.Value)).Key != 0)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[pair.Key].Dimension = dimension;
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[pair.Key].Dimension = dimension;
 
-                    var deltaBlip = new Delta_EntityProperties();
+                    var deltaBlip = new EntityProperties();
                     deltaBlip.Dimension = dimension;
                     GameServer.UpdateEntityInfo(pair.Key, EntityType.Prop, deltaBlip);
                 }
 
-                if (Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Attachables != null)
-                    foreach (var attached in Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Attachables)
+                if (Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Attachables != null)
+                    foreach (var attached in Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Attachables)
                     {
                         SetEntityDimension(new NetHandle(attached), dimension);
                     }
@@ -315,9 +315,9 @@ namespace ResuMPServer
 
         public int GetEntityDimension(NetHandle entity)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                return Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Dimension;
+                return Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Dimension;
             }
 
             return 0;
@@ -325,11 +325,11 @@ namespace ResuMPServer
 
         public void SetEntityInvincible(NetHandle entity, bool invincible)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].IsInvincible = invincible;
+                Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].IsInvincible = invincible;
 
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
                 delta.IsInvincible = invincible;
                 GameServer.UpdateEntityInfo(entity.Value, EntityType.Prop, delta);
 
@@ -339,9 +339,9 @@ namespace ResuMPServer
 
         public bool GetEntityInvincible(NetHandle entity)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(entity.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(entity.Value))
             {
-                return Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].IsInvincible;
+                return Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].IsInvincible;
             }
 
             return false;
@@ -355,20 +355,20 @@ namespace ResuMPServer
 
                 if (!collisionless)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag = (byte)
-                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag = (byte)
+                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag,
                             EntityFlag.Collisionless);
                 }
                 else
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag = (byte)
-                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag = (byte)
+                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag,
                             EntityFlag.Collisionless);
 
                 }
 
-                var delta = new Delta_EntityProperties();
-                delta.Flag = Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag;
+                var delta = new EntityProperties();
+                delta.Flag = Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag;
                 GameServer.UpdateEntityInfo(entity.Value, EntityType.Prop, delta);
             }
         }
@@ -377,7 +377,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(entity))
             {
-                return PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ToDict()[entity.Value].Flag, EntityFlag.Collisionless);
+                return PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ServerEntities[entity.Value].Flag, EntityFlag.Collisionless);
             }
 
             return false;
@@ -392,7 +392,7 @@ namespace ResuMPServer
                 {
                     prop.LoopingAnimation = animDict + " " + animName;
 
-                    var delta = new Delta_PedProperties();
+                    var delta = new PedProperties();
                     delta.LoopingAnimation = prop.LoopingAnimation;
                     GameServer.UpdateEntityInfo(ped.Value, EntityType.Ped, delta);
                 }
@@ -408,7 +408,7 @@ namespace ResuMPServer
             {
                 prop.LoopingAnimation = scenario;
 
-                var delta = new Delta_PedProperties();
+                var delta = new PedProperties();
                 delta.LoopingAnimation = prop.LoopingAnimation;
                 GameServer.UpdateEntityInfo(ped.Value, EntityType.Ped, delta);
 
@@ -423,7 +423,7 @@ namespace ResuMPServer
             {
                 prop.LoopingAnimation = "";
 
-                var delta = new Delta_PedProperties();
+                var delta = new PedProperties();
                 delta.LoopingAnimation = prop.LoopingAnimation;
                 GameServer.UpdateEntityInfo(ped.Value, EntityType.Ped, delta);
 

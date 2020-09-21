@@ -104,16 +104,6 @@
     <Compile Include="ClientResourceSettings.cs" />
     <Compile Include="EntityPropertie\Attachment.cs" />
     <Compile Include="EntityPropertie\BlipProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_BlipProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_EntityProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_MarkerProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_ParticleProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_PedProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_PickupProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_PlayerProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_TextLabelProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_VehicleProperties.cs" />
-    <Compile Include="EntityPropertie\Delta_WorldProperties.cs" />
     <Compile Include="EntityPropertie\EntityProperties.cs" />
     <Compile Include="EntityPropertie\MarkerProperties.cs" />
     <Compile Include="EntityPropertie\Movement.cs" />

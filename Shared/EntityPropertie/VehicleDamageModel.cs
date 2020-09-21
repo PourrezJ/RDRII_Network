@@ -5,13 +5,13 @@ namespace Shared
     [MessagePackObject]
     public class VehicleDamageModel
     {
-        [Key(0)]
+        [Key(23)]
         public byte BrokenWindows { get; set; }
 
-        [Key(1)]
+        [Key(24)]
         public byte BrokenDoors { get; set; }
 
-        [Key(2)]
+        [Key(25)]
         public int BrokenLights { get; set; }
     }
 }

@@ -10,31 +10,31 @@ namespace Shared
             EntityType = (byte)Shared.EntityType.Blip;
         }
 
-        [Key(0)]
+        [Key(23)]
         public int Sprite { get; set; }
 
-        [Key(1)]
+        [Key(24)]
         public float Scale { get; set; }
 
-        [Key(2)]
+        [Key(25)]
         public int Color { get; set; }
 
-        [Key(3)]
+        [Key(26)]
         public bool IsShortRange { get; set; }
 
-        [Key(4)]
+        [Key(27)]
         public int AttachedNetEntity { get; set; }
 
-        [Key(5)]
+        [Key(28)]
         public float RangedBlip { get; set; }
 
-        [Key(6)]
+        [Key(29)]
         public string Name { get; set; }
 
-        [Key(7)]
+        [Key(30)]
         public bool RouteVisible { get; set; }
 
-        [Key(8)]
+        [Key(31)]
         public int RouteColor { get; set; }
     }
 }

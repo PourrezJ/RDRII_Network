@@ -12,6 +12,6 @@ namespace Shared
         public byte EntityType { get; set; }
 
         [Key(2)]
-        public Delta_EntityProperties Properties { get; set; }
+        public EntityPropertiesAbstract Properties { get; set; }
     }
 }

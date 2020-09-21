@@ -127,20 +127,18 @@ namespace ResuMPServer
             {
                 if (locked)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag =
-                        (byte)PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag,
-                            EntityFlag.VehicleLocked);
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag =
+                        (byte)PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag, EntityFlag.VehicleLocked);
                 }
                 else
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag =
-                        (byte)PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag,
-                            EntityFlag.VehicleLocked);
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag =
+                        (byte)PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag, EntityFlag.VehicleLocked);
                 }
                 Program.ServerInstance.SendNativeCallToAllPlayers(0xB664292EAECF7FA6, new EntityArgument(vehicle.Value), locked ? 10 : 1);
 
-                var delta = new Delta_VehicleProperties();
-                delta.Flag = Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag;
+                var delta = new VehicleProperties();
+                delta.Flag = Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag;
                 GameServer.UpdateEntityInfo(vehicle.Value, EntityType.Vehicle, delta);
             }
         }
@@ -149,7 +147,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist(vehicle))
             {
-                return PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value].Flag,
+                return PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value].Flag,
                             EntityFlag.VehicleLocked);
             }
             return false;

@@ -215,31 +215,31 @@ namespace RDRN_Core
                             switch ((Shared.EntityType)data.EntityType)
                             {
                                 case Shared.EntityType.Blip:
-                                    NetEntityHandler.UpdateBlip(data.NetHandle, data.Properties as Delta_BlipProperties);
+                                    NetEntityHandler.UpdateBlip(data.NetHandle, data.Properties as BlipProperties);
                                     break;
                                 case Shared.EntityType.Marker:
-                                    NetEntityHandler.UpdateMarker(data.NetHandle, data.Properties as Delta_MarkerProperties);
+                                    NetEntityHandler.UpdateMarker(data.NetHandle, data.Properties as MarkerProperties);
                                     break;
                                 case Shared.EntityType.Player:
-                                    NetEntityHandler.UpdatePlayer(data.NetHandle, data.Properties as Delta_PlayerProperties);
+                                    NetEntityHandler.UpdatePlayer(data.NetHandle, data.Properties as PlayerProperties);
                                     break;
                                 case Shared.EntityType.Pickup:
-                                    NetEntityHandler.UpdatePickup(data.NetHandle, data.Properties as Delta_PickupProperties);
+                                    NetEntityHandler.UpdatePickup(data.NetHandle, data.Properties as PickupProperties);
                                     break;
                                 case Shared.EntityType.Prop:
                                     NetEntityHandler.UpdateProp(data.NetHandle, data.Properties);
                                     break;
                                 case Shared.EntityType.Vehicle:
-                                    NetEntityHandler.UpdateVehicle(data.NetHandle, data.Properties as Delta_VehicleProperties);
+                                    NetEntityHandler.UpdateVehicle(data.NetHandle, data.Properties as VehicleProperties);
                                     break;
                                 case Shared.EntityType.Ped:
-                                    NetEntityHandler.UpdatePed(data.NetHandle, data.Properties as Delta_PedProperties);
+                                    NetEntityHandler.UpdatePed(data.NetHandle, data.Properties as PedProperties);
                                     break;
                                 case Shared.EntityType.TextLabel:
-                                    NetEntityHandler.UpdateTextLabel(data.NetHandle, data.Properties as Delta_TextLabelProperties);
+                                    NetEntityHandler.UpdateTextLabel(data.NetHandle, data.Properties as TextLabelProperties);
                                     break;
                                 case Shared.EntityType.Particle:
-                                    NetEntityHandler.UpdateParticle(data.NetHandle, data.Properties as Delta_ParticleProperties);
+                                    NetEntityHandler.UpdateParticle(data.NetHandle, data.Properties as ParticleProperties);
                                     break;
                                 case Shared.EntityType.World:
                                     NetEntityHandler.UpdateWorld(data.Properties);
@@ -698,24 +698,7 @@ namespace RDRN_Core
                                         }
                                     }
                                     break;
-                                case SyncEventType.RadioChange:
-                                    {
-                                        var veh = NetEntityHandler.NetToEntity((int)args[0]);
-                                        var newRadio = (int)args[1];
-                                        if (veh != null)
-                                        {
-                                            /*
-                                            var rad = (RadioStation)newRadio;
-                                            string radioName = "OFF";
-                                            if (rad != RadioStation.RadioOff)
-                                            {
-                                                radioName = Function.Call<string>(Hash.GET_RADIO_STATION_NAME,
-                                                    newRadio);
-                                            }
-                                            Function.Call(Hash.SET_VEH_RADIO_STATION, veh, radioName);*/
-                                        }
-                                    }
-                                    break;
+
                                 case SyncEventType.PickupPickedUp:
                                     {
                                         var pickupItem = NetEntityHandler.NetToStreamedItem((int)args[0]);

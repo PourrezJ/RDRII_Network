@@ -6,19 +6,19 @@ namespace Shared
     [MessagePackObject]
     public class WorldProperties : EntityProperties
     {
-        [Key(0)]
+        [Key(23)]
         public byte Hours { get; set; }
 
-        [Key(1)]
+        [Key(24)]
         public byte Minutes { get; set; }
 
-        [Key(2)]
+        [Key(25)]
         public int Weather { get; set; }
 
-        [Key(3)]
+        [Key(26)]
         public List<string> LoadedIpl { get; set; }
 
-        [Key(4)]
+        [Key(27)]
         public List<string> RemovedIpl { get; set; }
     }
 }

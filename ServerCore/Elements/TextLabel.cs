@@ -42,9 +42,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Text = newText;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Text = newText;
 
-                var delta = new Delta_TextLabelProperties();
+                var delta = new TextLabelProperties();
                 delta.Text = newText;
                 GameServer.UpdateEntityInfo(Value, EntityType.TextLabel, delta);
             }
@@ -54,7 +54,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Text;
+                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Text;
             }
 
             return null;
@@ -64,9 +64,9 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Range = newRange;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Range = newRange;
 
-                var delta = new Delta_TextLabelProperties();
+                var delta = new TextLabelProperties();
                 delta.Range = newRange;
                 GameServer.UpdateEntityInfo(Value, EntityType.TextLabel, delta);
             }
@@ -76,7 +76,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Range;
+                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Range;
             }
 
             return 0;
@@ -86,12 +86,12 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Alpha = (byte)alpha;
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Red = red;
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Green = green;
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Blue = blue;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Alpha = (byte)alpha;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Red = red;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Green = green;
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Blue = blue;
 
-                var delta = new Delta_TextLabelProperties();
+                var delta = new TextLabelProperties();
                 delta.Alpha = (byte)alpha;
                 delta.Red = red;
                 delta.Green = green;
@@ -106,10 +106,10 @@ namespace ResuMPServer
 
             if (DoesEntityExist())
             {
-                output.alpha = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Alpha;
-                output.red = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Red;
-                output.green = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Green;
-                output.blue = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Blue;
+                output.alpha = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Alpha;
+                output.red = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Red;
+                output.green = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Green;
+                output.blue = ((MarkerProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Blue;
             }
 
             return output;
@@ -119,10 +119,10 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).EntitySeethrough =
+                ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).EntitySeethrough =
                     seethrough;
 
-                var delta = new Delta_TextLabelProperties();
+                var delta = new TextLabelProperties();
                 delta.EntitySeethrough = seethrough;
                 GameServer.UpdateEntityInfo(Value, EntityType.TextLabel, delta);
             }
@@ -132,7 +132,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).EntitySeethrough;
+                return ((TextLabelProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).EntitySeethrough;
             }
             return false;
         }

@@ -120,9 +120,7 @@ namespace RDRN_Core
 			LogManager.WriteLog("[INFO]", "Loading scripts from '", path, "' ...");
 
 			if (Directory.Exists(path))
-			{
-
-				
+			{	
 				var filenameAssemblies = new List<string>();
 
 				try
@@ -342,7 +340,7 @@ namespace RDRN_Core
 			}
 
 			// Start console
-			//Console.Start();
+			Console.Start();
 
 			// Start script threads
 			LogManager.WriteLog("[INFO]", "Starting ", _scriptTypes.Count.ToString(), " script(s) ...");
@@ -519,14 +517,14 @@ namespace RDRN_Core
 				}
 
 				_executingScript = null;
-
+				/*
 				if (!script._running)
 				{
 					LogManager.WriteLog("[ERROR]", "Script '", script.Name, "' is not responding! Aborting ...");
 
 					OnAbortScript(script);
 					continue;
-				}
+				}*/
 			}
 
 			// Clean up pinned strings
@@ -582,8 +580,8 @@ namespace RDRN_Core
 		}
 		public void ExecuteTask(IScriptTask task)
 		{
-			task.Run();
-			/*
+			//task.Run();
+			
 			if (Thread.CurrentThread.ManagedThreadId == _executingThreadId)
 			{
 				task.Run();
@@ -593,7 +591,7 @@ namespace RDRN_Core
 				_taskQueue.Enqueue(task);
 
 				SignalAndWait(ExecutingScript._waitEvent, ExecutingScript._continueEvent);
-			}*/
+			}
 		}
 		
 		public IntPtr PinString(string str)

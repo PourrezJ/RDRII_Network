@@ -282,8 +282,11 @@ namespace RDRN_Core.Util
             {
                 while (!model.IsLoaded) Script.Yield();
 
-                Game.Player.ChangeModel(model);
-                //Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, PlayerChar);
+                var handle = Game.Player.Handle;
+
+                Function.Call(Hash.SET_PLAYER_MODEL, handle, model.Hash, false);
+                Function.Call((Hash)0x283978A15512B2FE, handle, true);
+                model.MarkAsNoLongerNeeded();
             }
             PlayerChar = Game.Player.Character;
             ModelRequest = false;

@@ -9,7 +9,7 @@ namespace ResuMPServer
 {
     internal partial class GameServer
     {
-        public static void UpdateEntityInfo(int netId, EntityType entity, Delta_EntityProperties newInfo, Client exclude = null)
+        public static void UpdateEntityInfo(int netId, EntityType entity, EntityPropertiesAbstract newInfo, Client exclude = null)
         {
             var packet = new UpdateEntity
             {
@@ -149,7 +149,7 @@ namespace ResuMPServer
                 }
                 else if (!exception.CurrentVehicle.IsNull)
                 {
-                    var carPos = NetEntityHandler.ToDict()[exception.CurrentVehicle.Value].Position;
+                    var carPos = NetEntityHandler.ServerEntities[exception.CurrentVehicle.Value].Position;
                     if (fullPacket.NetHandle != null) basic = PacketOptimization.WriteBasicSync(fullPacket.NetHandle.Value, carPos);
                 }
             }
@@ -491,9 +491,9 @@ namespace ResuMPServer
 
         public void ChangePlayerTeam(Client target, int newTeam)
         {
-            if (NetEntityHandler.ToDict().ContainsKey(target.Id.Value))
+            if (NetEntityHandler.ServerEntities.ContainsKey(target.Id.Value))
             {
-                ((PlayerProperties)NetEntityHandler.ToDict()[target.Id.Value]).Team = newTeam;
+                ((PlayerProperties)NetEntityHandler.ServerEntities[target.Id.Value]).Team = newTeam;
             }
 
             var obj = new SyncEvent
@@ -507,9 +507,9 @@ namespace ResuMPServer
 
         public void ChangePlayerBlipColor(Client target, int newColor)
         {
-            if (NetEntityHandler.ToDict().ContainsKey(target.Id.Value))
+            if (NetEntityHandler.ServerEntities.ContainsKey(target.Id.Value))
             {
-                ((PlayerProperties)NetEntityHandler.ToDict()[target.Id.Value]).BlipColor = newColor;
+                ((PlayerProperties)NetEntityHandler.ServerEntities[target.Id.Value]).BlipColor = newColor;
             }
 
             var obj = new SyncEvent
@@ -534,9 +534,9 @@ namespace ResuMPServer
 
         public void ChangePlayerBlipSprite(Client target, int newSprite)
         {
-            if (NetEntityHandler.ToDict().ContainsKey(target.Id.Value))
+            if (NetEntityHandler.ServerEntities.ContainsKey(target.Id.Value))
             {
-                ((PlayerProperties)NetEntityHandler.ToDict()[target.Id.Value]).BlipSprite = newSprite;
+                ((PlayerProperties)NetEntityHandler.ServerEntities[target.Id.Value]).BlipSprite = newSprite;
             }
 
             var obj = new SyncEvent
@@ -561,9 +561,9 @@ namespace ResuMPServer
 
         public void ChangePlayerBlipAlpha(Client target, int newAlpha)
         {
-            if (NetEntityHandler.ToDict().ContainsKey(target.Id.Value))
+            if (NetEntityHandler.ServerEntities.ContainsKey(target.Id.Value))
             {
-                ((PlayerProperties)NetEntityHandler.ToDict()[target.Id.Value]).BlipAlpha = (byte)newAlpha;
+                ((PlayerProperties)NetEntityHandler.ServerEntities[target.Id.Value]).BlipAlpha = (byte)newAlpha;
             }
 
             var obj = new SyncEvent

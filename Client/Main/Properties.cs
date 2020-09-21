@@ -8,7 +8,7 @@ namespace RDRN_Core
 {
     public partial class Main
     {
-        public static void UpdateEntityInfo(int netId, EntityType entity, Delta_EntityProperties newInfo)
+        public static void UpdateEntityInfo(int netId, EntityType entity, EntityProperties newInfo)
         {
             var packet = new UpdateEntity();
             packet.EntityType = (byte)entity;
@@ -36,7 +36,7 @@ namespace RDRN_Core
 
             if (!item.LocalOnly)
             {
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
                 delta.SyncedProperties = new Dictionary<string, NativeArgument>();
                 delta.SyncedProperties.Add(key, nativeArg);
                 UpdateEntityInfo(handle, EntityType.Prop, delta);
@@ -60,7 +60,7 @@ namespace RDRN_Core
 
             if (!item.LocalOnly)
             {
-                var delta = new Delta_EntityProperties();
+                var delta = new EntityProperties();
                 delta.SyncedProperties = new Dictionary<string, NativeArgument>();
                 delta.SyncedProperties.Add(key, new LocalGamePlayerArgument());
                 UpdateEntityInfo(handle, EntityType.Prop, delta);
@@ -115,7 +115,7 @@ namespace RDRN_Core
             NetEntityHandler.ServerWorld.SyncedProperties.Set(key, nativeArg);
 
 
-            var delta = new Delta_EntityProperties();
+            var delta = new EntityProperties();
             delta.SyncedProperties = new Dictionary<string, NativeArgument>();
             delta.SyncedProperties.Add(key, nativeArg);
             UpdateEntityInfo(1, EntityType.Prop, delta);
@@ -130,7 +130,7 @@ namespace RDRN_Core
 
             NetEntityHandler.ServerWorld.SyncedProperties.Remove(key);
 
-            var delta = new Delta_EntityProperties();
+            var delta = new EntityProperties();
             delta.SyncedProperties = new Dictionary<string, NativeArgument>();
             delta.SyncedProperties.Add(key, new LocalGamePlayerArgument());
             UpdateEntityInfo(1, EntityType.Prop, delta);

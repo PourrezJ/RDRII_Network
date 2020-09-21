@@ -32,19 +32,22 @@ namespace RDRN_Core.Streamer
                     SyncCollector.LastSyncPacket = null;
                 }
 
-                if (lastPacket == null) continue;
+                if (lastPacket == null) 
+                    continue;
                 try
                 {
                     var data = lastPacket as PedData;
                     if (data != null)
-                    {
-                        var bin = PacketOptimization.WritePureSync(data);
+                    {              
+                        byte[] bin = PacketOptimization.WritePureSync(data);
 
+
+                        /*
                         var msg = Main.Client.CreateMessage();
                         msg.Write((byte) PacketType.PedPureSync);
                         msg.Write(bin.Length);
                         msg.Write(bin);
-
+                        
                         //try
                         //{
                             Main.Client.SendMessage(msg, NetDeliveryMethod.UnreliableSequenced, (int) ConnectionChannel.PureSync);
@@ -54,7 +57,7 @@ namespace RDRN_Core.Streamer
                         //    Util.Util.SafeNotify("FAILED TO SEND DATA: " + ex.Message);
                         //    LogManager.LogException(ex, "SENDPLAYERDATA");
                         //}
-
+                      
                         if (!lastPedData || Environment.TickCount - lastLightSyncSent > LIGHT_SYNC_RATE)
                         {
                             lastLightSyncSent = Environment.TickCount;
@@ -91,7 +94,7 @@ namespace RDRN_Core.Streamer
                         }
 
                         Main.BytesSent += bin.Length;
-                        Main.MessagesSent++;
+                        Main.MessagesSent++;  */
                     }
                     else
                     {
@@ -160,36 +163,5 @@ namespace RDRN_Core.Streamer
                 Thread.Sleep(PURE_SYNC_RATE);
             }
         }
-    }
-
-    public partial class SyncCollector : Script
-    {
-        internal static bool ForceAimData;
-        internal static object LastSyncPacket;
-        internal static object Lock = new object();
-
-        public SyncCollector()
-        {
-            var t = new Thread(SyncSender.MainLoop) {IsBackground = true};
-            t.Start();
-            Tick += OnTick;
-        }
-
-        private void OnTick(object sender, EventArgs e)
-        {
-            if (!Main.IsOnServer) return;
-            var player = Game.Player.Character;
-
-            if (player.IsInVehicle())
-            {
-                VehicleData(player);
-            }
-            else
-            {
-                PedData(player);
-            }
-        }
-
-
     }
 }

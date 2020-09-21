@@ -308,55 +308,59 @@ namespace ResuMPServer
             {
                 try
                 {
-                    Dictionary<int, EntityProperties> entities = Program.ServerInstance.NetEntityHandler.ToCopy();
+                    Dictionary<int, EntityPropertiesAbstract> entities = Program.ServerInstance.NetEntityHandler.ServerEntities;
 
-                    var entList = entities.Where(pair => _validTypes.Contains((EntityType) pair.Value.EntityType));
-
-                    List<ColShape> localShapes;
-                    lock (ColShapes)
+                    lock (entities)
                     {
-                        localShapes = new List<ColShape>(ColShapes);
-                    }
+                        var entList = entities.Where(pair => _validTypes.Contains((EntityType)pair.Value.EntityType));
 
-                    foreach (var shape in localShapes)
-                        foreach (var entity in entList.Where(ent => shape.dimension == 0 || ent.Value.Dimension == 0 || ent.Value.Dimension == shape.dimension))
+                        List<ColShape> localShapes;
+                        lock (ColShapes)
                         {
-                            if (entity.Value == null || entity.Value.Position == null) continue;
-                            if (shape.Check(entity.Value.Position))
-                            {
-                                if (!shape.EntitiesInContact.Contains(entity.Key))
-                                {
-                                    NetHandle ent = new NetHandle(entity.Key);
+                            localShapes = new List<ColShape>(ColShapes);
+                        }
 
-                                    lock (Program.ServerInstance.RunningResources)
+                        foreach (var shape in localShapes)
+                            foreach (var entity in entList.Where(ent => shape.dimension == 0 || ent.Value.Dimension == 0 || ent.Value.Dimension == shape.dimension))
+                            {
+                                if (entity.Value == null || entity.Value.Position == null) continue;
+                                if (shape.Check(entity.Value.Position))
+                                {
+                                    if (!shape.EntitiesInContact.Contains(entity.Key))
+                                    {
+                                        NetHandle ent = new NetHandle(entity.Key);
+
+                                        lock (Program.ServerInstance.RunningResources)
                                             Program.ServerInstance.RunningResources.ForEach(fs => fs.Engines.ForEach(en =>
                                             {
                                                 en.InvokeColshapeEnter(shape, ent);
                                             }));
 
-                                    shape.InvokeEnterColshape(ent);
+                                        shape.InvokeEnterColshape(ent);
 
-                                    shape.EntitiesInContact.Add(entity.Key);
+                                        shape.EntitiesInContact.Add(entity.Key);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                if (shape.EntitiesInContact.Contains(entity.Key))
+                                else
                                 {
-                                    NetHandle ent = new NetHandle(entity.Key);
+                                    if (shape.EntitiesInContact.Contains(entity.Key))
+                                    {
+                                        NetHandle ent = new NetHandle(entity.Key);
 
-                                    lock (Program.ServerInstance.RunningResources)
+                                        lock (Program.ServerInstance.RunningResources)
                                             Program.ServerInstance.RunningResources.ForEach(fs => fs.Engines.ForEach(en =>
                                             {
                                                 en.InvokeColshapeExit(shape, ent);
                                             }));
 
-                                    shape.InvokeExitColshape(ent);
+                                        shape.InvokeExitColshape(ent);
 
-                                    shape.EntitiesInContact.Remove(entity.Key);
+                                        shape.EntitiesInContact.Remove(entity.Key);
+                                    }
                                 }
                             }
-                        }
+                    }
+
                 }
                 catch (Exception ex)
                 {

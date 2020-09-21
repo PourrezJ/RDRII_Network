@@ -3,7 +3,6 @@ using Shared.Math;
 
 namespace Shared
 {
-
     [MessagePackObject]
     public class PedData
     {

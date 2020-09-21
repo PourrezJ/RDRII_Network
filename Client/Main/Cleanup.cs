@@ -41,7 +41,7 @@ namespace RDRN_Core
             CustomAnimation = null;
             AnimationFlag = 0;
 
-            Util.Util.SetPlayerSkin(PedHash.MP_S_M_M_PinLaw_01);
+            //Util.Util.SetPlayerSkin(PedHash.MP_S_M_M_PinLaw_01);
 
             playerChar = Game.Player.Character;
             var player = Game.Player;

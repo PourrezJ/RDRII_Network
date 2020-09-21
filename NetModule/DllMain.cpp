@@ -54,7 +54,10 @@ void ManagedTick()
 
 void ManagedKeyboardMessage(unsigned long key, bool status, bool statusCtrl, bool statusShift, bool statusAlt)
 {
-	LoaderData::Keyboard(safe_cast<WinForms::Keys>(key), status, statusCtrl, statusShift, statusAlt);
+	try
+	{
+		LoaderData::Keyboard(safe_cast<WinForms::Keys>(key), status, statusCtrl, statusShift, statusAlt);
+	}catch(...){}
 }
 
 
@@ -62,14 +65,39 @@ void ManagedKeyboardMessage(unsigned long key, bool status, bool statusCtrl, boo
 #include <Main.h>
 #include <Windows.h>
 #include <stdio.h>
+#include "memory-location.h"
+#include "detour-hook.hpp"
 
 bool sGameReloaded = false;
 PVOID sMainFib = nullptr;
 PVOID sScriptFib = nullptr;
 
+static rh2::ModifiedMemoryData memory;
+static rh2::MemoryLocation loc;
+
+static int Return()
+{
+	return 1;
+}
+
+
+static void Hook() {
+	if (loc = "75 05 83 FB 01 EB 03 83 FB 02")
+	{
+		auto truc = loc.sub(-0x1C).get_jmp();
+
+		if (truc) {
+			truc.write(1);
+		}
+		//rh2::hooking::DetourHook(loc, Return);
+	}
+}
+
 static void ScriptMain()
 {
 	sGameReloaded = true;
+
+	Hook();
 
 	// ScriptHookV already turned the current thread into a fiber, so we can safely retrieve it.
 	sMainFib = GetCurrentFiber();
@@ -112,6 +140,9 @@ static void ScriptMain()
 	}
 }
 
+
+
+
 static void ScriptKeyboardMessage(DWORD key, WORD repeats, BYTE scanCode, BOOL isExtended, BOOL isWithAlt, BOOL wasDownBefore, BOOL isUpNow)
 {
 	ManagedKeyboardMessage(key, isUpNow == FALSE, (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0, (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0, isWithAlt != FALSE);
@@ -130,6 +161,8 @@ BOOL APIENTRY DllMain(HMODULE hInstance, DWORD reason, LPVOID lpReserved)
 			printf("Starting RDRNetwork\n");
 		}
 		
+		
+
 		DisableThreadLibraryCalls(hInstance);
 		scriptRegister(hInstance, &ScriptMain);
 		keyboardHandlerRegister(&ScriptKeyboardMessage);

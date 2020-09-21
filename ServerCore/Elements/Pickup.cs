@@ -12,7 +12,7 @@ namespace ResuMPServer
 
         public int Amount
         {
-            get => ((PickupProperties)Program.ServerInstance.NetEntityHandler.ToDict()[Value]).Amount;
+            get => ((PickupProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[Value]).Amount;
         }
 
         public int CustomModel

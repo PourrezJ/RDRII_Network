@@ -229,8 +229,8 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Health = 1000f;
-                var delta = new Delta_VehicleProperties();
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Health = 1000f;
+                var delta = new VehicleProperties();
                 delta.Health = 1000f;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -246,7 +246,7 @@ namespace ResuMPServer
                 Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).Tires |= (byte)(1 << tyre);
                // Base.SendNativeToAllPlayers(0xEC6A202EE4960385, this, tyre, false, 1000);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.Tires = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).Tires;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -259,7 +259,7 @@ namespace ResuMPServer
                 Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).Tires &= (byte)~(1 << tyre);
                // Base.SendNativeToAllPlayers(0x6E13FC662B882D1D, this, tyre);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.Tires = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).Tires;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -291,7 +291,7 @@ namespace ResuMPServer
                 Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel.BrokenDoors |= (byte)(1 << door);
 
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.DamageModel = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -311,7 +311,7 @@ namespace ResuMPServer
 
                 Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel.BrokenDoors &= (byte)~(1 << door);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.DamageModel = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -382,7 +382,7 @@ namespace ResuMPServer
                     .DamageModel.BrokenDoors |= (byte)(1 << window);
                // Base.SendNativeToAllPlayers(0x9E5B5E4D2CCD2259, this, window);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.DamageModel = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -404,7 +404,7 @@ namespace ResuMPServer
                     .DamageModel.BrokenDoors &= (byte)~(1 << window);
                // Base.SendNativeToAllPlayers(0x772282EBEB95E682, this, window);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.DamageModel = Program.ServerInstance.NetEntityHandler.NetToProp<VehicleProperties>(this.Value).DamageModel;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -429,19 +429,19 @@ namespace ResuMPServer
             {
                 if (enabled)
                 {
-                    ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value])
+                    ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value])
                         .VehicleComponents |= (short)(1 << extra);
                 }
                 else
                 {
-                    ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value])
+                    ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value])
                         .VehicleComponents &= (short)(~(1 << extra));
                 }
 
                 //Base.SendNativeToAllPlayers(0x7EE3A3C5E4A40CC9, new EntityArgument(this.Value), extra, enabled ? 0 : -1);
 
-                var delta = new Delta_VehicleProperties();
-                delta.VehicleComponents = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value])
+                var delta = new VehicleProperties();
+                delta.VehicleComponents = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value])
                         .VehicleComponents;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -451,7 +451,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return (((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value])
+                return (((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value])
                     .VehicleComponents & 1 << extra) != 0;
             }
             return false;
@@ -459,13 +459,13 @@ namespace ResuMPServer
 
         public void SetMod(int slot, int mod)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(this.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(this.Value))
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Mods.Set((byte)slot, mod);
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Mods.Set((byte)slot, mod);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
 
-                delta.Mods = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Mods;
+                delta.Mods = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Mods;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
         }
@@ -474,7 +474,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Mods.Get((byte)slot);
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Mods.Get((byte)slot);
             }
 
             return 0;
@@ -484,13 +484,13 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Mods.Remove((byte)slot);
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Mods.Remove((byte)slot);
             }
 
             //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x92D619E420858204, vehicle, modType);
 
-            var delta = new Delta_VehicleProperties();
-            delta.Mods = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Mods;
+            var delta = new VehicleProperties();
+            delta.Mods = ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Mods;
             GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
         }
 
@@ -513,7 +513,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).PrimaryColor;
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).PrimaryColor;
             }
             return 0;
         }
@@ -522,11 +522,11 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).PrimaryColor = color;
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).PrimaryColor = color;
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x55E1D2758F34E437, vehicle);
-                //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x4F1D4BE3A7F24601, vehicle, color, ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value]).SecondaryColor);
+                //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x4F1D4BE3A7F24601, vehicle, color, ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value]).SecondaryColor);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.PrimaryColor = color;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -536,7 +536,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).SecondaryColor;
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).SecondaryColor;
             }
             return 0;
         }
@@ -545,11 +545,11 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).SecondaryColor = color;
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).SecondaryColor = color;
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x5FFBDEEC3E8E2009, vehicle);
-                //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x4F1D4BE3A7F24601, vehicle, ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[vehicle.Value]).PrimaryColor, color);
+                //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x4F1D4BE3A7F24601, vehicle, ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[vehicle.Value]).PrimaryColor, color);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.SecondaryColor = color;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -564,7 +564,7 @@ namespace ResuMPServer
 
             if (DoesEntityExist())
             {
-                Extensions.ToArgb(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).PrimaryColor,
+                Extensions.ToArgb(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).PrimaryColor,
                     out a, out red, out green, out blue);
             }
 
@@ -576,10 +576,10 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).PrimaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).PrimaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x7141766F91D15BEA, vehicle, red, green, blue);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.PrimaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -594,7 +594,7 @@ namespace ResuMPServer
 
             if (DoesEntityExist())
             {
-                Extensions.ToArgb(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).SecondaryColor,
+                Extensions.ToArgb(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).SecondaryColor,
                     out a, out red, out green, out blue);
             }
 
@@ -605,11 +605,11 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).SecondaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).SecondaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
                 
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x36CED73BFED89754, vehicle, red, green, blue);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.SecondaryColor = Extensions.FromArgb((byte)color.alpha, (byte)color.red, (byte)color.green, (byte)color.blue);
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -619,7 +619,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Health;
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Health;
             }
             return 0f;
         }
@@ -627,11 +627,11 @@ namespace ResuMPServer
 
         public void SetHealth(float health)
         {
-            if (Program.ServerInstance.NetEntityHandler.ToDict().ContainsKey(this.Value))
+            if (Program.ServerInstance.NetEntityHandler.ServerEntities.ContainsKey(this.Value))
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Health = health;
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Health = health;
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.Health = health;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -643,7 +643,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Livery;
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Livery;
             }
             return 0;
         }
@@ -652,10 +652,10 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Livery = livery;
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Livery = livery;
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x60BF608F1B8CD1B6, new EntityArgument(this.Value), livery);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.Livery = livery;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -666,7 +666,7 @@ namespace ResuMPServer
             if (DoesEntityExist())
             {
                 return
-                    new NetHandle(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).Trailer);
+                    new NetHandle(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).Trailer);
             }
 
             return new NetHandle();
@@ -677,7 +677,7 @@ namespace ResuMPServer
             if (DoesEntityExist())
             {
                 return
-                    new NetHandle(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).TraileredBy);
+                    new NetHandle(((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).TraileredBy);
             }
 
             return new NetHandle();
@@ -697,7 +697,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).NumberPlate;
+                return ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).NumberPlate;
             }
             return null;
         }
@@ -707,10 +707,10 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ToDict()[this.Value]).NumberPlate = plate;
+                ((VehicleProperties)Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value]).NumberPlate = plate;
                 //Program.ServerInstance.SendNativeCallToAllPlayers(false, 0x95A88F0B409CDA47, new EntityArgument(vehicle.Value), plate);
 
-                var delta = new Delta_VehicleProperties();
+                var delta = new VehicleProperties();
                 delta.NumberPlate = plate;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Vehicle, delta);
             }
@@ -720,7 +720,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag, EntityFlag.EngineOff);
+                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag, EntityFlag.EngineOff);
             }
 
             return false;
@@ -735,20 +735,20 @@ namespace ResuMPServer
 
                 if (turnedOn)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag = (byte)
-                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag = (byte)
+                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag,
                             EntityFlag.EngineOff);
                 }
                 else
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag = (byte)
-                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag = (byte)
+                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag,
                             EntityFlag.EngineOff);
 
                 }
 
-                var delta = new Delta_EntityProperties();
-                delta.Flag = Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag;
+                var delta = new EntityProperties();
+                delta.Flag = Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Prop, delta);
             } 
         }
@@ -757,7 +757,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag, EntityFlag.EngineOff);
+                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag, EntityFlag.EngineOff);
             }
 
             return false;
@@ -772,20 +772,20 @@ namespace ResuMPServer
 
                 if (turnedOn)
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag = (byte)
-                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag = (byte)
+                        PacketOptimization.SetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag,
                             EntityFlag.SpecialLight);
                 }
                 else
                 {
-                    Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag = (byte)
-                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag,
+                    Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag = (byte)
+                        PacketOptimization.ResetBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag,
                             EntityFlag.SpecialLight);
 
                 }
 
-                var delta = new Delta_EntityProperties();
-                delta.Flag = Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag;
+                var delta = new EntityProperties();
+                delta.Flag = Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag;
                 GameServer.UpdateEntityInfo(this.Value, EntityType.Prop, delta);
             }
         }
@@ -808,7 +808,7 @@ namespace ResuMPServer
         {
             if (DoesEntityExist())
             {
-                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ToDict()[this.Value].Flag, EntityFlag.SpecialLight);
+                return !PacketOptimization.CheckBit(Program.ServerInstance.NetEntityHandler.ServerEntities[this.Value].Flag, EntityFlag.SpecialLight);
             }
 
             return false;
